@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Hoang Trong Vu</title>
+        <link>http://example.org/</link>
+        <description>Recent content on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 08 Feb 2023 01:59:53 +0700</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GoogLeNet - Inception V1 (2014)</title>
+        <link>http://example.org/post/googlenet/</link>
+        <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
+        
+        <guid>http://example.org/post/googlenet/</guid>
+        <description>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀
+Giới thiệu Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, GoogLeNet, hay Inception V1 (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</description>
+        </item>
+        <item>
+        <title>VGG (2014)</title>
+        <link>http://example.org/post/vgg/</link>
+        <pubDate>Wed, 08 Feb 2023 01:52:02 +0700</pubDate>
+        
+        <guid>http://example.org/post/vgg/</guid>
+        <description>Giới thiệu Dựa trên sự thành công của AlexNet vào năm 2012, nhiều nghiên cứu đã được tiến hành nhằm tìm ra các phương pháp hay kiến trúc mới để đạt được kết quả tốt hơn, ví dụ như:
+Thay đổi (tăng, giảm) kích thước của conv filter Thay đổi stride, padding của conv layer Train và test trên các input với nhiều kích thước ảnh khác nhau Trong năm 2014, VGG là một trong những kết quả nghiên cứu nổi bật nhất, và nó tập trung vào một vấn đề khác với các hướng trên là độ sâu (depth, hay là số layer) của mô hình.</description>
+        </item>
+        <item>
+        <title>About</title>
+        <link>http://example.org/page/about/</link>
+        <pubDate>Tue, 07 Feb 2023 17:10:36 +0700</pubDate>
+        
+        <guid>http://example.org/page/about/</guid>
+        <description>Hi there 👋 Welcome to my blog!
+My name is Vu and I&amp;rsquo;m currently a thrid-year student at VNUHCM - University of Science. My major is Computer Science and I&amp;rsquo;m very interested in Mathematics, Machine Learning and Deep Learning 🤖.
+This blog is created with my willing to share the knowledge to others about many wonderful things in Artificial Intelligence. Currently, the language I use in almost posts will be Vietnamese.</description>
+        </item>
+        <item>
+        <title>Archives</title>
+        <link>http://example.org/page/archives/</link>
+        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/archives/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Links</title>
+        <link>http://example.org/page/links/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/links/</guid>
+        <description>To use this feature, add links section to frontmatter.
+This page&amp;rsquo;s frontmatter:
+1 2 3 4 5 6 7 8 9 links: - title: GitHub description: GitHub is the world&amp;#39;s largest software development platform. website: https://github.com image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png - title: TypeScript description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. website: https://www.typescriptlang.org image: ts-logo-128.jpg image field accepts both local and external images.</description>
+        </item>
+        <item>
+        <title>Search</title>
+        <link>http://example.org/page/search/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/search/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

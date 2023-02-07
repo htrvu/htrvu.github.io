@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
+<title>GoogLeNet - Inception V1 (2014)</title>
+
+<link rel='canonical' href='http://example.org/post/googlenet/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='GoogLeNet - Inception V1 (2014)'>
+<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
+<meta property='og:url' content='http://example.org/post/googlenet/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-02-08T01:59:53&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T01:59:53&#43;07:00'/>
+<meta name="twitter:title" content="GoogLeNet - Inception V1 (2014)">
+<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu">Giới thiệu</a></li>
+    <li><a href="#kết-nối-thưa-và-cnn">Kết nối thưa và CNN</a></li>
+    <li><a href="#inception-module">Inception module</a></li>
+    <li><a href="#kiến-trúc-googlenet">Kiến trúc GoogLeNet</a></li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/googlenet/">GoogLeNet - Inception V1 (2014)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 08, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <div style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/meme.jpg'>
+</div>
+<p>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀</p>
+<h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, <strong>GoogLeNet</strong>, hay <strong>Inception V1</strong> (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</p>
+<ul>
+<li>“Inception” có thể dịch là “sự khởi đầu”, nghe có vẻ rất hợp lý 😀.</li>
+</ul>
+<p>Ngoài ra, ở trong bài viết về VGG, mình có đề cập đến vấn đề thiết kế kiến trúc mô hình theo hướng có sự <strong>lặp lại các khuôn mẫu</strong>. GoogLeNet cũng sẽ được thiết kế như vậy.</p>
+<p><strong>Lưu ý.</strong> Tên của mô hình này là <strong>GoogLeNet</strong>, không phải GoogleNet =)) Tác giả cho biết ý nghĩa của cái tên này là “This name is a homage to Yann LeCuns pioneering LeNet 5 network.”</p>
+<p>Các tác giả của paper GoogLeNet có tóm tắt các mục tiêu của nghiên cứu như sau:</p>
+<ul>
+<li>Nâng cao khả năng tận dụng tài nguyên tính toán</li>
+<li>Cho phép tăng chiều rộng và chiều sâu của kiến trúc mô hình mà vẫn đảm bảo được <em>độ phức tạp tính toán</em> là ở mức chấp nhận được.</li>
+</ul>
+<p>GoogLeNet thật sự đã đạt được những điều đó, và nó được xây dựng dựa trên <strong>nguyên lý Hebbian:</strong> <em>“neurons that fire together, wire together”.</em>  Paper GoogLeNet đã đưa ra các nền tảng lý thuyết rất “căng thẳng” để cho thấy rằng mô hình CNN có thể hoạt động “đủ tốt”, điều mà ta chưa được biết đến ở trong các paper trước đó 😀</p>
+<p>Ngoài ra, có một quan điểm khá thú vị khi mô tả về kiến trúc của GoogLeNet như sau: Khi xây dựng kiến trúc CNN, thay vì phải suy nghĩ xem trong các mạng CNN ta nên áp dụng filter với kích thước bao nhiêu, hãy áp dụng luôn <strong>nhiều filter với kích thước khác nhau</strong> và tổng hợp kết quả lại 😜</p>
+<ul>
+<li>Mình cũng có đồng tình với quan điểm, nhưng khi đọc paper thì có vẻ là các tác giả cũng đã tiến hành phân tích và thử nghiệm nhiều lắm mới cho ra được cái kiến trúc như vậy.</li>
+</ul>
+<h2 id="kết-nối-thưa-và-cnn">Kết nối thưa và CNN</h2>
+<p>Đầu tiên, tại thời điểm trước khi Inception được công bố, chúng ta có thể cải thiện một mô hình DNN bằng những cách như sau:</p>
+<ul>
+<li>Tăng chiều sâu của mô hình (tức là số layer)</li>
+<li>Tăng chiều rộng (số channel trong mỗi layer)</li>
+</ul>
+<p>Tuy nhiên, với hai cách trên thì sẽ có những vấn đề mà ta cần lưu tâm là hiện tượng <em>overfitting</em> và <em>sự gia tăng độ phức tạp của mô hình.</em></p>
+<p>Các tác giả có đề cập đến một hướng đi có thể giảm bớt hai vấn đề trên là sử dụng <strong>kiến trúc kết nối thưa (sparsely connected architectures).</strong> Ta có thể hiểu đơn giản như sau:</p>
+<ul>
+<li>Với hai fully connected layer liên tiếp nhau, mỗi neuron trong layer sau sẽ kết nối với tất cả các unit trong layer trước. Nếu như ta thay đổi đi một chút, mỗi neuron trong layer sau sẽ chỉ kết nối đến <strong><strong>một vài</strong></strong> unit trong layer trước, kiến trúc có được sẽ trở nên “thưa” hơn.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 280px;" src='./images/sparse_fc.png'>
+<p align="centr" style="margin: 0; color: #888;">
+Kết nối thưa trong fully connected layer
+</p>
+</div>
+<ul>
+<li>Đối với conv layer thì ta đã đạt được tính chất thưa như vậy. Ta biết rằng, với mỗi phần tử trên feature map của layer hiện tại thì ta tính nó dựa vào một vùng nhỏ trên feature map output của layer trước đó. Giả sử hai layer này đều chỉ có 1 channel thì ta có thể biểu diễn nó như hình bên dưới:</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px;" src='./images/sparse_conv.png'>
+<p align="center" style="margin: 0; color: #888;">
+Kết nối thưa trong conv layer
+</p>
+</div>
+<p>Kiến trúc thưa được các tác giả mô tả là mô phỏng lại hệ thống sinh học (ví dụ như khi ta nhìn vào một đối tượng thì ta thường chỉ chú ý một số điểm trên đối tượng đó thôi, khó mà chú ý tất cả được).</p>
+<p>Ngoài ra, có một nền tàng lý thuyết rất trâu bò về kiến trúc thưa của Arora như sau:</p>
+<ul>
+<li><em>If the probability distribution of the data-set is representable by a large, very sparse deep neural network, then the <strong>optimal network topology</strong> can be constructed <strong>layer by layer</strong> by analyzing the correlation statistics of the activations of the last layer and clustering neurons with highly correlated outputs.</em></li>
+</ul>
+<p>Thật sự mình cũng chưa hiểu hết ý của câu trên… Nhưng đại ý của nó có thể là nếu ta biểu diễn được phân phối các điểm dữ liệu của một dataset bằng một kiến trúc DNN lớn và thưa thì từ đó ta có thể xây nên được một kiến trúc tối ưu (về cả độ chính xác và độ phức tạp), bằng cách xây từng layer một 😀</p>
+<p>Tuy nhiên, với các tài nguyên phần cứng trong thời gian này thì rất khó để ta có thể tính toán trên các mạng DNN thưa. Do đó, các tác giả đi theo hướng tìm một mô hình là có tận dụng một số thông tin về tính chất thưa nhưng vẫn thực hiện tính toán trên các ma trận đầy đủ. <strong>Đấy chính là hướng sử dụng các phép toán convolution!</strong>.</p>
+<ul>
+<li>Cũng vì lý do này, ở phần kiến trúc của GoogLeNet thì ta sẽ thấy nó chỉ có duy nhất một fully connected layer để sinh ra output, còn lại chỉ toàn conv layer thôi 😗</li>
+</ul>
+<p>Nói đến việc áp dụng các filter trong conv layer, các tác giả cho rằng:</p>
+<ul>
+<li>Mỗi phần tử trong feature map của một layer sẽ có mối tương quan với một vùng nào đó trên ảnh input (receptive field). Ta sẽ gom các phần tử cùng tương quan với một vùng vào cùng một cụm.</li>
+<li>Để ý rằng, trong những layer ở gần ảnh input thì ta sẽ có nhiều cụm và kích thước mỗi cụm là nhỏ. Càng đi qua các layer CNN thì số lượng cụm sẽ ít lại và kích thước cụm sẽ lan rộng ra. Tất nhiên là vẫn có thể có những cụm có kích thước nhỏ tại những layer đó. Do vậy, ta nên có các filter với kích thước lớn hơn để học các đặc trưng tại các cụm lớn, đồng thời cũng cần có filter kích thước nhỏ đối với các cụm nhỏ hơn.</li>
+</ul>
+<p>Qua một loạt các thử nghiệm, các tác giả đã chọn 3 filter là 1x1, 3x3 và 5x5. Một khối chứa 3 filter trên được đặt tên là <strong>Inception module.</strong></p>
+<p>Bây giờ quay lại với lý thuyết của Arora, ở ý xây dựng mạng tối ưu qua từng layer một. <strong>GoogLeNet</strong> được tạo nên bằng đúng ý tưởng như vậy, ta nối Inception module - by - Inception module 😀</p>
+<p><strong>P/s:</strong> Các bạn có thể tìm đọc phần <strong>Motivation</strong> trong paper gốc và tự cảm nhận nó nhé.</p>
+<h2 id="inception-module">Inception module</h2>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px;" src='./images/inception_module.png'>
+<p align="center" style="margin: 0; color: #888;">
+Inception module
+</p>
+</div>
+<p>Qua các mô tả ở phần trên, ta có thể liên tưởng đến kiến trúc của Inception module là một thứ gì đó giống với cái ở hình (a), với đủ 3 loại filter là 1 x 1, 3 x 3 và 5 x 5. Các tác giả dùng thêm cả một layer max pooling trong đó nữa, với lí do rất đơn giản là vì ở thời điểm đó thì max pooling thường mang lại hiệu quả tốt trong các kiến trúc mạng CNN =))</p>
+<p>Truy nhiên, cách cài đặt như hình (a) sẽ dẫn đến số lượng tham số của mô hình là rất lớn. Thay vào đó, ta có thể tạo ra kiến trúc dạng “bottleneck” bằng cách sử dụng thêm các layer convolution 1 x 1 như hình (b), nhằm mục đích chính là giảm số channel. Số lượng phép tính lúc này sẽ được giảm một cách đáng kể.</p>
+<p>Lưu ý rằng, ở cuối module ta có phép toán concatenate, tức là các feature-maps của toàn bộ layer convolution đều phải có cùng size (tức là width và height)</p>
+<h2 id="kiến-trúc-googlenet">Kiến trúc GoogLeNet</h2>
+<p>GoogLeNet sử dụng tổng cộng 9 Inception module, gồm có 22 layer có trọng số (tính cả pooling là 27), được tóm tắt qua bảng sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/googlenet.png'>
+</p>
+<p>Một điểm đặc biệt khi train GoogLeNet là các tác giả sử dụng các <strong>auxiliary classifiers</strong> (xem hình bên dưới). Các thành phần này sẽ khá giống như giống hệt với phần cuối của mô hình (bộ classifier). Như vậy, ta có thể xem GoogLeNet có 3 bộ classifier. <strong>Auxiliary classifiers</strong> được sử dụng với các ý nghĩa như sau:</p>
+<ul>
+<li>Hạn chế vanishing gradient</li>
+<li>Tăng regularization</li>
+</ul>
+<p><strong>Lưu ý:</strong></p>
+<ul>
+<li>Loss khi huấn luyện sẽ cộng loss của cả ba lại với nhau.</li>
+<li>Khi test thì ta thường chỉ quan tâm đến bộ classifer cuối cùng. Một cách làm khác là ta xài cả 3, sau đó lấy kết quả trung bình.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px;" src='./images/auxiliary.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png">https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png</a>
+</p>
+</div>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo phần cài đặt GoogLeNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >https://github.com/htrvu/cnn_practice</a>. Trong cách cài đặt này, mình sẽ bỏ qua auxiliary classifiers.</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Paper GoogLeNet: <a class="link" href="https://arxiv.org/abs/1409.4842"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1409.4842</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/vgg/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">VGG (2014)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

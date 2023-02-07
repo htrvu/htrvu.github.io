@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình VGG'>
+<title>VGG (2014)</title>
+
+<link rel='canonical' href='http://example.org/post/vgg/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='VGG (2014)'>
+<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình VGG'>
+<meta property='og:url' content='http://example.org/post/vgg/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2023-02-08T01:52:02&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T01:52:02&#43;07:00'/>
+<meta name="twitter:title" content="VGG (2014)">
+<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình VGG">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu">Giới thiệu</a></li>
+    <li><a href="#vgg-block">VGG block</a></li>
+    <li><a href="#kiến-trúc-vgg">Kiến trúc VGG</a></li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/vgg/">VGG (2014)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình VGG
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 08, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Dựa trên sự thành công của AlexNet vào năm 2012, nhiều nghiên cứu đã được tiến hành nhằm tìm ra các phương pháp hay kiến trúc mới để đạt được kết quả tốt hơn, ví dụ như:</p>
+<ul>
+<li>Thay đổi (tăng, giảm) kích thước của conv filter</li>
+<li>Thay đổi stride, padding của conv layer</li>
+<li>Train và test trên các input với nhiều kích thước ảnh khác nhau</li>
+</ul>
+<p>Trong năm 2014, VGG là một trong những kết quả nghiên cứu nổi bật nhất, và nó tập trung vào một vấn đề khác với các hướng trên là <strong>độ sâu</strong> (depth, hay là số layer) của mô hình. VGG đã đạt được các kết quả rất tốt trên tập ImageNet và các dataset khác, trong các task như classification, localization,…</p>
+<p>Ngoài ra, ta có thể đưa ra nhận xét như sau về AlexNet:</p>
+<ul>
+<li>Dù AlexNet đã chứng minh được CNN có thể đạt độ hiệu quả tốt, nó lại không cung cấp một <strong>khuôn mẫu</strong> nào cho việc nghiên cứu, thiết kế các mạng mới.</li>
+<li>Theo thời gian, các nhà nghiên cứu đã thay đổi suy nghĩ từ quy mô những neuron riêng lẻ sang các tầng, rồi sau đó là các <strong>khối</strong> gồm các tầng <strong>lặp lại theo khuôn mẫu</strong>.</li>
+</ul>
+<p>Kiến trúc của VGG là một trong những kiến trúc phổ biến đầu tiên được xây dựng theo tiêu chí như vậy.</p>
+<h2 id="vgg-block">VGG block</h2>
+<p>Điểm nổi bật của VGG là ta chỉ dùng duy nhất một kích thước filter trong mọi conv layer là 3 x 3, và ta dần tăng độ sâu của mô hình bằng các conv layer. Hơn nữa, ta còn áp dụng nhiều conv layer <strong>liền nhau</strong> rồi mới dùng đến max pooling (ta có thể gọi đây là <strong>VGG block</strong>)</p>
+<ul>
+<li>Các tác giả có đề cập đến một vấn đề cho cách áp dụng này như sau: <em>Việc dùng nhiều conv layer 3 x 3 liền nhau như vậy so với dùng một conv layer với filter lớn hơn (ví dụ 7 x 7) như hầu hết các mô hình đã được công bố vào thời điểm trước đó thì có gì “tốt” hơn, khi mà features map sau cùng ta thu được có thể có cùng kích thước?</em></li>
+<li>Để trả lời, ta có 2 ý chính như sau:
+<ul>
+<li>Giảm số lượng tham số của mô hình (đặt tính là biết nhaa 😜)</li>
+<li>Dùng nhiều conv layer thì ta có khả năng sẽ phát hiện được nhiều feature có ích hơn, từ đó decision function sẽ ok hơn.</li>
+</ul>
+</li>
+</ul>
+<p>Ngoài ra, VGG block sử dụng padding 1 (giữ nguyên kích thước input), theo sau đó là max pooling với pool size 2 x 2 và stride 2 (giảm kích thước input đi một nửa). Kiến trúc của nó có thể được mô tả như hình bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height:220px;" src='./images/vgg_block.png'>
+<p align="center" style="margin: 0; color: #888">
+VGG block <br>
+Nguồn: <a style="display: inline;" href="https://d2l.aivivn.com/_images/vgg.svg](https://d2l.aivivn.com/_images/vgg.svg">Dive intro AI</a>
+</p>
+</div>
+<p>Trong các bài toán áp dụng VGG, đôi khi ta có thể gặp VGG block với một conv layer 1 x 1 ở trước max pooling. Block dạng này thường được sử dụng với mục đích chính là bổ sung thêm một phép biến đổi tuyến tính nữa. Tuy nhiên, trong thực nghiệm thì các tác giả đã cho thấy rằng việc sử dụng block dạng này không hiệu quả hơn so với toàn các conv layer với filter 3 x 3 (cùng số lượng layer).</p>
+<h2 id="kiến-trúc-vgg">Kiến trúc VGG</h2>
+<p>Bằng cách kết hợp nhiều VGG block với nhau, các tác giả đã tạo ra nhiều phiên bản VGG khác nhau, với số layer có trọng số là trong đoạn 11 - 19. Trong paper VGG, các tác giả đã đưa ra 6 kiến trúc với độ sâu tăng dần và tiến hành so sánh với nhau. Điểm chung của các kiến trúc này là phần fully connected đều có 3 layer, và toàn bộ layer đều sử dụng activation <strong>ReLU.</strong></p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/vgg_versions.png'>
+<p align="center" style="margin: 0; color: #888">
+Các phiên bản VGG
+</p>
+</div>
+<p>Ta có một số nhận xét như sau:</p>
+<ul>
+<li>Số lượng conv layer trong các VGG block của các phiên bản là tăng dần. Để ý đến B, C và D thì:
+<ul>
+<li>C = B + conv layer 1 x 1</li>
+<li>D = C + đổi conv layer 1 x 1 thành 3 x 3</li>
+<li>Khi test, ta có B &lt; C &lt; D. Do đó, việc thêm phép biến đổi tuyến tính bằng conv layer 1 x 1 giúp mô hình hoạt động tốt hơn, nhưng nó vẫn không bằng với việc là ta thêm luôn conv layer 3 x 3.</li>
+</ul>
+</li>
+<li>Độ rộng (số channel) trong từng block được tăng theo <strong>bội 2</strong>. Ý tưởng này được sử dụng rất rộng rãi trong thời điểm này và cả về sau</li>
+<li>Để hạn chế overfitting, ta có thể sử dụng thêm <strong>dropout</strong> cho hai tầng fully connected đầu tiên.</li>
+</ul>
+<p>Hai kiến trúc phổ biến nhất trong việc áp dụng VGG vào các bài toán khác là D (<strong>VGG16</strong>) và E (<strong>VGG19</strong>). Để trực quan hơn, ta có thể thể biểu diễn VGG16 như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="width: 800px;" src='./images/vgg16.png'>
+<img style="width: 800px;" src='./images/vgg16_2.png'>
+<p align="center" style="margin: 0; color: #888">
+Nguồn: <a href="https://miro.medium.com/max/827/1*UeAhoKM0kJfCPA03wt5H0A.png">https://miro.medium.com/max/827/1*UeAhoKM0kJfCPA03wt5H0A.png</a>
+</p>
+</div>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo phần cài đặt VGG bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >sau</a></p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Paper VGG: <a class="link" href="https://arxiv.org/abs/1409.1556"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1409.1556</a></li>
+<li><a class="link" href="https://d2l.aivivn.com/chapter_convolutional-modern/vgg_vn.html"  target="_blank" rel="noopener"
+    >Dive intro AI - VGG</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/googlenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

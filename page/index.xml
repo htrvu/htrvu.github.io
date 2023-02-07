@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Pages on Hoang Trong Vu</title>
+        <link>http://example.org/page/</link>
+        <description>Recent content in Pages on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 07 Feb 2023 17:10:36 +0700</lastBuildDate><atom:link href="http://example.org/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>About</title>
+        <link>http://example.org/page/about/</link>
+        <pubDate>Tue, 07 Feb 2023 17:10:36 +0700</pubDate>
+        
+        <guid>http://example.org/page/about/</guid>
+        <description>Hi there 👋 Welcome to my blog!
+My name is Vu and I&amp;rsquo;m currently a thrid-year student at VNUHCM - University of Science. My major is Computer Science and I&amp;rsquo;m very interested in Mathematics, Machine Learning and Deep Learning 🤖.
+This blog is created with my willing to share the knowledge to others about many wonderful things in Artificial Intelligence. Currently, the language I use in almost posts will be Vietnamese.</description>
+        </item>
+        <item>
+        <title>Archives</title>
+        <link>http://example.org/page/archives/</link>
+        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/archives/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Links</title>
+        <link>http://example.org/page/links/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/links/</guid>
+        <description>To use this feature, add links section to frontmatter.
+This page&amp;rsquo;s frontmatter:
+1 2 3 4 5 6 7 8 9 links: - title: GitHub description: GitHub is the world&amp;#39;s largest software development platform. website: https://github.com image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png - title: TypeScript description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript. website: https://www.typescriptlang.org image: ts-logo-128.jpg image field accepts both local and external images.</description>
+        </item>
+        <item>
+        <title>Search</title>
+        <link>http://example.org/page/search/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://example.org/page/search/</guid>
+        <description></description>
+        </item>
+        
+    </channel>
+</rss>

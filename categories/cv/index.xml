@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Computer Vision on Hoang Trong Vu</title>
+        <link>http://example.org/categories/cv/</link>
+        <description>Recent content in Computer Vision on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 08 Feb 2023 01:59:53 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GoogLeNet - Inception V1 (2014)</title>
+        <link>http://example.org/post/googlenet/</link>
+        <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
+        
+        <guid>http://example.org/post/googlenet/</guid>
+        <description>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀
+Giới thiệu Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, GoogLeNet, hay Inception V1 (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</description>
+        </item>
+        <item>
+        <title>VGG (2014)</title>
+        <link>http://example.org/post/vgg/</link>
+        <pubDate>Wed, 08 Feb 2023 01:52:02 +0700</pubDate>
+        
+        <guid>http://example.org/post/vgg/</guid>
+        <description>Giới thiệu Dựa trên sự thành công của AlexNet vào năm 2012, nhiều nghiên cứu đã được tiến hành nhằm tìm ra các phương pháp hay kiến trúc mới để đạt được kết quả tốt hơn, ví dụ như:
+Thay đổi (tăng, giảm) kích thước của conv filter Thay đổi stride, padding của conv layer Train và test trên các input với nhiều kích thước ảnh khác nhau Trong năm 2014, VGG là một trong những kết quả nghiên cứu nổi bật nhất, và nó tập trung vào một vấn đề khác với các hướng trên là độ sâu (depth, hay là số layer) của mô hình.</description>
+        </item>
+        
+    </channel>
+</rss>
