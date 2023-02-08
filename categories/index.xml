@@ -12,7 +12,7 @@
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
         <guid>http://example.org/categories/cv/</guid>
-        <description></description>
+        <description>&lt;img src="http://example.org/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
         </item>
         <item>
         <title>Deep Learning</title>
@@ -20,7 +20,7 @@
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
         <guid>http://example.org/categories/dl/</guid>
-        <description></description>
+        <description>&lt;img src="http://example.org/categories/dl/dl.jpg" alt="Featured image of post Deep Learning" /&gt;</description>
         </item>
         <item>
         <title>Explainable AI</title>
@@ -28,7 +28,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://example.org/categories/xai/</guid>
-        <description></description>
+        <description>&lt;img src="http://example.org/categories/xai/xai.jpeg" alt="Featured image of post Explainable AI" /&gt;</description>
         </item>
         <item>
         <title>Machine Learning</title>
@@ -36,7 +36,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://example.org/categories/ml/</guid>
-        <description></description>
+        <description>&lt;img src="http://example.org/categories/ml/ml.jpg" alt="Featured image of post Machine Learning" /&gt;</description>
         </item>
         <item>
         <title>Natual Language Processing</title>
@@ -44,7 +44,7 @@
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
         <guid>http://example.org/categories/nlp/</guid>
-        <description></description>
+        <description>&lt;img src="http://example.org/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
         </item>
         
     </channel>
