@@ -6,12 +6,36 @@
         <description>Recent content in Tags on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 17:41:09 +0700</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 08 Feb 2023 18:03:46 +0700</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>cnn</title>
         <link>http://example.org/tags/cnn/</link>
-        <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
+        <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
         <guid>http://example.org/tags/cnn/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>inception</title>
+        <link>http://example.org/tags/inception/</link>
+        <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
+        
+        <guid>http://example.org/tags/inception/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>inception-resnet</title>
+        <link>http://example.org/tags/inception-resnet/</link>
+        <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
+        
+        <guid>http://example.org/tags/inception-resnet/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>skip connection</title>
+        <link>http://example.org/tags/skip-connection/</link>
+        <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
+        
+        <guid>http://example.org/tags/skip-connection/</guid>
         <description></description>
         </item>
         <item>
@@ -23,27 +47,11 @@
         <description></description>
         </item>
         <item>
-        <title>skip connection</title>
-        <link>http://example.org/tags/skip-connection/</link>
-        <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
-        
-        <guid>http://example.org/tags/skip-connection/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>googlenet</title>
         <link>http://example.org/tags/googlenet/</link>
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
         <guid>http://example.org/tags/googlenet/</guid>
-        <description></description>
-        </item>
-        <item>
-        <title>inception</title>
-        <link>http://example.org/tags/inception/</link>
-        <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
-        
-        <guid>http://example.org/tags/inception/</guid>
         <description></description>
         </item>
         <item>

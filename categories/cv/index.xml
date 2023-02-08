@@ -6,7 +6,17 @@
         <description>Recent content in Computer Vision on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 17:41:09 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 08 Feb 2023 18:03:46 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Inception-Reset (2016)</title>
+        <link>http://example.org/post/inception-resnet/</link>
+        <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
+        
+        <guid>http://example.org/post/inception-resnet/</guid>
+        <description>Giới thiệu Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp skip connection vào các Inception block (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.
+Kiến trúc mô hình Inception-ResNet V1 Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:
+Kiến trúc Inception-ResNet V1</description>
+        </item>
+        <item>
         <title>Resnet (2015)</title>
         <link>http://example.org/post/resnet/</link>
         <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>

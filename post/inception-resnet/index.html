@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
-<title>GoogLeNet - Inception V1 (2014)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
+<title>Inception-Reset (2016)</title>
 
-<link rel='canonical' href='http://example.org/post/googlenet/'>
+<link rel='canonical' href='http://example.org/post/inception-resnet/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='GoogLeNet - Inception V1 (2014)'>
-<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
-<meta property='og:url' content='http://example.org/post/googlenet/'>
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Inception-Reset (2016)'>
+<meta property='og:description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
+<meta property='og:url' content='http://example.org/post/inception-resnet/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='inception' /><meta property='article:tag' content='googlenet' /><meta property='article:published_time' content='2023-02-08T01:59:53&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T01:59:53&#43;07:00'/>
-<meta name="twitter:title" content="GoogLeNet - Inception V1 (2014)">
-<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='inception-resnet' /><meta property='article:tag' content='inception' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-08T18:03:46&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T18:03:46&#43;07:00'/>
+<meta name="twitter:title" content="Inception-Reset (2016)">
+<meta name="twitter:description" content="Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception">
     <link rel="shortcut icon" href="/neural.png" />
 
     </head>
@@ -233,10 +233,12 @@
             <nav id="TableOfContents">
   <ol>
     <li><a href="#giới-thiệu">Giới thiệu</a></li>
-    <li><a href="#kết-nối-thưa-và-cnn">Kết nối thưa và CNN</a></li>
-    <li><a href="#inception-module">Inception module</a></li>
-    <li><a href="#kiến-trúc-googlenet">Kiến trúc GoogLeNet</a></li>
-    <li><a href="#cài-đặt">Cài đặt</a></li>
+    <li><a href="#kiến-trúc-mô-hình">Kiến trúc mô hình</a>
+      <ol>
+        <li><a href="#inception-resnet-v1">Inception-ResNet V1</a></li>
+        <li><a href="#inception-resnet-v2">Inception-ResNet V2</a></li>
+      </ol>
+    </li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
 </nav>
@@ -269,12 +271,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/googlenet/">GoogLeNet - Inception V1 (2014)</a>
+            <a href="/post/inception-resnet/">Inception-Reset (2016)</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet
+            Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception
         </h3>
         
     </div>
@@ -310,7 +312,7 @@
 
 
                 <time class="article-time--reading">
-                    8 minute read
+                    1 minute read
                 </time>
             </div>
         
@@ -325,109 +327,65 @@
     <section class="article-content">
     
     
-    <div style="display: flex; flex-direction: column; align-items: center;">
-<img src='./images/meme.jpg'>
-</div>
-<p>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀</p>
-<h2 id="giới-thiệu">Giới thiệu</h2>
-<p>Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, <strong>GoogLeNet</strong>, hay <strong>Inception V1</strong> (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</p>
-<ul>
-<li>“Inception” có thể dịch là “sự khởi đầu”, nghe có vẻ rất hợp lý 😀.</li>
-</ul>
-<p>Ngoài ra, ở trong bài viết về VGG, mình có đề cập đến vấn đề thiết kế kiến trúc mô hình theo hướng có sự <strong>lặp lại các khuôn mẫu</strong>. GoogLeNet cũng sẽ được thiết kế như vậy.</p>
-<p><strong>Lưu ý.</strong> Tên của mô hình này là <strong>GoogLeNet</strong>, không phải GoogleNet =)) Tác giả cho biết ý nghĩa của cái tên này là “This name is a homage to Yann LeCuns pioneering LeNet 5 network.”</p>
-<p>Các tác giả của paper GoogLeNet có tóm tắt các mục tiêu của nghiên cứu như sau:</p>
-<ul>
-<li>Nâng cao khả năng tận dụng tài nguyên tính toán</li>
-<li>Cho phép tăng chiều rộng và chiều sâu của kiến trúc mô hình mà vẫn đảm bảo được <em>độ phức tạp tính toán</em> là ở mức chấp nhận được.</li>
-</ul>
-<p>GoogLeNet thật sự đã đạt được những điều đó, và nó được xây dựng dựa trên <strong>nguyên lý Hebbian:</strong> <em>“neurons that fire together, wire together”.</em>  Paper GoogLeNet đã đưa ra các nền tảng lý thuyết rất “căng thẳng” để cho thấy rằng mô hình CNN có thể hoạt động “đủ tốt”, điều mà ta chưa được biết đến ở trong các paper trước đó 😀</p>
-<p>Ngoài ra, có một quan điểm khá thú vị khi mô tả về kiến trúc của GoogLeNet như sau: Khi xây dựng kiến trúc CNN, thay vì phải suy nghĩ xem trong các mạng CNN ta nên áp dụng filter với kích thước bao nhiêu, hãy áp dụng luôn <strong>nhiều filter với kích thước khác nhau</strong> và tổng hợp kết quả lại 😜</p>
-<ul>
-<li>Mình cũng có đồng tình với quan điểm, nhưng khi đọc paper thì có vẻ là các tác giả cũng đã tiến hành phân tích và thử nghiệm nhiều lắm mới cho ra được cái kiến trúc như vậy.</li>
-</ul>
-<h2 id="kết-nối-thưa-và-cnn">Kết nối thưa và CNN</h2>
-<p>Đầu tiên, tại thời điểm trước khi Inception được công bố, chúng ta có thể cải thiện một mô hình DNN bằng những cách như sau:</p>
-<ul>
-<li>Tăng chiều sâu của mô hình (tức là số layer)</li>
-<li>Tăng chiều rộng (số channel trong mỗi layer)</li>
-</ul>
-<p>Tuy nhiên, với hai cách trên thì sẽ có những vấn đề mà ta cần lưu tâm là hiện tượng <em>overfitting</em> và <em>sự gia tăng độ phức tạp của mô hình.</em></p>
-<p>Các tác giả có đề cập đến một hướng đi có thể giảm bớt hai vấn đề trên là sử dụng <strong>kiến trúc kết nối thưa (sparsely connected architectures).</strong> Ta có thể hiểu đơn giản như sau:</p>
-<ul>
-<li>Với hai fully connected layer liên tiếp nhau, mỗi neuron trong layer sau sẽ kết nối với tất cả các unit trong layer trước. Nếu như ta thay đổi đi một chút, mỗi neuron trong layer sau sẽ chỉ kết nối đến <strong><strong>một vài</strong></strong> unit trong layer trước, kiến trúc có được sẽ trở nên “thưa” hơn.</li>
-</ul>
+    <h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp <strong>skip connection</strong> vào các <strong>Inception block</strong> (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.</p>
+<h2 id="kiến-trúc-mô-hình">Kiến trúc mô hình</h2>
+<h3 id="inception-resnet-v1">Inception-ResNet V1</h3>
+<p>Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:</p>
+<div style="display: flex; justify-content: space-around;">
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 280px;" src='./images/sparse_fc.png'>
+<img style="height: 600px"  src='./images/in_res_1.png'>
 <p align="center" style="margin: 0; color: #888;">
-Kết nối thưa trong fully connected layer
-</p>
+Kiến trúc Inception-ResNet V1</p>
 </div>
-<ul>
-<li>Đối với conv layer thì ta đã đạt được tính chất thưa như vậy. Ta biết rằng, với mỗi phần tử trên feature map của layer hiện tại thì ta tính nó dựa vào một vùng nhỏ trên feature map output của layer trước đó. Giả sử hai layer này đều chỉ có 1 channel thì ta có thể biểu diễn nó như hình bên dưới:</li>
-</ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/sparse_conv.png'>
+<img style="height: 600px" src='./images/stem_v1.png'>
 <p align="center" style="margin: 0; color: #888;">
-Kết nối thưa trong conv layer
-</p>
+Stem của Inception-ResNet V1</p>
 </div>
-<p>Kiến trúc thưa được các tác giả mô tả là mô phỏng lại hệ thống sinh học (ví dụ như khi ta nhìn vào một đối tượng thì ta thường chỉ chú ý một số điểm trên đối tượng đó thôi, khó mà chú ý tất cả được).</p>
-<p>Ngoài ra, có một nền tàng lý thuyết rất trâu bò về kiến trúc thưa của Arora như sau:</p>
+</div>
+<p>Ta sẽ đề cập đến các loại Inception-ResNet block và Reduction:</p>
 <ul>
-<li><em>If the probability distribution of the data-set is representable by a large, very sparse deep neural network, then the <strong>optimal network topology</strong> can be constructed <strong>layer by layer</strong> by analyzing the correlation statistics of the activations of the last layer and clustering neurons with highly correlated outputs.</em></li>
+<li><strong>Inception-ResNet block:</strong> Ta thấy rằng phần “Inception” trong các block này là đơn giản hơn khá nhiều so với các Inception block nguyên mẫu.</li>
 </ul>
-<p>Thật sự mình cũng chưa hiểu hết ý của câu trên… Nhưng đại ý của nó có thể là nếu ta biểu diễn được phân phối các điểm dữ liệu của một dataset bằng một kiến trúc DNN lớn và thưa thì từ đó ta có thể xây nên được một kiến trúc tối ưu (về cả độ chính xác và độ phức tạp), bằng cách xây từng layer một 😀</p>
-<p>Tuy nhiên, với các tài nguyên phần cứng trong thời gian này thì rất khó để ta có thể tính toán trên các mạng DNN thưa. Do đó, các tác giả đi theo hướng tìm một mô hình là có tận dụng một số thông tin về tính chất thưa nhưng vẫn thực hiện tính toán trên các ma trận đầy đủ. <strong>Đấy chính là hướng sử dụng các phép toán convolution!</strong>.</p>
-<ul>
-<li>Cũng vì lý do này, ở phần kiến trúc của GoogLeNet thì ta sẽ thấy nó chỉ có duy nhất một fully connected layer để sinh ra output, còn lại chỉ toàn conv layer thôi 😗</li>
-</ul>
-<p>Nói đến việc áp dụng các filter trong conv layer, các tác giả cho rằng:</p>
-<ul>
-<li>Mỗi phần tử trong feature map của một layer sẽ có mối tương quan với một vùng nào đó trên ảnh input (receptive field). Ta sẽ gom các phần tử cùng tương quan với một vùng vào cùng một cụm.</li>
-<li>Để ý rằng, trong những layer ở gần ảnh input thì ta sẽ có nhiều cụm và kích thước mỗi cụm là nhỏ. Càng đi qua các layer CNN thì số lượng cụm sẽ ít lại và kích thước cụm sẽ lan rộng ra. Tất nhiên là vẫn có thể có những cụm có kích thước nhỏ tại những layer đó. Do vậy, ta nên có các filter với kích thước lớn hơn để học các đặc trưng tại các cụm lớn, đồng thời cũng cần có filter kích thước nhỏ đối với các cụm nhỏ hơn.</li>
-</ul>
-<p>Qua một loạt các thử nghiệm, các tác giả đã chọn 3 filter là $1 \times 1$, $3 \times 3$ và $5 \times 5$. Một khối chứa 3 filter trên được đặt tên là <strong>Inception module.</strong></p>
-<p>Bây giờ quay lại với lý thuyết của Arora, ở ý xây dựng mạng tối ưu qua từng layer một. <strong>GoogLeNet</strong> được tạo nên bằng đúng ý tưởng như vậy, ta nối Inception module - by - Inception module 😀</p>
-<p><strong>P/s:</strong> Các bạn có thể tìm đọc phần <strong>Motivation</strong> trong paper gốc và tự cảm nhận nó nhé.</p>
-<h2 id="inception-module">Inception module</h2>
+<div style="display: flex; justify-content: space-around;">
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/inception_module.png'>
+<img style="height: 350px" src='./images/v1_a.png'>
 <p align="center" style="margin: 0; color: #888;">
-Inception module
-</p>
+Inception-ResNet-A V1</p>
 </div>
-<p>Qua các mô tả ở phần trên, ta có thể liên tưởng đến kiến trúc của Inception module là một thứ gì đó giống với cái ở hình (a), với đủ 3 loại filter là $1 \times 1$, $3 \times 3$ và $5 \times 5$. Các tác giả dùng thêm cả một layer max pooling trong đó nữa, với lí do rất đơn giản là vì ở thời điểm đó thì max pooling thường mang lại hiệu quả tốt trong các kiến trúc mạng CNN =))</p>
-<p>Truy nhiên, cách cài đặt như hình (a) sẽ dẫn đến số lượng tham số của mô hình là rất lớn. Thay vào đó, ta có thể tạo ra kiến trúc dạng “bottleneck” bằng cách sử dụng thêm các layer convolution $1 \times 1$ như hình (b), nhằm mục đích chính là giảm số channel. Số lượng phép tính lúc này sẽ được giảm một cách đáng kể.</p>
-<p>Lưu ý rằng, ở cuối module ta có phép toán concatenate, tức là các feature-maps của toàn bộ layer convolution đều phải có cùng size (tức là width và height)</p>
-<h2 id="kiến-trúc-googlenet">Kiến trúc GoogLeNet</h2>
-<p>GoogLeNet sử dụng tổng cộng 9 Inception module, gồm có 22 layer có trọng số (tính cả pooling là 27), được tóm tắt qua bảng sau:</p>
-<p style="display: flex; flex-direction: column; align-items: center;">
-<img src='./images/googlenet.png'>
-</p>
-<p>Một điểm đặc biệt khi train GoogLeNet là các tác giả sử dụng các <strong>auxiliary classifiers</strong> (xem hình bên dưới). Các thành phần này sẽ khá giống như giống hệt với phần cuối của mô hình (bộ classifier). Như vậy, ta có thể xem GoogLeNet có 3 bộ classifier. <strong>Auxiliary classifiers</strong> được sử dụng với các ý nghĩa như sau:</p>
-<ul>
-<li>Hạn chế vanishing gradient</li>
-<li>Tăng regularization</li>
-</ul>
-<p><strong>Lưu ý:</strong></p>
-<ul>
-<li>Loss khi huấn luyện sẽ cộng loss của cả ba lại với nhau.</li>
-<li>Khi test thì ta thường chỉ quan tâm đến bộ classifer cuối cùng. Một cách làm khác là ta xài cả 3, sau đó lấy kết quả trung bình.</li>
-</ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 300px;" src='./images/auxiliary.png'>
+<img style="height: 350px" src='./images/v1_b.png'>
 <p align="center" style="margin: 0; color: #888;">
-Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png">https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png</a>
-</p>
+Inception-ResNet-B V1</p>
 </div>
-<h2 id="cài-đặt">Cài đặt</h2>
-<p>Các bạn có thể tham khảo phần cài đặt GoogLeNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
-    >sau</a>. Trong cách cài đặt này, mình sẽ bỏ qua auxiliary classifiers.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px" src='./images/v1_c.png'>
+<p align="center" style="margin: 0; color: #888;">
+Inception-ResNet-C V1</p>
+</div>
+</div>
+<ul>
+<li><strong>Reduction:</strong> Chúng thực hiện nhiệm vụ giảm kích thước (width, height) của các tensor đi một nửa. Kiến trúc của chúng rất giống với các Inception block</li>
+</ul>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px" src='./images/v1_reduce_a.png'>
+<p align="center" style="margin: 0; color: #888;">
+Reduction-A</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px" src='./images/v1_reduce_b.png'>
+<p align="center" style="margin: 0; color: #888;">
+Reduction-B</p>
+</div>
+</div>
+<h3 id="inception-resnet-v2">Inception-ResNet V2</h3>
+<p>Phiên bản thứ hai của Inception-ResNet có kiến trúc tổng thể giống hệt với phiên bản đầu tiên, ta chỉ có một số thay đổi ở các block Inception-ResNet và Reduction</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
-<li>Paper GoogLeNet: <a class="link" href="https://arxiv.org/abs/1409.4842"  target="_blank" rel="noopener"
-    >https://arxiv.org/abs/1409.4842</a></li>
+<li>Paper Inception-ResNet: <a class="link" href="https://arxiv.org/abs/1602.07261"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1602.07261</a></li>
 </ul>
 
 </section>
@@ -439,9 +397,11 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
         
             <a href="/tags/cnn/">cnn</a>
         
+            <a href="/tags/inception-resnet/">inception-resnet</a>
+        
             <a href="/tags/inception/">inception</a>
         
-            <a href="/tags/googlenet/">googlenet</a>
+            <a href="/tags/skip-connection/">skip connection</a>
         
     </section>
 
@@ -449,29 +409,6 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
     </footer>
 
 
-    
-        <link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
-            ><script 
-                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
-                defer
-                >
-            </script><script>
-    window.addEventListener("DOMContentLoaded", () => {
-        renderMathInElement(document.querySelector(`.article-content`), {
-            delimiters: [
-                { left: "$$", right: "$$", display: true },
-                { left: "$", right: "$", display: false },
-                { left: "\\(", right: "\\)", display: false },
-                { left: "\\[", right: "\\]", display: true }
-            ]
-        });})
-</script>
     
 </article>
 
@@ -486,12 +423,12 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
             
                 
 <article class="">
-    <a href="/post/inception-resnet/">
+    <a href="/post/resnet/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">Inception-Reset (2016)</h2>
+            <h2 class="article-title">Resnet (2015)</h2>
         </div>
     </a>
 </article>
@@ -499,12 +436,12 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
             
                 
 <article class="">
-    <a href="/post/resnet/">
+    <a href="/post/googlenet/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">Resnet (2015)</h2>
+            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
         </div>
     </a>
 </article>
