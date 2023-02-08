@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
-<title>Inception-Reset (2016)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu phép toán depthwise separable convolution, kiến trúc và cách cài đặt MobileNet V1'>
+<title>MobileNet (2017)</title>
 
-<link rel='canonical' href='http://example.org/post/inception-resnet/'>
+<link rel='canonical' href='http://example.org/post/mobilenet/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Inception-Reset (2016)'>
-<meta property='og:description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
-<meta property='og:url' content='http://example.org/post/inception-resnet/'>
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='MobileNet (2017)'>
+<meta property='og:description' content='Giới thiệu phép toán depthwise separable convolution, kiến trúc và cách cài đặt MobileNet V1'>
+<meta property='og:url' content='http://example.org/post/mobilenet/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='inception-resnet' /><meta property='article:tag' content='inception' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-08T18:03:46&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T18:03:46&#43;07:00'/>
-<meta name="twitter:title" content="Inception-Reset (2016)">
-<meta name="twitter:description" content="Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='mobilenet' /><meta property='article:tag' content='depthwise-separable-convolution' /><meta property='article:published_time' content='2023-02-08T18:13:00&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T18:13:00&#43;07:00'/>
+<meta name="twitter:title" content="MobileNet (2017)">
+<meta name="twitter:description" content="Giới thiệu phép toán depthwise separable convolution, kiến trúc và cách cài đặt MobileNet V1">
     <link rel="shortcut icon" href="/neural.png" />
 
     </head>
@@ -233,12 +233,20 @@
             <nav id="TableOfContents">
   <ol>
     <li><a href="#giới-thiệu">Giới thiệu</a></li>
-    <li><a href="#kiến-trúc-mô-hình">Kiến trúc mô hình</a>
+    <li><a href="#depthwise-separable-convolutions">Depthwise separable convolutions</a></li>
+    <li><a href="#siêu-tham-số-điều-chỉnh-trade-off">Siêu tham số điều chỉnh trade-off</a>
       <ol>
-        <li><a href="#inception-resnet-v1">Inception-ResNet V1</a></li>
-        <li><a href="#inception-resnet-v2">Inception-ResNet V2</a></li>
+        <li><a href="#width-multiplier">Width multiplier</a></li>
+        <li><a href="#resolution-multiplier">Resolution multiplier</a></li>
       </ol>
     </li>
+    <li><a href="#kiến-trúc-mô-hình">Kiến trúc mô hình</a>
+      <ol>
+        <li><a href="#depthwise-separable-block">Depthwise Separable block</a></li>
+        <li><a href="#kiến-trúc-mobilenet">Kiến trúc MobileNet</a></li>
+      </ol>
+    </li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
 </nav>
@@ -271,12 +279,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/inception-resnet/">Inception-Reset (2016)</a>
+            <a href="/post/mobilenet/">MobileNet (2017)</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception
+            Giới thiệu phép toán depthwise separable convolution, kiến trúc và cách cài đặt MobileNet V1
         </h3>
         
     </div>
@@ -312,7 +320,7 @@
 
 
                 <time class="article-time--reading">
-                    1 minute read
+                    8 minute read
                 </time>
             </div>
         
@@ -328,64 +336,136 @@
     
     
     <h2 id="giới-thiệu">Giới thiệu</h2>
-<p>Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp <strong>skip connection</strong> vào các <strong>Inception block</strong> (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.</p>
+<p>Qua các mô hình đã được giới thiệu như VGG, GoogLeNet hay ResNet thì ta thấy rằng chúng đều được phát triển theo hướng tăng dần độ sâu và độ phức tạp tính toán của mô hình để đạt được độ chính xác cao hơn, kể từ khi AlexNet được công bố. Số lượng tham số của chúng là rất lớn.</p>
+<p>Tuy nhiên, các ứng dụng AI trong thực tế như robotics, xe tự hành thì các phép tính toán của mô hình cần được thực hiện trong <strong>một khoảng thời gian giới hạn</strong>, cùng với <strong>tài nguyên phần cứng hạn chế</strong>. Do đó, ta phải đối mặt với một trade-off giữa <em>độ chính xác</em> và <em>độ trễ, kích thước mô hình.</em></p>
+<p>Vào thời điểm này, có 2 hướng giải pháp chính để có thể đưa các mô hình vào ứng dụng thực tế như sau:</p>
+<ul>
+<li>Nén các mô hình phức tạp lại thông qua các phương pháp như lượng tử hóa (quantization), hashing, cắt tỉa mô hình</li>
+<li>Xây dựng và huấn luyên các mô hình nhỏ, độ phức tạp thấp ngay từ đầu.</li>
+</ul>
+<p>MobileNet được phát triển theo hướng thứ 2, trong đó, nó tập trung vào các yếu tố:</p>
+<ul>
+<li>Vừa đảm bảo kích thước mô hình đủ nhỏ, tốc độ suy diễn đủ nhanh (độ trễ thấp) và với độ chính xác đủ cao.</li>
+<li>Cung cấp hai siêu tham số cho phép ta điều chỉnh trade-off giữa độ chính xác và độ trễ, kích thước mô hình: width multiplier (liên quan đến số channel trong từng layer) và resolution multiplier (width và height trong từng layer)</li>
+</ul>
+<h2 id="depthwise-separable-convolutions">Depthwise separable convolutions</h2>
+<p>MobileNet được xây dựng từ các layer convolution khá đặc biệt, chúng được gọi là <strong>depthwise separable convolutions.</strong></p>
+<ul>
+<li><em>Dạng layer này đã được giới thiệu trước đó và ứng dụng vào mô hình Xception, một phiên bản cải tiến của InceptionV3.</em></li>
+</ul>
+<p>Depthwise separable convolution được tạo ra từ hai phép toán:</p>
+<ul>
+<li><strong>Depthwise convolution:</strong> Áp dụng từng filter cho từng channel của input. Nếu input có bao nhiêu channel thì ta sẽ có bấy nhiêu filter.</li>
+<li><strong>Pointwise convolution:</strong> Đây thực chất là convolution layer thông thường với filter 1 x 1. Nó được dùng để tổng hợp các kết quả từ phép toán depthwise convolution và tính ra output, thông qua các phép toán tổ hợp tuyến tính.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px;" src='./images/depthwise-separable.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://www.researchgate.net/publication/358585116/figure/fig1/AS:1127546112487425@1645839350616/Depthwise-separable-convolutions.png">Research Gate</a>
+</p>
+</div>
+<p>Ta có thể thấy ngay sự khác biệt giữa depthwise separable convolution và convolution thông thường như sau:</p>
+<ul>
+<li><strong>Convolution thông thường:</strong> Mỗi filter sẽ tương tác với toàn bộ channel của input.
+<ul>
+<li>Giả sử input của ta là $D_F \times D_F \times M$, một filter $3 \times 3$ được áp dụng thì filter sẽ trở thành $3 \times 3 \times M$, ta thực hiện convolution trên từng channel và sau đó cộng $M$ ma trận lại với nhau, thu được kết quả $D_F \times D_F$. Nếu dùng $N$ filter thì ta sẽ có kết quả cuối cùng là $D_F \times D_F \times N$</li>
+</ul>
+</li>
+<li><strong>Depthwise separable convolution:</strong> Ban đầu, các channel được tính toán độc lập với từng filter riêng, sau đó mới kết hợp lại sau nhờ vào pointwise convolution.
+<ul>
+<li>Với input $D_F \times D_F \times M$ thì khi đưa qua depthwise convotution, ta sẽ có kết quả là $D_F \times D_F \times M$. Nếu pointwise convolution sử dụng $N$ filter $1 \times 1$ thì ta có kết quả cuối cùng là $D_F \times D_F \times N$</li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; justify-content: space-around;">
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 150px" src='./images/standard-conv.png'>
+</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 150px" src='./images/depthwise-conv.png'>
+</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 150px" src='./images/pointwise-conv.png'>
+</p>
+</div>
+<p>Vấn đề đặt ra là tại sao sử dụng depthwise separable convolution lại có thể giúp cho MobileNet gọn nhẹ hơn, tính toán nhanh hơn và có độ chính xác đủ tốt, không hề kém cạnh các mô hình to lớn khác. Ta sẽ đặt tính một chút:</p>
+<p>Giả sử input của ta là feature maps $\bold{F}: D_F \times D_F \times M$, output cuối cùng là $\bold{G}: D_F \times D_F \times N$.</p>
+<ul>
+<li>
+<p>Với convolution thông thường:
+Giả sử ta dùng $N$ filter $\bold{K}: D_K \times D_K$, stride là 1, padding sao cho kích thước width và height không đổi. Khi đó, độ phức tạp tính toán sẽ là</p>
+<p>$$
+O_1 = D_K \times D_K \times D_F \times D_F \times M \times N
+$$</p>
+<p>, vì với mỗi filter thì: mỗi lần tính toán ta phải thực hiện $D_K \times D_K$ phép toán nhân, sau đó cộng chúng lại; ta tính tại $D_F \times D_F$ vị trí trên $M$ channel của input, và ta sử dụng $N$ filter.</p>
+</li>
+<li>
+<p>Với depthwise separable convolution:
+Ở bước depthwise convolution thì ta dùng $M$ filter $\bold{K}: D_K \times D_K$, stride là 1, padding phù hợp. Khi đó, độ phức tạp tính toán sẽ là</p>
+<p>$$
+D_K \times D_K \times D_F \times D_F \times M
+$$</p>
+<p>, vì ta chỉ đơn giản là áp dụng đơn lẻ từng filter cho từng channels</p>
+<p>Với pointwise convolution thì ta dùng $N$ filter $\bold{K}: 1 \times 1$, stride là 1, padding 0. Khi đó, độ phức tạp tính toán sẽ là</p>
+<p>$$
+D_F \times D_F \times M \times N
+$$</p>
+<p>Do đó, ta có độ phức tạp tính toán là</p>
+<p>$$
+O_2 = D_K \times D_K \times D_F \times D_F \times M + D_F \times D_F \times M \times N
+$$</p>
+</li>
+</ul>
+<p>Lúc này, đem chia cho nhau thì ta có tỉ lệ</p>
+<p>$$
+\frac{O_2}{O_1}=\frac{D_K \times D_K \times D_F \times D_F \times M + D_F \times D_F \times M \times N}{D_K \times D_K \times D_F \times D_F \times M \times N} = \frac{1}{N} + \frac{1}{D_K^2}
+$$</p>
+<p>Như vậy, độ phức tạp tính toán khi sử dụng depthwise separable convolution đã giảm khoảng $D_K^2$ lần so với convolution thông thường. MobileNet sử dụng các filter $3 \times 3$, từ đó giảm được độ phức tạp tính toán đi khoảng 8 đến 9 lần, trong khi độ chính xác chỉ giảm đi một phần nhỏ.</p>
+<h2 id="siêu-tham-số-điều-chỉnh-trade-off">Siêu tham số điều chỉnh trade-off</h2>
+<p>Để có thể hỗ trợ tốt hơn việc áp dụng MobileNet vào các thiết bị biên trong các ứng dụng thực tế, các tác giả còn cung cấp thêm cho ta hai siêu tham số để điều chỉnh trade-off giữa độ chính xác và độ trễ, kích thước của mô hình</p>
+<h3 id="width-multiplier">Width multiplier</h3>
+<p>Tham số width multiplier (kí hiệu là $\alpha$) sẽ tác động lên giá trị số channel của các layer. Với những công thức ở trên thì số channel chính là $M$ và $N$. Giá trị $\alpha \in (0, 1]$ và ta thường đặt là $1, 0.75, 0.5, 0.25.$ Khi đó, thứ thật sự được thay đổi chính là số lượng filter mà ta dùng trong các phép toán pointwise convolution.</p>
+<p>Độ phức tạp tính toán của depthwise separable convolution khi ta có sử dụng width multiplier $\alpha$ là</p>
+<p>$$
+D_K \times D_K \times D_F \times D_F \times \alpha M + D_F \times D_F \times \alpha M \times \alpha N
+$$</p>
+<h3 id="resolution-multiplier">Resolution multiplier</h3>
+<p>Tham số resolution muiltiplier (kí hiệu là $\rho$ ) liên quan đến kích thước width và height (chính là $D_F$ trong các công thức trên). Miền giá trị của nó cũng sẽ tương tự như $\alpha$. Thực chất thì ta sẽ chỉ áp dụng nó vào input ban đầu của mô hình (ảnh). Các kích thước input mà ta thường sử dụng với mô hình MobileNet là 224, 192, 160 hoặc 128.</p>
+<p>Độ phức tạp tính toán của depthwise separable convolution khi ta có sử dụng thêm resolution multiplier $\rho$ là</p>
+<p>$$
+D_K \times D_K \times \rho D_F \times \rho D_F \times \alpha M + \rho D_F \times \rho D_F \times \alpha M \times \alpha N
+$$</p>
 <h2 id="kiến-trúc-mô-hình">Kiến trúc mô hình</h2>
-<h3 id="inception-resnet-v1">Inception-ResNet V1</h3>
-<p>Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:</p>
-<div style="display: flex; justify-content: space-around;">
+<h3 id="depthwise-separable-block">Depthwise Separable block</h3>
+<p>Mô hình MobileNet V1 được tạo thành bởi các thành phần chính là depthwise separable block. Chúng bao gồm hai phép toán như ta đã đề cập là depthwise convolution và pointwise convolution. Đi kèm với các layer đó là batch norm và activation ReLU.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 600px"  src='./images/in_res_1.png'>
+<img style="height: 250px;" src='./images/depthwise-separable-block.png'>
 <p align="center" style="margin: 0; color: #888;">
-Kiến trúc Inception-ResNet V1</p>
+Nguồn: <a href="https://www.researchgate.net/publication/346607345/figure/fig1/AS:964710501466113@1607016315481/MobileNets-with-the-depthwise-separable-convolutions-process-which-consists-of-depthwise.ppm](https://www.researchgate.net/publication/346607345/figure/fig1/AS:964710501466113@1607016315481/MobileNets-with-the-depthwise-separable-convolutions-process-which-consists-of-depthwise.ppm)">Research Gate</a>
+</p>
 </div>
+<h3 id="kiến-trúc-mobilenet">Kiến trúc MobileNet</h3>
+<p>MobileNet sử dụng tất cả gồm 13 depthwise separable block. Tổng thể kiến trúc của MobileNet được thể hiện ở bảng sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 600px" src='./images/stem_v1.png'>
-<p align="center" style="margin: 0; color: #888;">
-Stem của Inception-ResNet V1</p>
+<img style="height: 500px;" src='./images/mobilenet.png'>
 </div>
-</div>
-<p>Ta sẽ đề cập đến các loại Inception-ResNet block và Reduction:</p>
+<p>Trong đó:</p>
 <ul>
-<li><strong>Inception-ResNet block:</strong> Ta thấy rằng phần “Inception” trong các block này là đơn giản hơn khá nhiều so với các Inception block nguyên mẫu.</li>
+<li>Conv dw là depthwise convolution. Ta có thể thấy các filter shape của chúng luôn có cùng số channel trong input size.</li>
+<li>Các conv layer với filter shape $1 \times 1$ chính là pointwise convolution.</li>
+<li>s1 tức là stride = 1, tương tự với s2. Toàn bộ các conv layer trong mô hình đều có padding sao cho kích thước width và height của input và output của layer đó là như nhau.</li>
 </ul>
-<div style="display: flex; justify-content: space-around;">
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_a.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-A V1</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_b.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-B V1</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_c.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-C V1</p>
-</div>
-</div>
+<p><strong>Note:</strong></p>
 <ul>
-<li><strong>Reduction:</strong> Chúng thực hiện nhiệm vụ giảm kích thước (width, height) của các tensor đi một nửa. Kiến trúc của chúng rất giống với các Inception block</li>
+<li>Trong bảng trên có vẻ có một chỗ gõ nhầm. Để ý đến layer “Conv dw / s2” đầu tiên từ dưới lên, nếu đây là s2 thì input size của layer “Conv / s1” tiếp theo phải bị giảm size chứ không phải $7 \times 7$. Do đó, trong cài đặt thì mình đổi lại thành “Conv dw / s1”.</li>
 </ul>
-<div style="display: flex; justify-content: space-around;">
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_reduce_a.png'>
-<p align="center" style="margin: 0; color: #888;">
-Reduction-A</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_reduce_b.png'>
-<p align="center" style="margin: 0; color: #888;">
-Reduction-B</p>
-</div>
-</div>
-<h3 id="inception-resnet-v2">Inception-ResNet V2</h3>
-<p>Phiên bản thứ hai của Inception-ResNet có kiến trúc tổng thể giống hệt với phiên bản đầu tiên, ta chỉ có một số thay đổi ở các block Inception-ResNet và Reduction</p>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo phần cài đặt MobileNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >sau</a></p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
-<li>Paper Inception-ResNet: <a class="link" href="https://arxiv.org/abs/1602.07261"  target="_blank" rel="noopener"
-    >https://arxiv.org/abs/1602.07261</a></li>
+<li>Paper MobileNet: <a class="link" href="https://arxiv.org/abs/1704.04861"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1704.04861</a></li>
 </ul>
 
 </section>
@@ -397,11 +477,9 @@ Reduction-B</p>
         
             <a href="/tags/cnn/">cnn</a>
         
-            <a href="/tags/inception-resnet/">inception-resnet</a>
+            <a href="/tags/mobilenet/">mobilenet</a>
         
-            <a href="/tags/inception/">inception</a>
-        
-            <a href="/tags/skip-connection/">skip connection</a>
+            <a href="/tags/depthwise-separable-convolution/">depthwise-separable-convolution</a>
         
     </section>
 
@@ -409,6 +487,29 @@ Reduction-B</p>
     </footer>
 
 
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
     
 </article>
 
@@ -420,6 +521,19 @@ Reduction-B</p>
     <h2 class="section-title">Related content</h2>
     <div class="related-content">
         <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/inception-resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Inception-Reset (2016)</h2>
+        </div>
+    </a>
+</article>
+
             
                 
 <article class="">
@@ -442,19 +556,6 @@ Reduction-B</p>
 
         <div class="article-details">
             <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/post/mobilenet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">MobileNet (2017)</h2>
         </div>
     </a>
 </article>

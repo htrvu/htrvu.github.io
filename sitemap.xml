@@ -3,19 +3,34 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://example.org/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/cnn/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/cv/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/dl/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/depthwise-separable-convolution/</loc>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/mobilenet/</loc>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/mobilenet/</loc>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/</loc>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/</loc>
+    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/inception/</loc>
     <lastmod>2023-02-08T18:03:46+07:00</lastmod>
@@ -26,13 +41,7 @@
     <loc>http://example.org/tags/inception-resnet/</loc>
     <lastmod>2023-02-08T18:03:46+07:00</lastmod>
   </url><url>
-    <loc>http://example.org/post/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
-  </url><url>
     <loc>http://example.org/tags/skip-connection/</loc>
-    <lastmod>2023-02-08T18:03:46+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/</loc>
     <lastmod>2023-02-08T18:03:46+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/resnet/</loc>

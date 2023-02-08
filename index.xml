@@ -6,7 +6,16 @@
         <description>Recent content on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 18:03:46 +0700</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 08 Feb 2023 18:13:00 +0700</lastBuildDate><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MobileNet (2017)</title>
+        <link>http://example.org/post/mobilenet/</link>
+        <pubDate>Wed, 08 Feb 2023 18:13:00 +0700</pubDate>
+        
+        <guid>http://example.org/post/mobilenet/</guid>
+        <description>Giới thiệu Qua các mô hình đã được giới thiệu như VGG, GoogLeNet hay ResNet thì ta thấy rằng chúng đều được phát triển theo hướng tăng dần độ sâu và độ phức tạp tính toán của mô hình để đạt được độ chính xác cao hơn, kể từ khi AlexNet được công bố. Số lượng tham số của chúng là rất lớn.
+Tuy nhiên, các ứng dụng AI trong thực tế như robotics, xe tự hành thì các phép tính toán của mô hình cần được thực hiện trong một khoảng thời gian giới hạn, cùng với tài nguyên phần cứng hạn chế.</description>
+        </item>
+        <item>
         <title>Inception-Reset (2016)</title>
         <link>http://example.org/post/inception-resnet/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
