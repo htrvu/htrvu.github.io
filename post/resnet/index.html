@@ -366,10 +366,11 @@ Nguồn: <a href="https://d2l.aivivn.com/_images/functionclasses.svg">Dive into 
 </div>
 <p>Như vậy, điểm nhấn của ResNet là ta đi học các hàm phần dư, thông qua việc “gợi ý” cho hàm số mong muốn một giá trị bằng với giá trị input. Trong cài đặt, thao tác này được thực hiện thông qua một kết nối gọi là <strong>skip connection</strong>. Ta sẽ cộng input $x$ vào output của block thông thường.</p>
 <ul>
-<li>Đối với việc cộng như vậy thì thực chất là ta đang đi <strong>cộng hai ma trận</strong>. Khi đó thì có nảy sinh một vấn đề về <strong>kích thước</strong> của chúng, mà thường là số channel. Nếu số channel không khớp thì ta cần phải tiến hành “điều chỉnh”. Chi tiết về phần này sẽ được đề cập trong phần về Residual block.
+<li>Đối với việc cộng như vậy thì thực chất là ta đang đi <strong>cộng hai ma trận</strong>. Khi đó, một vấn đề có thể nảy sinh là về <strong>shape</strong> của chúng, mà thường là số channel. Nếu số channel không khớp thì ta cần phải tiến hành “điều chỉnh”.
 <ul>
-<li>Vì các block được sử dụng thường giữ nguyên kích thước của input (width x height) nên ta chỉ nhắc đến số channel. Khi width và height được giữ nguyên thì skip connection được gọi là <strong>identity skip connection.</strong></li>
-<li>Trong trường hợp width và height của output cũng khác input $x$ thì ta cần phải biến đổi $x$ trước. Phép biến đổi này thực chất là dùng conv layer $1 \times 1$ để thay đổi số channel. Lúc này, skip connection được gọi là <strong>projection skip connection.</strong></li>
+<li>Vì các block được sử dụng thường gồm các conv layer với stride và padding phù hợp để giữ nguyên width và height nên ta sẽ chỉ xét đến số channel.</li>
+<li>Nếu số channel của $x$ và output ban đầu là như nhau thì ta gọi skip connection này là <strong>identity skip connection</strong></li>
+<li>Ngược lại, ta sẽ dùng conv layer $1 \times 1$ để điều chỉnh số channel của $x$. Lúc này, skip connection được gọi là <strong>projection skip connection.</strong></li>
 </ul>
 </li>
 </ul>
@@ -380,7 +381,10 @@ Sử dụng skip connection (identity) <br>
 Nguồn: <a href="https://d2l.aivivn.com/_images/residual-block.svg">Dive into AI</a>
 </p>
 </div>
-<p>Bây giờ, khi quan sát vào hình trên thì ta còn nhận thấy một lợi ích khác của skip connection là giúp cho gradient được lan truyền tốt hơn trong quá trình backpropagation, từ đó góp phần làm giảm hiện tượng <strong>vanishing gradient</strong>.</p>
+<p>Ngoài ra, ta còn có một điểm mạnh quan trọng của skip connection là nó giúp cho <strong>gradient được lan truyền tốt hơn</strong> trong quá trình backpropagation, từ đó góp phần làm giảm hiện tượng <strong>vanishing gradient</strong></p>
+<ul>
+<li>Quan sát hình phía trên, ta thấy rằng khi backpropagation thì layer ở ngay trước block nhận được gradient từ <strong>hai layer</strong> phía sau nó (một layer liền trước nó và một layer được kết nối thông qua skip connection).</li>
+</ul>
 <h2 id="residual-block">Residual block</h2>
 <p>Residual block (khối phần dư) được tạo ra bằng cách thêm một <strong>skip connection</strong> vào một block thông thường trong các mô hình CNN như VGG block. Ta có hai loại residual block như sau:</p>
 <ul>
