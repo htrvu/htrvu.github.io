@@ -6,7 +6,16 @@
         <description>Recent content in Posts on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 01:59:53 +0700</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 08 Feb 2023 17:41:09 +0700</lastBuildDate><atom:link href="http://example.org/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Resnet (2015)</title>
+        <link>http://example.org/post/resnet/</link>
+        <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
+        
+        <guid>http://example.org/post/resnet/</guid>
+        <description>Giới thiệu Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:
+Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</description>
+        </item>
+        <item>
         <title>GoogLeNet - Inception V1 (2014)</title>
         <link>http://example.org/post/googlenet/</link>
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>

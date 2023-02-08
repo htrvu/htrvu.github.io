@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
-<title>GoogLeNet - Inception V1 (2014)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.'>
+<title>Resnet (2015)</title>
 
-<link rel='canonical' href='http://example.org/post/googlenet/'>
+<link rel='canonical' href='http://example.org/post/resnet/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='GoogLeNet - Inception V1 (2014)'>
-<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet'>
-<meta property='og:url' content='http://example.org/post/googlenet/'>
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Resnet (2015)'>
+<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.'>
+<meta property='og:url' content='http://example.org/post/resnet/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='inception' /><meta property='article:tag' content='googlenet' /><meta property='article:published_time' content='2023-02-08T01:59:53&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T01:59:53&#43;07:00'/>
-<meta name="twitter:title" content="GoogLeNet - Inception V1 (2014)">
-<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='resnet' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-08T17:41:09&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T17:41:09&#43;07:00'/>
+<meta name="twitter:title" content="Resnet (2015)">
+<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.">
     <link rel="shortcut icon" href="/neural.png" />
 
     </head>
@@ -233,9 +233,9 @@
             <nav id="TableOfContents">
   <ol>
     <li><a href="#giới-thiệu">Giới thiệu</a></li>
-    <li><a href="#kết-nối-thưa-và-cnn">Kết nối thưa và CNN</a></li>
-    <li><a href="#inception-module">Inception module</a></li>
-    <li><a href="#kiến-trúc-googlenet">Kiến trúc GoogLeNet</a></li>
+    <li><a href="#hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</a></li>
+    <li><a href="#residual-block">Residual block</a></li>
+    <li><a href="#kiến-trúc-resnet">Kiến trúc ResNet</a></li>
     <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
@@ -269,12 +269,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/googlenet/">GoogLeNet - Inception V1 (2014)</a>
+            <a href="/post/resnet/">Resnet (2015)</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình GoogLeNet
+            Giới thiệu ý tưởng, kiến trúc và cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.
         </h3>
         
     </div>
@@ -310,7 +310,7 @@
 
 
                 <time class="article-time--reading">
-                    8 minute read
+                    7 minute read
                 </time>
             </div>
         
@@ -325,109 +325,117 @@
     <section class="article-content">
     
     
-    <div style="display: flex; flex-direction: column; align-items: center;">
-<img src='./images/meme.jpg'>
-</div>
-<p>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀</p>
-<h2 id="giới-thiệu">Giới thiệu</h2>
-<p>Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, <strong>GoogLeNet</strong>, hay <strong>Inception V1</strong> (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</p>
-<ul>
-<li>“Inception” có thể dịch là “sự khởi đầu”, nghe có vẻ rất hợp lý 😀.</li>
-</ul>
-<p>Ngoài ra, ở trong bài viết về VGG, mình có đề cập đến vấn đề thiết kế kiến trúc mô hình theo hướng có sự <strong>lặp lại các khuôn mẫu</strong>. GoogLeNet cũng sẽ được thiết kế như vậy.</p>
-<p><strong>Lưu ý.</strong> Tên của mô hình này là <strong>GoogLeNet</strong>, không phải GoogleNet =)) Tác giả cho biết ý nghĩa của cái tên này là “This name is a homage to Yann LeCuns pioneering LeNet 5 network.”</p>
-<p>Các tác giả của paper GoogLeNet có tóm tắt các mục tiêu của nghiên cứu như sau:</p>
-<ul>
-<li>Nâng cao khả năng tận dụng tài nguyên tính toán</li>
-<li>Cho phép tăng chiều rộng và chiều sâu của kiến trúc mô hình mà vẫn đảm bảo được <em>độ phức tạp tính toán</em> là ở mức chấp nhận được.</li>
-</ul>
-<p>GoogLeNet thật sự đã đạt được những điều đó, và nó được xây dựng dựa trên <strong>nguyên lý Hebbian:</strong> <em>“neurons that fire together, wire together”.</em>  Paper GoogLeNet đã đưa ra các nền tảng lý thuyết rất “căng thẳng” để cho thấy rằng mô hình CNN có thể hoạt động “đủ tốt”, điều mà ta chưa được biết đến ở trong các paper trước đó 😀</p>
-<p>Ngoài ra, có một quan điểm khá thú vị khi mô tả về kiến trúc của GoogLeNet như sau: Khi xây dựng kiến trúc CNN, thay vì phải suy nghĩ xem trong các mạng CNN ta nên áp dụng filter với kích thước bao nhiêu, hãy áp dụng luôn <strong>nhiều filter với kích thước khác nhau</strong> và tổng hợp kết quả lại 😜</p>
-<ul>
-<li>Mình cũng có đồng tình với quan điểm, nhưng khi đọc paper thì có vẻ là các tác giả cũng đã tiến hành phân tích và thử nghiệm nhiều lắm mới cho ra được cái kiến trúc như vậy.</li>
-</ul>
-<h2 id="kết-nối-thưa-và-cnn">Kết nối thưa và CNN</h2>
-<p>Đầu tiên, tại thời điểm trước khi Inception được công bố, chúng ta có thể cải thiện một mô hình DNN bằng những cách như sau:</p>
-<ul>
-<li>Tăng chiều sâu của mô hình (tức là số layer)</li>
-<li>Tăng chiều rộng (số channel trong mỗi layer)</li>
-</ul>
-<p>Tuy nhiên, với hai cách trên thì sẽ có những vấn đề mà ta cần lưu tâm là hiện tượng <em>overfitting</em> và <em>sự gia tăng độ phức tạp của mô hình.</em></p>
-<p>Các tác giả có đề cập đến một hướng đi có thể giảm bớt hai vấn đề trên là sử dụng <strong>kiến trúc kết nối thưa (sparsely connected architectures).</strong> Ta có thể hiểu đơn giản như sau:</p>
-<ul>
-<li>Với hai fully connected layer liên tiếp nhau, mỗi neuron trong layer sau sẽ kết nối với tất cả các unit trong layer trước. Nếu như ta thay đổi đi một chút, mỗi neuron trong layer sau sẽ chỉ kết nối đến <strong><strong>một vài</strong></strong> unit trong layer trước, kiến trúc có được sẽ trở nên “thưa” hơn.</li>
-</ul>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 280px;" src='./images/sparse_fc.png'>
-<p align="centr" style="margin: 0; color: #888;">
-Kết nối thưa trong fully connected layer
-</p>
-</div>
-<ul>
-<li>Đối với conv layer thì ta đã đạt được tính chất thưa như vậy. Ta biết rằng, với mỗi phần tử trên feature map của layer hiện tại thì ta tính nó dựa vào một vùng nhỏ trên feature map output của layer trước đó. Giả sử hai layer này đều chỉ có 1 channel thì ta có thể biểu diễn nó như hình bên dưới:</li>
-</ul>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/sparse_conv.png'>
-<p align="center" style="margin: 0; color: #888;">
-Kết nối thưa trong conv layer
-</p>
-</div>
-<p>Kiến trúc thưa được các tác giả mô tả là mô phỏng lại hệ thống sinh học (ví dụ như khi ta nhìn vào một đối tượng thì ta thường chỉ chú ý một số điểm trên đối tượng đó thôi, khó mà chú ý tất cả được).</p>
-<p>Ngoài ra, có một nền tàng lý thuyết rất trâu bò về kiến trúc thưa của Arora như sau:</p>
-<ul>
-<li><em>If the probability distribution of the data-set is representable by a large, very sparse deep neural network, then the <strong>optimal network topology</strong> can be constructed <strong>layer by layer</strong> by analyzing the correlation statistics of the activations of the last layer and clustering neurons with highly correlated outputs.</em></li>
-</ul>
-<p>Thật sự mình cũng chưa hiểu hết ý của câu trên… Nhưng đại ý của nó có thể là nếu ta biểu diễn được phân phối các điểm dữ liệu của một dataset bằng một kiến trúc DNN lớn và thưa thì từ đó ta có thể xây nên được một kiến trúc tối ưu (về cả độ chính xác và độ phức tạp), bằng cách xây từng layer một 😀</p>
-<p>Tuy nhiên, với các tài nguyên phần cứng trong thời gian này thì rất khó để ta có thể tính toán trên các mạng DNN thưa. Do đó, các tác giả đi theo hướng tìm một mô hình là có tận dụng một số thông tin về tính chất thưa nhưng vẫn thực hiện tính toán trên các ma trận đầy đủ. <strong>Đấy chính là hướng sử dụng các phép toán convolution!</strong>.</p>
-<ul>
-<li>Cũng vì lý do này, ở phần kiến trúc của GoogLeNet thì ta sẽ thấy nó chỉ có duy nhất một fully connected layer để sinh ra output, còn lại chỉ toàn conv layer thôi 😗</li>
-</ul>
-<p>Nói đến việc áp dụng các filter trong conv layer, các tác giả cho rằng:</p>
-<ul>
-<li>Mỗi phần tử trong feature map của một layer sẽ có mối tương quan với một vùng nào đó trên ảnh input (receptive field). Ta sẽ gom các phần tử cùng tương quan với một vùng vào cùng một cụm.</li>
-<li>Để ý rằng, trong những layer ở gần ảnh input thì ta sẽ có nhiều cụm và kích thước mỗi cụm là nhỏ. Càng đi qua các layer CNN thì số lượng cụm sẽ ít lại và kích thước cụm sẽ lan rộng ra. Tất nhiên là vẫn có thể có những cụm có kích thước nhỏ tại những layer đó. Do vậy, ta nên có các filter với kích thước lớn hơn để học các đặc trưng tại các cụm lớn, đồng thời cũng cần có filter kích thước nhỏ đối với các cụm nhỏ hơn.</li>
-</ul>
-<p>Qua một loạt các thử nghiệm, các tác giả đã chọn 3 filter là $1 \times 1$, $3 \times 3$ và $5 \times 5$. Một khối chứa 3 filter trên được đặt tên là <strong>Inception module.</strong></p>
-<p>Bây giờ quay lại với lý thuyết của Arora, ở ý xây dựng mạng tối ưu qua từng layer một. <strong>GoogLeNet</strong> được tạo nên bằng đúng ý tưởng như vậy, ta nối Inception module - by - Inception module 😀</p>
-<p><strong>P/s:</strong> Các bạn có thể tìm đọc phần <strong>Motivation</strong> trong paper gốc và tự cảm nhận nó nhé.</p>
-<h2 id="inception-module">Inception module</h2>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/inception_module.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception module
-</p>
-</div>
-<p>Qua các mô tả ở phần trên, ta có thể liên tưởng đến kiến trúc của Inception module là một thứ gì đó giống với cái ở hình (a), với đủ 3 loại filter là $1 \times 1$, $3 \times 3$ và $5 \times 5$. Các tác giả dùng thêm cả một layer max pooling trong đó nữa, với lí do rất đơn giản là vì ở thời điểm đó thì max pooling thường mang lại hiệu quả tốt trong các kiến trúc mạng CNN =))</p>
-<p>Truy nhiên, cách cài đặt như hình (a) sẽ dẫn đến số lượng tham số của mô hình là rất lớn. Thay vào đó, ta có thể tạo ra kiến trúc dạng “bottleneck” bằng cách sử dụng thêm các layer convolution $1 \times 1$ như hình (b), nhằm mục đích chính là giảm số channel. Số lượng phép tính lúc này sẽ được giảm một cách đáng kể.</p>
-<p>Lưu ý rằng, ở cuối module ta có phép toán concatenate, tức là các feature-maps của toàn bộ layer convolution đều phải có cùng size (tức là width và height)</p>
-<h2 id="kiến-trúc-googlenet">Kiến trúc GoogLeNet</h2>
-<p>GoogLeNet sử dụng tổng cộng 9 Inception module, gồm có 22 layer có trọng số (tính cả pooling là 27), được tóm tắt qua bảng sau:</p>
+    <h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:</p>
 <p style="display: flex; flex-direction: column; align-items: center;">
-<img src='./images/googlenet.png'>
+<img style="height: 220px;" src='./images/shallow_deep.png'>
 </p>
-<p>Một điểm đặc biệt khi train GoogLeNet là các tác giả sử dụng các <strong>auxiliary classifiers</strong> (xem hình bên dưới). Các thành phần này sẽ khá giống như giống hệt với phần cuối của mô hình (bộ classifier). Như vậy, ta có thể xem GoogLeNet có 3 bộ classifier. <strong>Auxiliary classifiers</strong> được sử dụng với các ý nghĩa như sau:</p>
+<p>Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</p>
 <ul>
-<li>Hạn chế vanishing gradient</li>
-<li>Tăng regularization</li>
+<li>Overfitting</li>
+<li>Vanishing/exploding gradient. Vấn đề này thì ta đã có một số cách giải quyết phổ biến như thay đổi activation function, các phương pháp khởi tạo trọng số</li>
 </ul>
-<p><strong>Lưu ý:</strong></p>
+<p>Đặc biêt hơn là vấn đề <strong>degradation</strong>: Accuracy tăng dần cho đến một độ sâu nhất định thì ngừng tăng (bão hòa) rồi sau đó sẽ giảm dần.</p>
+<p><strong>Lưu ý.</strong> Nhiều trường hợp degradation không phải do overfitting gây ra.</p>
+<p>Degradation cho chúng ta thấy rằng việc tối ưu các mô hình có độ sâu lớn là không hề dễ dàng.</p>
+<p>Trong quá trình xây dựng mô hình, từ một mô hình ban đầu, ta thêm một số layer vào thì tất nhiên là ta mong rằng <strong>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</strong>. Tuy nhiên, khi xảy ra degradation thì mong muốn đó đã không thể thành sự thật được. 😀</p>
+<p>ResNet được công bố nhằm giải quyết vấn đề degradation đối với các mô hình có độ sâu lớn. Khi nhắc đến ResNet thì ta sẽ lập tức nghĩ đến những mô hình với độ sâu rất khủng, thậm chỉ là lên đến 100, 200 layer.</p>
+<h2 id="hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</h2>
+<p>Nhắc lại về cái mong muốn ở trên, rằng <em>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</em>, ta có thể nghĩ ngay đến một phương pháp cực kì đơn giản: các layer phía sau sẽ là <strong>identity mapping</strong>, tức là input và output của nó sẽ giống hệt nhau. Với cách làm này thì hiển nhiên là ta đạt được mong muốn rồi, vì độ hiệu quả của mô hình mới và mô hình gốc sẽ y hệt nhau.</p>
 <ul>
-<li>Loss khi huấn luyện sẽ cộng loss của cả ba lại với nhau.</li>
-<li>Khi test thì ta thường chỉ quan tâm đến bộ classifer cuối cùng. Một cách làm khác là ta xài cả 3, sau đó lấy kết quả trung bình.</li>
+<li>Tuy nhiên, nếu chỉ muốn ngang đó thôi thì thêm layer vào làm gì :v Ta muốn đạt được kết quả tốt hơn!</li>
+</ul>
+<p>Các tác giả của paper ResNet giới thiệu một phương pháp gọi là <strong>deep residual learning</strong> (học phần dư).</p>
+<ul>
+<li>Giả sử ta có một block <strong>B</strong> các layer, input của nó là $x$. Với một mô hình thông thường, ta sẽ “học” một hàm số đầu ra mong muốn là $f(x)$. Lúc này, ban đầu thì ta hoàn toàn chưa có một thông tin gì về $f(x)$ cả, việc “học” sẽ xuất phát từ một đại lượng ngẫu nhiên.</li>
+<li>Đối với phương pháp deep residual learning, output của block <strong>B</strong> sẽ có dạng $h(x) = x + f(x)$, và ta sẽ đi học $f(x)$. Lúc này, ta gọi $f(x)$ là <strong>residual function</strong> (hàm phần dư)</li>
+<li>Ta có các nhận xét sau:
+<ul>
+<li>Trong deep residual learning, ta đã có sự “gợi ý” cho hàm mong muốn thông qua giá trị input $x$<strong>.</strong> Đối với thông thường thì không có sự gợi ý nào, học từ một cái hoàn toàn ngẫu nhiên.</li>
+<li>Việc học $f(x)$ như là một hàm phần dư là <strong>dễ hơn</strong> so với việc học hàm mong muốn. Nếu identity mapping là kết quả tối ưu thì ta có luôn $f(x)=0$</li>
+<li>Về mặt bản chất, với phương pháp deep residual learning, ta đã tác động vào lớp hàm chứa hàm mong muốn, sao cho lớp mới là lớn hơn (bao gồm) lớp cũ.</li>
+</ul>
+</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 300px;" src='./images/auxiliary.png'>
+<img style="height: 250px;" src='./images/function_space.png'>
 <p align="center" style="margin: 0; color: #888;">
-Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png">https://img2018.cnblogs.com/blog/1603578/201906/1603578-20190626151101604-1002238110.png</a>
+Lớp hàm chứa hàm mong muốn của phương pháp thông thường và phương pháp deep residual learning <br>
+Nguồn: <a href="https://d2l.aivivn.com/_images/functionclasses.svg">Dive into AI</a>
 </p>
 </div>
+<p>Như vậy, điểm nhấn của ResNet là ta đi học các hàm phần dư, thông qua việc “gợi ý” cho hàm số mong muốn một giá trị bằng với giá trị input. Trong cài đặt, thao tác này được thực hiện thông qua một kết nối gọi là <strong>skip connection</strong>. Ta sẽ cộng input $x$ vào output của block thông thường.</p>
+<ul>
+<li>Đối với việc cộng như vậy thì thực chất là ta đang đi <strong>cộng hai ma trận</strong>. Khi đó thì có nảy sinh một vấn đề về <strong>kích thước</strong> của chúng, mà thường là số channel. Nếu số channel không khớp thì ta cần phải tiến hành “điều chỉnh”. Chi tiết về phần này sẽ được đề cập trong phần về Residual block.
+<ul>
+<li>Vì các block được sử dụng thường giữ nguyên kích thước của input (width x height) nên ta chỉ nhắc đến số channel. Khi width và height được giữ nguyên thì skip connection được gọi là <strong>identity skip connection.</strong></li>
+<li>Trong trường hợp width và height của output cũng khác input $x$ thì ta cần phải biến đổi $x$ trước. Phép biến đổi này thực chất là dùng conv layer $1 \times 1$ để thay đổi số channel. Lúc này, skip connection được gọi là <strong>projection skip connection.</strong></li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px;" src='./images/skip_connection.png'>
+<p align="center" style="margin: 0; color: #888;">
+Sử dụng skip connection (identity) <br>
+Nguồn: <a href="https://d2l.aivivn.com/_images/residual-block.svg">Dive into AI</a>
+</p>
+</div>
+<p>Bây giờ, khi quan sát vào hình trên thì ta còn nhận thấy một lợi ích khác của skip connection là giúp cho gradient được lan truyền tốt hơn trong quá trình backpropagation, từ đó góp phần làm giảm hiện tượng <strong>vanishing gradient</strong>.</p>
+<h2 id="residual-block">Residual block</h2>
+<p>Residual block (khối phần dư) được tạo ra bằng cách thêm một <strong>skip connection</strong> vào một block thông thường trong các mô hình CNN như VGG block. Ta có hai loại residual block như sau:</p>
+<ul>
+<li><strong>Basic:</strong> Các conv layer trong block này có filter $3 \times 3$. Block dạng này thường được dùng cho các mô hình có độ sâu vừa phải.</li>
+<li><strong>Bottleneck:</strong> Nhằm giảm bớt số lượng tham số của các mô hình có độ sâu lớn, các tác giả sử dụng dạng block này với hai conv layer $1 \times 1$ với vai trò là giảm/tăng số channel, tạo ra một hình dáng giống như nút thắt cổ chai.
+<ul>
+<li>Hai layer conv $1 \times 1$ như vậy được gọi là <strong>bottleneck layer</strong>. Để cho dễ hình dùng thì ta có thể xem đây như là thao tác “cô đọng kiến thức” của mô hình, hay nói rõ hơn là nén lượng thông tin lại sao cho vừa giữ được thông tin và vừa tiết kiệm tài nguyên (bộ nhớ, độ phức tạp tính toán).</li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px;" src='./images/basic_block.png'>
+<p align="center" style="margin: 0; color: #888;">
+Basic Residual Block và Bottleneck Residual Block
+</p>
+</div>
+<p><strong>Lưu ý.</strong> Có một chi tiết này khá quan trọng trong cài đặt là ta sẽ tiến hành cộng ma trận trước rồi mới đưa kết quả qua activation function.</p>
+<p>Ngoài ra, ta còn có 2 loại skip connection là identity và projection. Lúc này, tùy vào số channels của input và output ban đầu có khớp hay không mà block tương ứng sẽ chứa loại skip connection phù hợp.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px;" src='./images/identity_projection.png'>
+<p align="center" style="margin: 0; color: #888;">
+Basic residual block với identity và projection skip connection <br>
+Nguồn: <a href="https://d2l.aivivn.com/_images/resnet-block.svg">Dive into AI</a>
+</p>
+</div>
+<h2 id="kiến-trúc-resnet">Kiến trúc ResNet</h2>
+<p>ResNet được tạo nên bằng cách sử dụng nhiều residual block liên tiếp nhau, tương tự như những gì mà GoogLeNet hay VGG đã thực hiện, Các tác giả của paper ResNet tạo ra nhiều phiên bản ResNet khác nhau với độ sâu tăng dần.</p>
+<ul>
+<li>Dựa vào số lượng layer thì ta sẽ có tên các mô hình như ResNet18 (18 layer có trọng số), ResNet34,…</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px;" src='./images/resnet.png'>
+<p align="center" style="margin: 0; color: #888;">
+Các phiên bản ResNet
+</p>
+</div>
+<p>Ta có một số nhận xét như sau:</p>
+<ul>
+<li>Các phiên bản có độ sâu lớn như 50, 101 và 152 sử dụng Bottleneck Residual Block. Với 18 và 34 thì chúng dùng Basic block</li>
+<li>Trong các kiến trúc trên thì ta sử dụng cả 2 loại skip connection: identity và projection
+<ul>
+<li>Ví dụ, với ResNet18 thì trong cụm Basic block đầu tiên của cụm <strong>conv3_x</strong> sẽ có số channel là 64, còn output ban đầu của block này thì là 128 nên ta phải áp dụng projection vào input</li>
+</ul>
+</li>
+<li>Đối với height và width thì các tác giả cho biết việc <strong>downsampling</strong> input sẽ được thực hiện tại <strong>conv layer đầu tiên</strong> của các cụm <strong>conv3_x</strong>, <strong>conv4_x</strong>, <strong>conv5_x</strong> (với stride là 2). Các conv layer khác thì đều có stride 1. Ta sẽ cần chú ý đến chi tiết này khi tiến hành cài đặt ResNet.</li>
+</ul>
 <h2 id="cài-đặt">Cài đặt</h2>
-<p>Các bạn có thể tham khảo phần cài đặt GoogLeNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
-    >sau</a>. Trong cách cài đặt này, mình sẽ bỏ qua auxiliary classifiers.</p>
+<p>Các bạn có thể tham khảo phần cài đặt ResNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >sau</a></p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
-<li>Paper GoogLeNet: <a class="link" href="https://arxiv.org/abs/1409.4842"  target="_blank" rel="noopener"
-    >https://arxiv.org/abs/1409.4842</a></li>
+<li>Paper ResNet: <a class="link" href="https://arxiv.org/abs/1512.03385"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1512.03385</a></li>
+<li><a class="link" href="https://d2l.aivivn.com/chapter_convolutional-modern/resnet_vn.html"  target="_blank" rel="noopener"
+    >Dive into AI, ResNet</a></li>
 </ul>
 
 </section>
@@ -439,9 +447,9 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
         
             <a href="/tags/cnn/">cnn</a>
         
-            <a href="/tags/inception/">inception</a>
+            <a href="/tags/resnet/">resnet</a>
         
-            <a href="/tags/googlenet/">googlenet</a>
+            <a href="/tags/skip-connection/">skip connection</a>
         
     </section>
 
@@ -486,12 +494,12 @@ Nguồn: <a href="https://img2018.cnblogs.com/blog/1603578/201906/1603578-201906
             
                 
 <article class="">
-    <a href="/post/resnet/">
+    <a href="/post/googlenet/">
         
         
 
         <div class="article-details">
-            <h2 class="article-title">Resnet (2015)</h2>
+            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
         </div>
     </a>
 </article>

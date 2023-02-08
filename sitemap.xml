@@ -3,19 +3,34 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://example.org/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/cnn/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/cv/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/dl/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/</loc>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/resnet/</loc>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/resnet/</loc>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/skip-connection/</loc>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/</loc>
+    <lastmod>2023-02-08T17:41:09+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/googlenet/</loc>
     <lastmod>2023-02-08T01:59:53+07:00</lastmod>
@@ -24,12 +39,6 @@
     <lastmod>2023-02-08T01:59:53+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/inception/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/post/</loc>
-    <lastmod>2023-02-08T01:59:53+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/</loc>
     <lastmod>2023-02-08T01:59:53+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/vgg/</loc>
