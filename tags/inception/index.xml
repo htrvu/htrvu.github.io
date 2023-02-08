@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>inception on Hoang Trong Vu</title>
+        <link>http://example.org/tags/inception/</link>
+        <description>Recent content in inception on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 08 Feb 2023 01:59:53 +0700</lastBuildDate><atom:link href="http://example.org/tags/inception/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>GoogLeNet - Inception V1 (2014)</title>
+        <link>http://example.org/post/googlenet/</link>
+        <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
+        
+        <guid>http://example.org/post/googlenet/</guid>
+        <description>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀
+Giới thiệu Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, GoogLeNet, hay Inception V1 (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</description>
+        </item>
+        
+    </channel>
+</rss>
