@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN'>
+<title>CAM, Grad-CAM và Score-CAM trong CNN</title>
+
+<link rel='canonical' href='http://example.org/post/cam/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='CAM, Grad-CAM và Score-CAM trong CNN'>
+<meta property='og:description' content='Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN'>
+<meta property='og:url' content='http://example.org/post/cam/'>
+<meta property='og:site_name' content='htrvu&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='xai' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='cam' /><meta property='article:tag' content='attention' /><meta property='article:published_time' content='2023-02-09T18:30:41&#43;07:00'/><meta property='article:modified_time' content='2023-02-09T18:30:41&#43;07:00'/>
+<meta name="twitter:title" content="CAM, Grad-CAM và Score-CAM trong CNN">
+<meta name="twitter:description" content="Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">htrvu&#39;s Blog</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu">Giới thiệu</a></li>
+    <li><a href="#các-phương-pháp-sinh-cam">Các phương pháp sinh CAM</a>
+      <ol>
+        <li><a href="#default-cam-2016">Default CAM (2016)</a></li>
+        <li><a href="#grad-cam-2016">Grad-CAM (2016)</a></li>
+        <li><a href="#score-cam-2019">Score-CAM (2019)</a></li>
+        <li><a href="#nhận-xét">Nhận xét</a></li>
+      </ol>
+    </li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/xai/" style="background-color: #2a9d8f; color: #fff;">
+                Explainable AI
+            </a>
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/cam/">CAM, Grad-CAM và Score-CAM trong CNN</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 09, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    10 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="giới-thiệu">Giới thiệu</h2>
+<p><strong>Class Activation Map (CAM)</strong> là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là <strong>Attention Map</strong>.</p>
+<p>Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px;" src='./images/intro_1.png'>
+<p align="center" style="margin: 0; color: #888;">
+CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog” <br>
+Nguồn: <a href="https://glassboxmedicine.files.wordpress.com/2019/06/greater-swiss-mountain-dog.jpeg">GlassBoxMedicine</a>
+</p>
+</div>
+<div>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px"  src='./images/intro_2.png'>
+<p align="center" style="margin: 0; color: #888;">
+CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog”</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px" src='./images/intro_3.png'>
+<p align="center" style="margin: 0; color: #888;">CNN tập trung vào con mèo khi đưa ra xác suất mà bức ảnh thuộc class “cat”/p>
+</div>
+</div>
+<p align="center">Nguồn: <a href='https://glassboxmedicine.files.wordpress.com/2020/05/featured-image-6.png'>GlassBoxMedicine</a>
+</div>
+<p>Các phương pháp này được xếp vào nhóm <strong>post-hoc</strong>, tức là ta chỉ tiến hành sinh ra CAM để giải thích sự hoạt động của CNN sau khi mô hình này đã được huấn luyện và có một bộ trọng số cố định.</p>
+<p>Việc giải thích CNN bằng CAM là rất hợp lý, vì:</p>
+<ul>
+<li>Ta có thể biết được mô hình của mình có đang thật sự hoạt động tốt hay không (tập trung vào đúng phần quan trọng trong ảnh), tức là có chứng cứ rõ ràng cho các dự đoán</li>
+<li>Nó giúp ta kịp thời phát hiện những đặc trưng mà mô hình “hiểu lầm” khi học về một đối tượng nào đó. Ví dụ, nhờ CAM thì ta thây rằng mô hình học cách nhận dạng tàu hỏa dựa vào các đường ray trong ảnh thì rõ ràng là nó đã học sai đặc trưng. Trường hợp này hoàn toàn có thể xảy ra vì phần lớn bức ảnh có tàu hỏa thì cũng có đường ray, nhưng ngược lại thì không. Ta có thể có một chiếc xe ô tô chạy ngang đường ray 😀</li>
+</ul>
+<p>Trong các phương pháp sinh ra CAM cho một CNN (theo từng input) thì ta có các phương pháp nổi bật như Default CAM, Grad-CAM, Score-CAM. Ta sẽ lần lượt đề cập đến các phương pháp đó.</p>
+<h2 id="các-phương-pháp-sinh-cam">Các phương pháp sinh CAM</h2>
+<h3 id="default-cam-2016">Default CAM (2016)</h3>
+<p>Phương pháp này được đề xuất ngay từ khi các ý tưởng về CAM được công bố. Ta sẽ dựa vào <strong>output của conv layer cuối cùng</strong> trong kiến trúc, ngay trước fully connected layer sinh ra output của mô hình và <strong>các trọng số trong output layer</strong>.</p>
+<ul>
+<li>Đầu tiên, để mô tả về ý nghĩa của các feature maps trong output của conv layer cuối cùng thì ta xét ví dụ sau:
+<ul>
+<li>Trong hình ảnh bên dưới, conv layer cuối cùng của ta là “Conv Layer n”. Output của nó có $k$ channel, hay là $k$ feature maps, mỗi feature map sẽ liên quan đến một đặc trưng nào đó trong ảnh input. Giả sử như feature map $1$ sẽ phát hiện mặt người trong ảnh, feature map $2$ sẽ phát phiện lông của con chó,…, feature map $k$ sẽ phát hiện tai của con chó.</li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px;" src='./images/cam_1.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa ý nghĩa các feature maps <br>
+Nguồn: <a href="https://johfischer.com/wp-content/uploads/2022/01/slide2-1-768x341.png">Johfischer</a>
+</p>
+</div>
+<ul>
+<li>Các trọng số trong output layer sẽ mang ý nghĩa là tầm quan trọng của feature map tương ứng vơi trọng số đó trong việc đưa ra xác suất dự đoán ảnh input thuộc một class nào đó.
+<ul>
+<li>Ví dụ, ta xét class 2 như hình ảnh bên dưới Khi đó, với $k$ feature maps $F_i$, ta có $k$ trọng số $w_i$ và bằng cách tính tổ hợp tuyến tính của $F_i$ và $w_i$ thì ta sẽ có CAM của ảnh input ứng với class 2.</li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/cam_2.png'>
+<p align="center" style="margin: 0; color: #888;"> Phép tổ hợp tuyến tính giữa các feature maps <br>
+Nguồn: <a href="https://johfischer.com/wp-content/uploads/2022/01/slide2-1-768x341.png">Johfischer</a>
+</p>
+</div>
+<p>$$CAM_2 = w_1 * F_1 + w_2 * F_2 + &hellip; + w_k * F_k$$</p>
+<ul>
+<li><strong>Lưu ý:</strong>
+<ul>
+<li>Kích thước width và height của CAM đang bằng với các feature maps và nó thường nhỏ hơn nhiều so với ảnh input. Để có thể visualize được như trên, ta chỉ cần upsample CAM lên bằng kích thước của ảnh input.</li>
+<li>Với mỗi class khác nhau thì CAM tính được là khác nhau</li>
+</ul>
+</li>
+</ul>
+<p>Sau khi trình bày ý tưởng của CAM thì ta thấy ngay một điều kiện mà CNN cần thỏa mãn để có thể áp dụng phương pháp này là sau các conv layer thì nó chỉ có <strong>duy nhất</strong> một fully connected layer để sinh ra output, và điểm nối giữa hai phần này là một <strong>global average pooling layer (GAP)</strong>. Ví dụ như hình bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/cam_4.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://glassboxmedicine.files.wordpress.com/2019/06/network-sketch.png">GlassBoxMedicine</a>
+</p>
+</div>
+<ul>
+<li>Trong kiến trúc trên, ta có một CNN với output của conv layer cuối cùng là 3 feature map là A1, A2, A3. Qua GAP thì ta thu được một layer với 3 giá trị số thực. Theo sau đó là một fully connected layer sinh ra output của mô hình.</li>
+<li><strong>Vì sao ta cần có duy nhất một fully connected layer?</strong>
+<ul>
+<li>Ta đã đề cập rằng các trọng số trong output layer sẽ mang ý nghĩa là tầm quan trọng của feature map tương ứng. Do đó, nối ngay ở đây thì nó mới “đúng ý” (với mỗi neuron trong output layer, ta có đúng $k$ trọng số liên quan trực tiếp đến $k$ feature maps)</li>
+</ul>
+</li>
+<li><strong>Vì sao ta cần GAP?</strong>
+<ul>
+<li>Nó sẽ tạo ra cầu nối giữa các feature map và output layer và đảm bảo rằng số channel trong input của output layer đúng bằng số feature maps của conv layer cuối cùng.</li>
+</ul>
+</li>
+</ul>
+<p>Viết một cách tổng quát và “formal” hơn, ta sẽ có như sau:</p>
+<p>Xét một CNN thỏa điều kiện áp dụng CAM với conv layer cuối cùng có $k$ feature maps $F_i$, output layer có $C$ neurons ứng với $C$ class. Ma trận trọng số tại output layer là $W_{C \times k}$. Khi đó, với input $X$, CAM được sinh ra cho class $c$ là</p>
+<p>$$CAM_c = W_{c,1} * F_1 +  W_{c,2} * F_2 + &hellip; +  W_{c,k} * F_k$$</p>
+<h3 id="grad-cam-2016">Grad-CAM (2016)</h3>
+<p><strong>Gradient-weighted Class Activation Mapping (Grad-CAM)</strong> là một phiên bản cải tiến của Default CAM với hai yếu tố sau:</p>
+<ul>
+<li>Không ràng buộc điều kiện đối với kiến trúc của mô hình. Phần fully connected layers được phép ở bất kì cách tổ chức nào. Lưu ý là ta vẫn dùng GAP</li>
+<li>Thay vì phải áp dụng cho conv layer cuối cùng thì ta áp dụng cho layer nào cũng được, nhưng thường thì người ta vẫn hay cùng conv layer cuối hơn 😜.</li>
+<li>“Tầm quan trọng” của các feature maps sẽ được tính theo cách khác, và cách tính này sẽ dựa vào gradient!</li>
+</ul>
+<p>Grad-CAM thường cho ra kết quả CAM tốt hơn, tập trung vào đúng vùng quan trong hơn trong ảnh input khi so sánh với Default CAM. Vi dụ:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/grad-cam_1.png'>
+<p align="center" style="margin: 0; color: #888;"> So sánh Default CAM và Grad-CAM <br>
+Nguồn: <a href="https://www.mdpi.com/electronics/electronics-10-01541/article_deploy/html/images/electronics-10-01541-g004.png](https://www.mdpi.com/electronics/electronics-10-01541/article_deploy/html/images/electronics-10-01541-g004.png">MDPI</a>
+</p>
+</div>
+<p>Xét một CNN với conv layer cuối cùng có $k$ feature maps $F_i$, output layer có $C$ neurons ứng với $C$ class. Gọi giá trị output cho class $c$ là $y_c$. Với ảnh input $X$, ta đặt:</p>
+<ul>
+<li>
+<p>Tầm quan trọng của feature map $F_i$ trong việc đưa ra xác suất $X$ thuộc class $c$ được tính dựa vào gradient của output $Y_c$ theo $F_i$, tức là</p>
+<p>$$
+\alpha_{c,i} = GAP(\frac{\partial Y_c}{\partial F_i})
+$$</p>
+<p>, với GAP là global average pooling.</p>
+<p>Để ý rằng, $\dfrac{\partial Y_c}{\partial F_i}$ có cùng shape với $F_i$, ta tiến hành tính GAP để có được giá trị số thực $\alpha_{c,i}$</p>
+</li>
+<li>
+<p>Từ đó, CAM cho class $c$ sẽ được tính bằng tổ hợp tuyến tính giữa $F_i$ và $\alpha_{c,i}$:</p>
+<p>$$CAM_{c} = \alpha_{c,1} * F_1 +  \alpha_{c,2} * F_2 + &hellip; +  \alpha_{c,k} * F_k$$</p>
+</li>
+</ul>
+<p>Grad-CAM đã hoạt động rất tốt và được dùng nhiều trong việc giải thích cho CNN. Tuy nhiên, đến năm 2021 thì có 2 tác giả đã chỉ ra rằng có những trường hợp Grad-CAM cho ra kết quả không thật sự đúng, khi mà CAM được sinh ra tập trung không đúng vào các phần quan trọng. Vi dụ trong y học mà các tác giả đưa ra như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px" src='./images/grad-cam_2.png'>
+</p>
+<ul>
+<li>Lý do chính dẫn đến yếu tố này là ở phép toán GAP trong việc tính $\alpha_{c,i}$. Có những tình huống mà GAP sẽ làm mất đi một số điểm nổi bật ở trong một feature map.</li>
+<li>Phương pháp mới được giới thiệu là <strong>HiresCam (2021)</strong>, bằng cách thay thế GAP thành phép toán tích element-wise. Các bạn có thể tự tìm hiểu về cái này nhé.</li>
+</ul>
+<h3 id="score-cam-2019">Score-CAM (2019)</h3>
+<p>Score-CAM là một phương pháp dựa chỉ dựa vào <strong>score của các class</strong> (vector output của output layer) để tính tầm quan trọng của các feature maps, từ đó sinh ra CAM. Kết quả ta có được là các CAM tốt hơn phương pháp Grad-CAM, khi mà vùng được chú ý trong ảnh input là đúng hơn, “gọn” hơn (không lan rộng ra những thứ không liên quan lắm ở các phía xung quanh). Ví dụ:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 350px" src='./images/score-cam_1.png'>
+<p align="center" style="margin: 0; color: #888;"> So sánh Score-CAM và Grad-CAM <br>
+Nguồn: <a href="https://arxiv.org/pdf/1910.01279.pdf](https://arxiv.org/pdf/1910.01279.pdf">Paper Score-CAM - Figure 1</a>
+</p>
+</div>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>Ta xét score của class khi <strong>chưa áp dụng softmax</strong> để đưa về xác suất.</li>
+<li>Score-CAM cũng không có ràng buộc gì về kiến trúc của CNN và ta có thể sinh CAM cho các feature map tại bất kỳ layer nào như Grad-CAM</li>
+</ul>
+<p>Để trình bày phương pháp này thì ta phải dùng các kí hiệu toán học hơi nhiều một chút 😀</p>
+<ul>
+<li>
+<p><strong>Increase of Confidence:</strong> Giả sử ta có hàm số $y = f(X)$ với input $X$ là vector $[x_1, x_2,&hellip;, x_n]^T$ và $y$ là số thực. Với một input cơ sở $X_b$ đã biết nào đó, <strong>tầm quan trọng của thành phần $x_i$</strong> đối với việc tính ra giá trị $y$ sẽ bằng với độ chênh lệch của output khi ta thay đổi phần thứ $i$ trong $X_b$ bằng cách nhân thêm $x_i$, tức là</p>
+<p>$$
+c_i = f(X_b \circ H_i) - f(X_b)
+$$</p>
+<p>, với $\circ$ là <strong>element-wise product</strong>, $H_i = [1, &hellip;, 1, x_i, 1, &hellip; 1]^T$ (thành phần thứ $i$ là $x_i$)</p>
+</li>
+<li>
+<p>Bây giờ, áp dụng <strong>Increase of Confidence</strong> trên với việc ta tính <strong>tầm quan trọng của các feature maps:</strong> Giả sử ta có một CNN $Y = f(X)$ với input $X$ là ảnh, $Y$ là vector có $C$ phần tử, ứng với score của $C$ class (chưa áp dụng softmax).
+Ta xét conv layer thứ $k$, feature map thứ $i$ tại layer này được kí hiệu là $F_{k, i}$. Với một input cơ sở $X_b$, tầm quan trọng của $F_{k, i}$ đối với score của class $c$ $( Y_c = f_c(X))$ là</p>
+</li>
+</ul>
+<p>$$
+C(F_{k, i}) = f_c(X_b \circ H_{k, i}) - f_c(X_b)
+$$</p>
+<p>, với $H_{k, i} = s(Up(F_{k, i})$ là ta upsample $F_{k, i}$ lên cùng shape với ảnh input $X$, sau đó normalize nó theo công thức $Z \leftarrow \dfrac{Z - \min_Z}{\max_Z - \min_Z}$</p>
+<p>Sau khi tính các giá trị $C(F_{k, i})$, ta đưa chúng qua softmax để có các giá trị tầm quan trọng với tổng bằng 1:</p>
+<p>$$
+\alpha_{c,i} = \frac{\exp(C(F_{k,i}))}{\sum \exp(C(F_{k,i})) }
+$$</p>
+<p>Khi đó, ta có thể sinh ra CAM cho class $c$ như sau:</p>
+<p>$$CAM_c = \alpha_{c,1} * F_1 +  \alpha_{c,2} * F_2 + &hellip; +  \alpha_{c,k} * F_k$$</p>
+<p>Như vậy, ta đã xác định được tầm quan trọng của các feature map theo cách là chỉ dựa vào output của CNN (score của các class).</p>
+<h3 id="nhận-xét">Nhận xét</h3>
+<p>Qua các phương pháp đã trình bày là Default CAM, Grad-CAM, Score-CAM, ta có thể thấy rằng điểm khác biệt lớn nhất giữa chúng là cách tính tầm quan trọng của các feature maps trong việc sinh ra output của CNN.</p>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo notebook sau: <a class="link" href="https://colab.research.google.com/drive/1iSn3fP2vQ0Lj7x5jEZyl2xGsJ9x5ec4t?usp=sharing"  target="_blank" rel="noopener"
+    >https://colab.research.google.com/drive/1iSn3fP2vQ0Lj7x5jEZyl2xGsJ9x5ec4t?usp=sharing</a></p>
+<p>Nội dung của notebook trên là sinh ra CAM cho các mô hình CNN như ResNet, DenseNet, EfficientNet và so sánh output của CAM, Grad-CAM và Score-CAM. Các kết quả chạy được trong notebook trên như sau:</p>
+<ul>
+<li>CAM của các model khác nhau:</li>
+</ul>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="width: 800px;" src='./images/code_1.png'>
+</p>
+<ul>
+<li>So sánh CAM, Grad-CAM và Score-CAM của ResNet50:</li>
+</ul>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="width: 800px;" src='./images/code_2.png'>
+</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://glassboxmedicine.com/2019/06/11/cnn-heat-maps-class-activation-mapping-cam/"  target="_blank" rel="noopener"
+    >GlassBox, CNN Heat Maps: Class Activation Mapping (CAM)</a></li>
+<li><a class="link" href="https://glassboxmedicine.com/2020/05/29/grad-cam-visual-explanations-from-deep-networks/"  target="_blank" rel="noopener"
+    >GlassBox, Grad-CAM: Visual Explanations from Deep Networks</a></li>
+<li>Paper Grad-CAM: <a class="link" href="https://arxiv.org/abs/1610.02391"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1610.02391</a></li>
+<li>Paper Score-CAM: <a class="link" href="https://arxiv.org/abs/1910.01279"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1910.01279</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/xai/">xai</a>
+        
+            <a href="/tags/cnn/">cnn</a>
+        
+            <a href="/tags/cam/">cam</a>
+        
+            <a href="/tags/attention/">attention</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/inception-resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Inception-Reset (2016)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Resnet (2015)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/googlenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/vgg/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">VGG (2014)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 htrvu&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

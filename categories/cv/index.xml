@@ -6,7 +6,16 @@
         <description>Recent content in Computer Vision on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 18:13:00 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
+        <link>http://example.org/post/cam/</link>
+        <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
+        
+        <guid>http://example.org/post/cam/</guid>
+        <description>Giới thiệu Class Activation Map (CAM) là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là Attention Map.
+Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</description>
+        </item>
+        <item>
         <title>MobileNet (2017)</title>
         <link>http://example.org/post/mobilenet/</link>
         <pubDate>Wed, 08 Feb 2023 18:13:00 +0700</pubDate>

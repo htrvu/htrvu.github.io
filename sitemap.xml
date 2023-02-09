@@ -3,34 +3,43 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://example.org/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/attention/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/cam/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/cam/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/cnn/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/categories/cv/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/categories/dl/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
   </url><url>
     <loc>http://example.org/categories/xai/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/post/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
+  </url><url>
+    <loc>http://example.org/tags/xai/</loc>
+    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
   </url><url>
     <loc>http://example.org/post/intro-xai/</loc>
     <lastmod>2023-02-09T15:30:31+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/post/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/xai/</loc>
-    <lastmod>2023-02-09T15:30:31+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/tags/cnn/</loc>
-    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/categories/cv/</loc>
-    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
-  </url><url>
-    <loc>http://example.org/categories/dl/</loc>
-    <lastmod>2023-02-08T18:13:00+07:00</lastmod>
   </url><url>
     <loc>http://example.org/tags/depthwise-separable-convolution/</loc>
     <lastmod>2023-02-08T18:13:00+07:00</lastmod>
