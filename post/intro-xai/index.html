@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Explainable AI - một xu hướng nghiên cứu đang dần phát triển mạnh'>
+<title>Giới thiệu về XAI</title>
+
+<link rel='canonical' href='http://example.org/post/intro-xai/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Giới thiệu về XAI'>
+<meta property='og:description' content='Explainable AI - một xu hướng nghiên cứu đang dần phát triển mạnh'>
+<meta property='og:url' content='http://example.org/post/intro-xai/'>
+<meta property='og:site_name' content='htrvu&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='xai' /><meta property='article:published_time' content='2023-02-09T15:30:31&#43;07:00'/><meta property='article:modified_time' content='2023-02-09T15:30:31&#43;07:00'/>
+<meta name="twitter:title" content="Giới thiệu về XAI">
+<meta name="twitter:description" content="Explainable AI - một xu hướng nghiên cứu đang dần phát triển mạnh">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">htrvu&#39;s Blog</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#xai-là-gì">XAI là gì?</a></li>
+    <li><a href="#diễn-giải-một-mô-hình-ai">Diễn giải một mô hình AI</a></li>
+    <li><a href="#đánh-giá-phương-pháp-xai">Đánh giá phương pháp XAI</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/xai/" style="background-color: #2a9d8f; color: #fff;">
+                Explainable AI
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/intro-xai/">Giới thiệu về XAI</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Explainable AI - một xu hướng nghiên cứu đang dần phát triển mạnh
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 09, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    5 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="xai-là-gì">XAI là gì?</h2>
+<p>Hầu hết các mô hình AI nói chung hay Deep Learning nói riêng luôn được người ta ví như là một <strong>chiếc hộp đen (black-box)</strong>. Chúng ta xây dựng các mô hình với rất nhiều layer, từ convolution cho đến fully connected, sau đó sử dụng các optimizer như Adam, RMSprop,… (hoặc nói chung chung là gradient descent) để tối ưu mô hình, tức là tìm ra bộ trọng số sao cho hàm mất mát có giá trị nhỏ nhất có thể. Tuy nhiên, nếu ta nhìn lại mô hình và tìm cách <strong>giải thích</strong> là vì sao các mô hình hoạt động được tốt như vậy thì đây luôn là một câu hỏi khó, Việc đưa những chứng minh chặt chẽ, rõ ràng là không đề hơn giản. Từ đó, ta có một hướng nghiên cứu về các phương pháp giải thích sự hoạt động của các mô hình AI và lĩnh vực này được gọi là <strong>Explainable AI (XAI).</strong></p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px;" src='./images/blackbox.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://impact.nuigalway.ie/wp-content/uploads/2022/01/blackboxpng.png">https://impact.nuigalway.ie/wp-content/uploads/2022/01/blackboxpng.png</a>
+</p>
+</div>
+<p><strong>Vì sao chúng ta cần phải tìm cách giải thích các mô hình AI?</strong></p>
+<p>Ta lấy một ví dụ về mô hình chẩn đoán ung thư dạ dày dựa vào hình ảnh chụp nội soi được sử dụng ở các bệnh viện. Lúc này, tính chính xác của mô hình sẽ trở nên đặc biệt nghiêm trọng, nó có thể ảnh hưởng đến sức khỏe và cả tính mạng của bệnh nhân. Nếu mô hình chẩn đoán là ung thư thì ta cũng cần nó đưa ra những “chứng cứ” cho chẩn đoán đó, tất nhiên là chứng cứ phải đúng, mang tính thuyết phục cao thì mới chấp nhân được. Ngoài lĩnh vực y tế thì ta còn có các ví dụ khác như trong hệ thống bảo mật của ngân hàng,…</p>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px"  src='./images/medical.jpg'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href='https://uploads-ssl.webflow.com/60ae502e1fc8451b318f88e0/61d506d235f891f56a5d3972_AI_healthcare.jpg'>Webflow</a></p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px" src='./images/security.jpg'>
+<p align="center" style="margin: 0; color: #888;">Nguồn: <a href='https://uploads-ssl.webflow.com/60ae502e1fc8451b318f88e0/61d506d235f891f56a5d3972_AI_healthcare.jpg'>MicroAI</a></p>
+</div>
+</div>
+<p>Khi AI càng được ứng dụng nhiều vào cuộc sống thì nhu cầu giải thích các mô hình AI cũng sẽ dần nhiều lên. Điều đó dẫn đến sự phát triển mạnh của XAI trong thời gian gần đây.</p>
+<h2 id="diễn-giải-một-mô-hình-ai">Diễn giải một mô hình AI</h2>
+<p><strong>Khả năng diễn giải mô hình (interpretability)</strong> là mức độ hiểu biết của chúng ta về cách mô hình hoạt động, mà cụ thể hơn là về quá trình đưa ra dự đoán của mô hình. Ta có hai hướng tiếp cận chính đối với việc diễn giải mô hình là <strong>intrinsic</strong> và <strong>post-hoc</strong>.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 200px;" src='./images/interpretability.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://erdem.pl/static/7651b488f72c88d2321915da153aa33f/f4281/taxonomy.png">Kemal Erdem</a>
+</p>
+</div>
+<ul>
+<li><strong>Intrinsic (dựa vào bản chất của mô hình):</strong> Cách tiếp cận này thường dùng cho những mô hình thuộc nhóm white-box, đặc biệt là những mô hình Machine Learning như Linear Regresion, Decision Tree, SVM,… Đằng sau những mô hình đó là các lý thuyết toán chặt chẽ, ta có thể tìm được ngay công thức tính ra trọng số tối ưu của bài. Nói cách khác, khi chưa cần huấn luyện thì ta cũng có thể giải thích rằng mô hình sẽ hoạt động theo cách như thế này, như thế kia.</li>
+</ul>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px"  src='./images/decision-tree.png'>
+<p align="center" style="margin: 0; color: #888;">Decision Tree <br> Nguồn: <a href='https://static.javatpoint.com/tutorial/machine-learning/images/decision-tree-classification-algorithm.png'>javatpoint</a></p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 250px" src='./images/svm.png'>
+<p align="center" style="margin: 0; color: #888;">SVM <br>Nguồn: <a href='https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/SVM_margin.png/300px-SVM_margin.png'>Wikipedia</a></p>
+</div>
+</div>
+<ul>
+<li>
+<p><strong>Post-hoc:</strong> Đây là cách tiếp cận chúng ta thường dùng khi diễn giải các mô hình Deep Learning, và đặc biệt là nó được tiến hành <strong>sau khi mô hình đã được huấn luyện</strong> với một bộ trọng số đủ tốt. Vì việc giải thích, chứng minh chặt chẽ, chính xác về quá trình hoạt động của các mô hình Deep Learning là rất khó khăn nên post-hoc là hướng tiếp cận được ưu tiên hơn. Trong post-hoc, ta có 2 cách diễn giải là <strong>model-agnostic</strong> và <strong>model-specific</strong>.</p>
+<ul>
+<li><strong>Model-agnostic:</strong> Cách này nghĩa là chúng ta có thể áp dụng cùng một phương pháp để diễn giải cho toàn bộ các mô hình mà không cần quan tâm đến kiến trúc của chúng. Như vậy, ta chỉ dựa vào input và output của mô hình để đưa ra cách diễn giải.</li>
+<li><strong>Model-specific:</strong> Với cách này thì tùy theo những mô hình, hay là họ các mô hình, mà ta sẽ đưa ra cách diễn giải tương ứng.</li>
+</ul>
+<p>Ta có thể thấy rằng model-specific có thể dễ tiến hành hơn model-agnostic rất nhiều.</p>
+</li>
+</ul>
+<p>Những phương pháp trong XAI mà mình trình bày trong tương lai sẽ chủ yếu thuộc về hướng <strong>post-hoc.</strong></p>
+<p><strong>Vì sao chúng ta bàn nhiều về khả năng diễn giải mô hình (interpretability) nhưng lĩnh vực này lại gọi là Explainable AI (thiên về khả năng giải thích mô hình)?</strong></p>
+<ul>
+<li>2 thuật ngữ <strong>diễn giải</strong> và <strong>giải thích</strong> có thể xem là mang ý nghĩa tương tự và có thể dùng thay thế cho nhau. Tuy nhiên, có một vài quan điểm cho rằng khả năng diễn giải là nói đến một tính chất bị động của mô hình và nó cần con người chúng ta can thiệp vào, còn khả năng giải thích là thiên về chủ động, tức là mô hình có thể tự giải thích cho chính nó.</li>
+<li>Ở đây, con người chúng ta đang tìm cách giải thích các mô hình, do đó ta ưu tiên gọi là <strong>diễn giải</strong>.</li>
+</ul>
+<h2 id="đánh-giá-phương-pháp-xai">Đánh giá phương pháp XAI</h2>
+<p>Một vấn đề khác mà người ta thường quan tâm đến là cách đánh giá một phương pháp XAI, tức là xét xem cách diễn giải mô hình A đã thuyết phục, đã đúng hay chưa. Hiện tại, ta chưa có một độ đo nào để có thể so sánh các phương pháp với nhau. Phần lớn thì nó nằm ở các nhận xét của con người thông qua việc quan sát 😀</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://www.mobiquity.com/insights/an-introduction-to-explainable-artifical-intelligence"  target="_blank" rel="noopener"
+    >Mobiquity, An introduction to Explainable Artificial Intelligence (XAI)</a></li>
+<li><a class="link" href="https://erdem.pl/2021/10/xai-methods-the-introduction"  target="_blank" rel="noopener"
+    >Erdem, XAI Methods - The Introduction</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/xai/">xai</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 htrvu&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
