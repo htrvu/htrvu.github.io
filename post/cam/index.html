@@ -340,7 +340,7 @@
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height: 200px;" src='./images/intro_1.png'>
 <p align="center" style="margin: 0; color: #888;">
-CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog”
+CNN tập trung vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class “dog”
 </p>
 </div>
 <div>
@@ -348,11 +348,11 @@ CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xá
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height: 250px"  src='./images/intro_2.png'>
 <p align="center" style="margin: 0; color: #888;">
-CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog”</p>
+CNN tập trung vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class “dog”</p>
 </div>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height: 250px" src='./images/intro_3.png'>
-<p align="center" style="margin: 0; color: #888;">CNN tập trung vào con mèo khi đưa ra xác suất mà bức ảnh thuộc class “cat”/p>
+<p align="center" style="margin: 0; color: #888;">CNN tập trung vào con mèo khi đưa ra xác suất mà bức ảnh thuộc class “cat”</p>
 </div>
 </div>
 <p align="center">Nguồn: <a href='https://glassboxmedicine.files.wordpress.com/2020/05/featured-image-6.png'>GlassBoxMedicine</a>
@@ -361,7 +361,7 @@ CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xá
 <p>Việc giải thích CNN bằng CAM là rất hợp lý, vì:</p>
 <ul>
 <li>Ta có thể biết được mô hình của mình có đang thật sự hoạt động tốt hay không (tập trung vào đúng phần quan trọng trong ảnh), tức là có chứng cứ rõ ràng cho các dự đoán</li>
-<li>Nó giúp ta kịp thời phát hiện những đặc trưng mà mô hình “hiểu lầm” khi học về một đối tượng nào đó. Ví dụ, nhờ CAM thì ta thây rằng mô hình học cách nhận dạng tàu hỏa dựa vào các đường ray trong ảnh thì rõ ràng là nó đã học sai đặc trưng. Trường hợp này hoàn toàn có thể xảy ra vì phần lớn bức ảnh có tàu hỏa thì cũng có đường ray, nhưng ngược lại thì không. Ta có thể có một chiếc xe ô tô chạy ngang đường ray 😀</li>
+<li>Nó giúp ta kịp thời phát hiện những đặc trưng mà mô hình “hiểu lầm” khi học về một đối tượng nào đó. Ví dụ, nhờ CAM thì ta thấy rằng mô hình học cách nhận dạng tàu hỏa dựa vào các đường ray trong ảnh thì rõ ràng là nó đã học sai đặc trưng. Trường hợp này hoàn toàn có thể xảy ra vì phần lớn bức ảnh có tàu hỏa thì cũng có đường ray, nhưng ngược lại thì không. Ta có thể có một chiếc xe ô tô chạy ngang đường ray 😀</li>
 </ul>
 <p>Trong các phương pháp sinh ra CAM cho một CNN (theo từng input) thì ta có các phương pháp nổi bật như Default CAM, Grad-CAM, Score-CAM. Ta sẽ lần lượt đề cập đến các phương pháp đó.</p>
 <h2 id="các-phương-pháp-sinh-cam">Các phương pháp sinh CAM</h2>
@@ -428,11 +428,11 @@ Nguồn: <a href="https://glassboxmedicine.files.wordpress.com/2019/06/network-s
 <h3 id="grad-cam-2016">Grad-CAM (2016)</h3>
 <p><strong>Gradient-weighted Class Activation Mapping (Grad-CAM)</strong> là một phiên bản cải tiến của Default CAM với hai yếu tố sau:</p>
 <ul>
-<li>Không ràng buộc điều kiện đối với kiến trúc của mô hình. Phần fully connected layers được phép ở bất kì cách tổ chức nào. Lưu ý là ta vẫn dùng GAP</li>
+<li>Không ràng buộc điều kiện đối với kiến trúc của mô hình. Phần fully connected layers được phép ở bất kì cách tổ chức nào. Lưu ý là ta vẫn dùng GAP (global average pooling).</li>
 <li>Thay vì phải áp dụng cho conv layer cuối cùng thì ta áp dụng cho layer nào cũng được, nhưng thường thì người ta vẫn hay cùng conv layer cuối hơn 😜.</li>
 <li>“Tầm quan trọng” của các feature maps sẽ được tính theo cách khác, và cách tính này sẽ dựa vào gradient!</li>
 </ul>
-<p>Grad-CAM thường cho ra kết quả CAM tốt hơn, tập trung vào đúng vùng quan trong hơn trong ảnh input khi so sánh với Default CAM. Vi dụ:</p>
+<p>Grad-CAM thường cho ra kết quả CAM tốt hơn, tập trung vào đúng vùng quan trọng hơn trong ảnh input khi so sánh với Default CAM. Vi dụ:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="width: 400px" src='./images/grad-cam_1.png'>
 <p align="center" style="margin: 0; color: #888;"> So sánh Default CAM và Grad-CAM <br>
@@ -473,7 +473,7 @@ Nguồn: <a href="https://arxiv.org/pdf/1910.01279.pdf](https://arxiv.org/pdf/19
 <p><strong>Lưu ý.</strong></p>
 <ul>
 <li>Ta xét score của class khi <strong>chưa áp dụng softmax</strong> để đưa về xác suất.</li>
-<li>Score-CAM cũng không có ràng buộc gì về kiến trúc của CNN và ta có thể sinh CAM cho các feature map tại bất kỳ layer nào như Grad-CAM</li>
+<li>Score-CAM cũng không có ràng buộc gì về kiến trúc của CNN và ta có thể sinh CAM cho các feature map tại bất kỳ layer nào như Grad-CAM.</li>
 </ul>
 <p>Để trình bày phương pháp này thì ta phải dùng các kí hiệu toán học hơi nhiều một chút 😀</p>
 <ul>
@@ -504,16 +504,16 @@ $$</p>
 <p>Qua các phương pháp đã trình bày là Default CAM, Grad-CAM, Score-CAM, ta có thể thấy rằng điểm khác biệt lớn nhất giữa chúng là cách tính tầm quan trọng của các feature maps trong việc sinh ra output của CNN.</p>
 <h2 id="cài-đặt">Cài đặt</h2>
 <p>Các bạn có thể tham khảo notebook sau: <a class="link" href="https://colab.research.google.com/drive/1iSn3fP2vQ0Lj7x5jEZyl2xGsJ9x5ec4t?usp=sharing"  target="_blank" rel="noopener"
-    >https://colab.research.google.com/drive/1iSn3fP2vQ0Lj7x5jEZyl2xGsJ9x5ec4t?usp=sharing</a></p>
+    >Google Colab</a></p>
 <p>Nội dung của notebook trên là sinh ra CAM cho các mô hình CNN như ResNet, DenseNet, EfficientNet và so sánh output của CAM, Grad-CAM và Score-CAM. Các kết quả chạy được trong notebook trên như sau:</p>
 <ul>
-<li>CAM của các model khác nhau:</li>
+<li>CAM của các mô hình CNN khác nhau:</li>
 </ul>
 <p style="display: flex; flex-direction: column; align-items: center;">
 <img style="width: 800px;" src='./images/code_1.png'>
 </p>
 <ul>
-<li>So sánh CAM, Grad-CAM và Score-CAM của ResNet50:</li>
+<li>So sánh CAM, Grad-CAM và Score-CAM của mô hình ResNet50:</li>
 </ul>
 <p style="display: flex; flex-direction: column; align-items: center;">
 <img style="width: 800px;" src='./images/code_2.png'>
