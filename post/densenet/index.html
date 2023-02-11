@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình DenseNet'>
+<title>Densenet</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/densenet/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Densenet'>
+<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình DenseNet'>
+<meta property='og:url' content='https://htrvu.github.io/post/densenet/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='densenet' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-11T18:09:08&#43;07:00'/><meta property='article:modified_time' content='2023-02-11T18:09:08&#43;07:00'/>
+<meta name="twitter:title" content="Densenet">
+<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình DenseNet">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#skip-connection-và-concatenate">Skip connection và concatenate</a></li>
+    <li><a href="#dense-block-transition-layer-và-growth-rate">Dense block, transition layer và growth rate</a>
+      <ol>
+        <li><a href="#dense-block-và-transition-layer">Dense block và transition layer</a></li>
+      </ol>
+    </li>
+    <li><a href="#22-growth-rate">2.2. Growth rate</a></li>
+    <li><a href="#kiến-trúc-densenet">Kiến trúc DenseNet</a></li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/densenet/">Densenet</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình DenseNet
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 11, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="skip-connection-và-concatenate">Skip connection và concatenate</h2>
+<p>Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các <strong>Skip Connection</strong> khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng Skip Connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối <strong>1 feature map</strong> vào làm input của một layer sau đó, và chúng đều sử dụng <strong>phép toán cộng</strong>.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 200px" src='./images/residual_block.png'>
+<p align="center" style="margin: 0; color: #888;">
+Residual block trong ResNet sử dụng skip connection với phép toán cộng <br>
+Nguồn: <a href="https://idiotdeveloper.com/wp-content/uploads/2021/09/residual_block.png">Idiot Developer</a>
+</p>
+</div>
+<p>Công thức về Skip Connection trong block trên có thể được viết như sau:</p>
+<p>$$ x_l = H_l(x_{l - 1}) + x_{l-1} $$</p>
+<p>, với $H_l$ là phép biến đổi phi tuyến ở layer thứ $l$, $x_l$ là output của layer thứ $l$.</p>
+<p>Paper DenseNet giới thiệu một kiến trúc với ý tưởng là feature-map tại layer $l$ sẽ sử dụng <strong>toàn bộ feature-maps ở phía trước</strong> (layer $l - 1, l - 2,&hellip;$) để làm input, và chúng sử dụng <strong>concatenate</strong> (thay vì phép toán cộng như ResNet). Với tư tưởng như vậy, các feature-maps ta có được có thể xem là một trạng thái có <strong>phạm vi toàn cục</strong> và bất kì layer nào cũng có thể sử dụng trạng thái này trong việc tính toán ra feature-maps của nó. Nếu viết theo kiểu công thức thì ta sẽ có</p>
+<p>$$ x_l = H_l([x_0, x_1,&hellip;, x_{l-1}]) $$</p>
+<p><strong>Lưu ý.</strong> Để thực hiện phép toán concatenate thì các feature-maps phải có cùng size, hay là width và height.</p>
+<p>Một ví dụ cho kiến trúc DenseNet như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/dense_ex.png'>
+</p>
+<ul>
+<li>Trong hình trên, với $L$ layer, ta có $\dfrac{L(L+1)}{2}$ kết nối trực tiếp giữa các layer. Các kết nối có vẻ rất dày đặc (hay là dense) —&gt; Tên của kiến trúc được đặt là <strong>Dense Convolutional Network (DenseNet)</strong>.</li>
+</ul>
+<p>Bàn về cách tổ chức các liên kết như vậy một chút:</p>
+<ul>
+<li>
+<p>Nhóm tác giả cho rằng kiến trúc như DenseNet sẽ đảm bảo lượng thông tin cũng như gradient truyền qua các layer là nhiều nhất có thể , từ đó mô hình sẽ có thể học được từ nhiều thông tin hơn, và tất nhiên là nó sẽ tạo ra hiệu ứng làm dịu bớt hiện tượng vanishing gradient.</p>
+</li>
+<li>
+<p>Đồng thời, việc sử phép toán concatenate có mang đến cho ta trực giác là có sự phân biệt rõ hơn giữa input trực tiếp từ layer ở ngay phía trước nó với các thông tin được “lưu trữ” và truyền đến từ các layer ở phía trước nữa. Nếu sử dụng phép toán cộng, những yếu tố này đã bị pha lẫn vào nhau.</p>
+</li>
+</ul>
+<p>Có một chi tiết mà ta thường nghĩ đến ở các mô hình có kiến trúc rất sâu (nhiều layer) là <strong>số lượng tham số</strong> của nó sẽ rất lớn. Tuy nhiên, với DenseNet thì điều này không phải là vấn đề. Số feature-maps của các layer trong DenseNet sẽ rất nhỏ (chỉ tầm không quá 60), với lý do là để tính toán cho layer kế tiếp thì ta đã dùng toàn bộ feature-maps ở các phía trước rồi chứ không phải chỉ mỗi layer liền trước nó như hầu hết các mô hình khác, nên tại mỗi layer ta chỉ cần tầm đó là đủ rồi 😀</p>
+<p>Kết quả so sánh giữa DenseNet và ResNet trên dataste ImageNet được các tác giả công bố như hình bên dưới. Ta thấy rằng DenseNet có số lượng tham số và số phép toán ít hơn ResNet, cùng với độ hiệu quả cao hơn.</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/dense_vs_res.png'>
+</p>
+<h2 id="dense-block-transition-layer-và-growth-rate">Dense block, transition layer và growth rate</h2>
+<h3 id="dense-block-và-transition-layer">Dense block và transition layer</h3>
+<p>Ta thấy rằng nếu áp dụng ý tưởng kết nối dày đặt của DenseNet cho toàn bộ layer trong mô hình thì toàn bộ feature-maps trong tất cả layer này đều phải có cùng size (do phép toán được sử dụng là concatnerate).</p>
+<p>Tuy nhiên, nếu toàn bộ các layer trong kiến trúc đều có cùng size như vậy thì ta khó mà down-sampling feature-maps về các size nhỏ hơn và rồi sau đó sử dụng các layer như Average Pooling, Dense để cho ra output như các kiến trúc khác được. Và việc “cô đọng” kiến thức của mô hình cũng sẽ gặp khó khăn.</p>
+<p>Do đó, ý tưởng kết nối dày đặt được các tác giả áp dụng trong từng khối (gọi là <strong>Dense block</strong>), việc down-sampling sẽ được thực hiện trong các <strong>khớp nối</strong> các Dense block với nhau (gọi là <strong>Transition layer</strong>).</p>
+<p>Có tổng cộng 4 dạng Dense block như sau:</p>
+<ul>
+<li>
+<p><strong>Dense block cơ bản:</strong></p>
+  <p style="display: flex; flex-direction: column; align-items: center;">
+  <img src='./images/dense_ex.png'>
+  </p>
+<ul>
+<li>Hàm $H_l$ trong block này là sự kết hợp theo thứ tự 3 phép toán:</li>
+</ul>
+<p>$$ BN \to ReLU \to Conv ; 3 \times 3 $$</p>
+<p>Ngoài ra, ta có thể thêm dropout vào sau Conv để giảm overfitting.</p>
+</li>
+<li>
+<p><strong>Dense-B block (bottleneck):</strong></p>
+<ul>
+<li>Để tăng hiệu suất về mặt tính toán, ta có thể thêm một phép toán Conv $1 \times 1$ vào $H_l$ để giảm bớt số lượng feature-maps input. Lúc này, thứ tự các phép toán sẽ là</li>
+</ul>
+<p>$$ BN \to ReLU \to Conv ; 1 \times 1 \to BN \to ReLU \to Conv ; 3 \times 3 $$</p>
+</li>
+<li>
+<p><strong>Dense-C block (compression):</strong></p>
+<ul>
+<li>Ta sẽ giảm số lượng output feature-maps của các Dense block theo tham số $0 &lt; \theta \leq 1$: từ $m$ feature-maps thành $\lfloor \theta m \rfloor$</li>
+<li>Thông thường, phần cài đặt của thao tác compression được ghép vào transition layer.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dense-BC block:</strong></p>
+<ul>
+<li>Kết hợp bottleneck và compression vào Dense block.</li>
+</ul>
+</li>
+</ul>
+<p>Trong kiến trúc tổng thể, nếu trước đó ta dùng Dense-C hoặc Dense-BC block thì theo sau nó sẽ có thêm layer bottleneck (Conv $1 \times 1) và thành phần này gọi là <strong>transition layer</strong>. Bên cạnh conv layer, thành phần không thể thiếu trong transition layer là một lớp Pooling (các tác giả sử dụng <strong>Average Pooling</strong>) để thực hiện down-sampling các feature-maps. Thứ tự các phép toán trong transition layer sẽ là</p>
+<p>$$ BN \to ReLU \to Conv ; 1 \times 1 \to AvgPool ; 2 \times 2 $$</p>
+<h2 id="22-growth-rate">2.2. Growth rate</h2>
+<p>Như đã đề cập ở phần ý tưởng, lượng tham số trong DenseNet được tối thiểu hóa là nhờ vào chi tiết số lượng feature-maps tại các layer trong DenseNet là nhỏ. Các tác giả xem số lượng feature-maps $k$ tại các layer là một siêu tham số của DenseNet, và nó được gọi là <strong>growth rate</strong>.</p>
+<p>Thực nghiệm cho thấy rằng các giá trị $k$ mang lại kết quả tốt trên các dataset thường không quá lớn. Về mặt trực giác, ta có thể hiểu $k$ điều chỉnh lượng thông tin mới mà một layer có thể đóng góp vào trạng thái toàn cục (đóng góp một lượng vừa đủ thì sẽ tốt hơn là quá nhiều hay quá ít).</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px" src='./images/growth_rate.png'>
+<p align="center" style="margin: 0; color: #888;">
+Minh họa Dense Block với growth rate là 4 <br>
+Nguồn: <a href="https://blog.kakaocdn.net/dn/df23Nq/btqTSTNVNN6/aggJ9KW2Gimtpx27vHk6u1/img.png">https://reliablecho-programming.tistory.com/3</a>
+</p>
+</div>
+<h2 id="kiến-trúc-densenet">Kiến trúc DenseNet</h2>
+<p>Tùy vào loại Dense block được sử dụng, ta cũng có các tên gọi khác nhau cho DenseNet (DenseNet, DenseNet-B, Denset-C, DenseNet-BC). Kiến trúc DenseNet-C (hoặc DenseNet-BC) với 3 Dense block được mô tả trong hình bên dưới:
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img src='./images/dense_net.png'>
+</p></p>
+<ul>
+<li>Trước khi đến với quá trình tính toán qua các Dense block và Transition layer, ta có một layer Conv (và có thể có thêm Pooling, BN) như đa số các kiến trúc CNN khác. Các layer của của mô hình cũng sử dụng Global Pooling và Dense cùng activation softmax để tạo ra vector output.</li>
+</ul>
+<p>Các mô hình được nhóm tác giả thử nghiệm với dataset ImageNet được tóm tắt như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img  style="max-height: 500px" src='./images/dense_table.png'>
+</p>
+<p>Quan sát bảng trên, ta có nhận xét là các mô hình trên đều thuộc loại DenseNet-BC. Ngoài ra, các tác giả cho biết giá trị growth rate được sử dụng là $k=32$.</p>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo phần cài đặt DenseNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >sau</a>.</p>
+<p>Khi cài đặt DenseNet, ta thường sẽ hơi phân vân về cách cài đặt các Dense block. Làm sao để cài đặt các kết nối dày đặc như vậy?</p>
+<p>Thực ra cách cài đặt là rất đơn giản. Ta gọi khối gồm (Conv 1x1, Conv 1x3) như hình trên là bottleneck block (bb). Khi đó 1 dense block với 4 bottleneck block sẽ có dạng như sau:</p>
+<ul>
+<li>x → <strong>bb_1</strong> → x1 → <strong>bb_2</strong> → x2 → <strong>bb_3</strong> → x3 → <strong>bb_4</strong> → x4 (output)</li>
+</ul>
+<p>Trong đó:</p>
+<ul>
+<li>bb_1.input = <input checked="" disabled="" type="checkbox"> </li>
+<li>bb_2.input = [x1, x]</li>
+<li>bb_3.input = [x2, x1, x]</li>
+<li>bb_4.input = [x3, x2, x1, x]</li>
+</ul>
+<p>Mã giả cho cách cài đặt dense block này như sau:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">bottleneck_block</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">BN</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">ReLU</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>		
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">conv_1x1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">BN</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">ReLU</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">conv_3x3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">x</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">dense_block</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="nb">input</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x1</span> <span class="o">=</span> <span class="n">bottleneck_block</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>    <span class="c1"># c = [x1, input]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x2</span> <span class="o">=</span> <span class="n">bottleneck_block</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>    <span class="c1"># c = [x2, x1, input]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x3</span> <span class="o">=</span> <span class="n">bottleneck_block</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">x3</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>    <span class="c1"># c = [x3, x2, x1, input]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x4</span> <span class="o">=</span> <span class="n">bottleneck_block</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">x4</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>    <span class="c1"># c = [x4, x3, x2, x1, input]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">c</span>   <span class="c1"># done!</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Như vậy, ta hoàn toàn có thể dùng một vòng lặp để cài đặt dense block:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">dense_block</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">c</span> <span class="o">=</span> <span class="nb">input</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">x</span> <span class="o">=</span> <span class="n">bottleneck_block</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">c</span> <span class="o">=</span> <span class="n">concatenate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">c</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Paper DenseNet: <a class="link" href="https://arxiv.org/abs/1608.06993"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1608.06993</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/cnn/">cnn</a>
+        
+            <a href="/tags/densenet/">densenet</a>
+        
+            <a href="/tags/skip-connection/">skip connection</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/inception-resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Inception-Reset (2016)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Resnet (2015)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/googlenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
