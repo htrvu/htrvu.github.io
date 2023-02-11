@@ -236,9 +236,9 @@
     <li><a href="#dense-block-transition-layer-và-growth-rate">Dense block, transition layer và growth rate</a>
       <ol>
         <li><a href="#dense-block-và-transition-layer">Dense block và transition layer</a></li>
+        <li><a href="#growth-rate">Growth rate</a></li>
       </ol>
     </li>
-    <li><a href="#22-growth-rate">2.2. Growth rate</a></li>
     <li><a href="#kiến-trúc-densenet">Kiến trúc DenseNet</a></li>
     <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
@@ -406,7 +406,7 @@ Nguồn: <a href="https://idiotdeveloper.com/wp-content/uploads/2021/09/residual
 </ul>
 <p>Trong kiến trúc tổng thể, nếu trước đó ta dùng Dense-C hoặc Dense-BC block thì theo sau nó sẽ có thêm layer bottleneck (Conv $1 \times 1) và thành phần này gọi là <strong>transition layer</strong>. Bên cạnh conv layer, thành phần không thể thiếu trong transition layer là một lớp Pooling (các tác giả sử dụng <strong>Average Pooling</strong>) để thực hiện down-sampling các feature-maps. Thứ tự các phép toán trong transition layer sẽ là</p>
 <p>$$ BN \to ReLU \to Conv   1 \times 1 \to AvgPool   2 \times 2 $$</p>
-<h2 id="22-growth-rate">2.2. Growth rate</h2>
+<h3 id="growth-rate">Growth rate</h3>
 <p>Như đã đề cập ở phần ý tưởng, lượng tham số trong DenseNet được tối thiểu hóa là nhờ vào chi tiết số lượng feature-maps tại các layer trong DenseNet là nhỏ. Các tác giả xem số lượng feature-maps $k$ tại các layer là một siêu tham số của DenseNet, và nó được gọi là <strong>growth rate</strong>.</p>
 <p>Thực nghiệm cho thấy rằng các giá trị $k$ mang lại kết quả tốt trên các dataset thường không quá lớn. Về mặt trực giác, ta có thể hiểu $k$ điều chỉnh lượng thông tin mới mà một layer có thể đóng góp vào trạng thái toàn cục (đóng góp một lượng vừa đủ thì sẽ tốt hơn là quá nhiều hay quá ít).</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
