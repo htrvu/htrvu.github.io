@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Natual Language Processing on htrvu&#39;s Blog</title>
+        <title>Natual Language Processing on Hoang Trong Vu</title>
         <link>https://htrvu.github.io/categories/nlp/</link>
-        <description>Recent content in Natual Language Processing on htrvu&#39;s Blog</description>
+        <description>Recent content in Natual Language Processing on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language><atom:link href="https://htrvu.github.io/categories/nlp/index.xml" rel="self" type="application/rss+xml" />
     </channel>

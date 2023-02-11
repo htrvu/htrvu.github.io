@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Deep Learning on htrvu&#39;s Blog</title>
+        <title>Deep Learning on Hoang Trong Vu</title>
         <link>https://htrvu.github.io/categories/dl/</link>
-        <description>Recent content in Deep Learning on htrvu&#39;s Blog</description>
+        <description>Recent content in Deep Learning on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/dl/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 11 Feb 2023 18:09:08 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/dl/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Densenet</title>
+        <link>https://htrvu.github.io/post/densenet/</link>
+        <pubDate>Sat, 11 Feb 2023 18:09:08 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/densenet/</guid>
+        <description>Skip connection và concatenate Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các Skip Connection khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng Skip Connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối 1 feature map vào làm input của một layer sau đó, và chúng đều sử dụng phép toán cộng.</description>
+        </item>
+        <item>
         <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
         <link>https://htrvu.github.io/post/cam/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
