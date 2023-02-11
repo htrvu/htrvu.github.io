@@ -2,62 +2,62 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Computer Vision on htrvu&#39;s Blog</title>
-        <link>http://example.org/categories/cv/</link>
+        <link>https://htrvu.github.io/categories/cv/</link>
         <description>Recent content in Computer Vision on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/cv/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
-        <link>http://example.org/post/cam/</link>
+        <link>https://htrvu.github.io/post/cam/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/post/cam/</guid>
+        <guid>https://htrvu.github.io/post/cam/</guid>
         <description>Giới thiệu Class Activation Map (CAM) là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là Attention Map.
 Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</description>
         </item>
         <item>
         <title>MobileNet (2017)</title>
-        <link>http://example.org/post/mobilenet/</link>
+        <link>https://htrvu.github.io/post/mobilenet/</link>
         <pubDate>Wed, 08 Feb 2023 18:13:00 +0700</pubDate>
         
-        <guid>http://example.org/post/mobilenet/</guid>
+        <guid>https://htrvu.github.io/post/mobilenet/</guid>
         <description>Giới thiệu Qua các mô hình đã được giới thiệu như VGG, GoogLeNet hay ResNet thì ta thấy rằng chúng đều được phát triển theo hướng tăng dần độ sâu và độ phức tạp tính toán của mô hình để đạt được độ chính xác cao hơn, kể từ khi AlexNet được công bố. Số lượng tham số của chúng là rất lớn.
 Tuy nhiên, các ứng dụng AI trong thực tế như robotics, xe tự hành thì các phép tính toán của mô hình cần được thực hiện trong một khoảng thời gian giới hạn, cùng với tài nguyên phần cứng hạn chế.</description>
         </item>
         <item>
         <title>Inception-Reset (2016)</title>
-        <link>http://example.org/post/inception-resnet/</link>
+        <link>https://htrvu.github.io/post/inception-resnet/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
-        <guid>http://example.org/post/inception-resnet/</guid>
+        <guid>https://htrvu.github.io/post/inception-resnet/</guid>
         <description>Giới thiệu Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp skip connection vào các Inception block (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.
 Kiến trúc mô hình Inception-ResNet V1 Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:
 Kiến trúc Inception-ResNet V1</description>
         </item>
         <item>
         <title>Resnet (2015)</title>
-        <link>http://example.org/post/resnet/</link>
+        <link>https://htrvu.github.io/post/resnet/</link>
         <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
         
-        <guid>http://example.org/post/resnet/</guid>
+        <guid>https://htrvu.github.io/post/resnet/</guid>
         <description>Giới thiệu Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:
 Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</description>
         </item>
         <item>
         <title>GoogLeNet - Inception V1 (2014)</title>
-        <link>http://example.org/post/googlenet/</link>
+        <link>https://htrvu.github.io/post/googlenet/</link>
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
-        <guid>http://example.org/post/googlenet/</guid>
+        <guid>https://htrvu.github.io/post/googlenet/</guid>
         <description>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀
 Giới thiệu Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, GoogLeNet, hay Inception V1 (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</description>
         </item>
         <item>
         <title>VGG (2014)</title>
-        <link>http://example.org/post/vgg/</link>
+        <link>https://htrvu.github.io/post/vgg/</link>
         <pubDate>Wed, 08 Feb 2023 01:52:02 +0700</pubDate>
         
-        <guid>http://example.org/post/vgg/</guid>
+        <guid>https://htrvu.github.io/post/vgg/</guid>
         <description>Giới thiệu Dựa trên sự thành công của AlexNet vào năm 2012, nhiều nghiên cứu đã được tiến hành nhằm tìm ra các phương pháp hay kiến trúc mới để đạt được kết quả tốt hơn, ví dụ như:
 Thay đổi (tăng, giảm) kích thước của conv filter Thay đổi stride, padding của conv layer Train và test trên các input với nhiều kích thước ảnh khác nhau Trong năm 2014, VGG là một trong những kết quả nghiên cứu nổi bật nhất, và nó tập trung vào một vấn đề khác với các hướng trên là độ sâu (depth, hay là số layer) của mô hình.</description>
         </item>

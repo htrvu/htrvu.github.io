@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>inception on htrvu&#39;s Blog</title>
-        <link>http://example.org/tags/inception/</link>
+        <link>https://htrvu.github.io/tags/inception/</link>
         <description>Recent content in inception on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 08 Feb 2023 18:03:46 +0700</lastBuildDate><atom:link href="http://example.org/tags/inception/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 08 Feb 2023 18:03:46 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/inception/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Inception-Reset (2016)</title>
-        <link>http://example.org/post/inception-resnet/</link>
+        <link>https://htrvu.github.io/post/inception-resnet/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
-        <guid>http://example.org/post/inception-resnet/</guid>
+        <guid>https://htrvu.github.io/post/inception-resnet/</guid>
         <description>Giới thiệu Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp skip connection vào các Inception block (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.
 Kiến trúc mô hình Inception-ResNet V1 Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:
 Kiến trúc Inception-ResNet V1</description>
         </item>
         <item>
         <title>GoogLeNet - Inception V1 (2014)</title>
-        <link>http://example.org/post/googlenet/</link>
+        <link>https://htrvu.github.io/post/googlenet/</link>
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
-        <guid>http://example.org/post/googlenet/</guid>
+        <guid>https://htrvu.github.io/post/googlenet/</guid>
         <description>Cá nhân mình thấy GoogLeNet là một paper khó đọc. Khi viết ra bài này thì mình vẫn đang cảm thấy hơi lú về nội dung của nó 😀
 Giới thiệu Từ khi AlexNet được công bố vào năm 2012 và đặt nền tảng cho các mạng Deep CNN, GoogLeNet, hay Inception V1 (2014), là một trong những kiến trúc có cách thiết kế rất thú vị khi nó tận dụng hiệu quả các conv layer, đặt nền móng cho nhiều mô hình sau này.</description>
         </item>

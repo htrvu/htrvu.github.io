@@ -4,11 +4,11 @@
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN'>
 <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
 
-<link rel='canonical' href='http://example.org/post/cam/'>
+<link rel='canonical' href='https://htrvu.github.io/post/cam/'>
 
 <link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='CAM, Grad-CAM và Score-CAM trong CNN'>
 <meta property='og:description' content='Các phương pháp thường sử dụng để giải thích cho các dự đoán của mô hình CNN'>
-<meta property='og:url' content='http://example.org/post/cam/'>
+<meta property='og:url' content='https://htrvu.github.io/post/cam/'>
 <meta property='og:site_name' content='htrvu&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='xai' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='cam' /><meta property='article:tag' content='attention' /><meta property='article:published_time' content='2023-02-09T18:30:41&#43;07:00'/><meta property='article:modified_time' content='2023-02-09T18:30:41&#43;07:00'/>
 <meta name="twitter:title" content="CAM, Grad-CAM và Score-CAM trong CNN">
@@ -338,21 +338,20 @@
 <p><strong>Class Activation Map (CAM)</strong> là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là <strong>Attention Map</strong>.</p>
 <p>Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/intro_1.png'>
+<img style="height: 200px;" src='./images/intro_1.png'>
 <p align="center" style="margin: 0; color: #888;">
-CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog” <br>
-Nguồn: <a href="https://glassboxmedicine.files.wordpress.com/2019/06/greater-swiss-mountain-dog.jpeg">GlassBoxMedicine</a>
+CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog”
 </p>
 </div>
 <div>
 <div style="display: flex; justify-content: space-around;">
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 300px"  src='./images/intro_2.png'>
+<img style="height: 250px"  src='./images/intro_2.png'>
 <p align="center" style="margin: 0; color: #888;">
 CNN tập trung chủ yếu vào phần đầu của con chó để đưa ra xác suất mà bức ảnh thuộc class là “dog”</p>
 </div>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 300px" src='./images/intro_3.png'>
+<img style="height: 250px" src='./images/intro_3.png'>
 <p align="center" style="margin: 0; color: #888;">CNN tập trung vào con mèo khi đưa ra xác suất mà bức ảnh thuộc class “cat”/p>
 </div>
 </div>
@@ -435,7 +434,7 @@ Nguồn: <a href="https://glassboxmedicine.files.wordpress.com/2019/06/network-s
 </ul>
 <p>Grad-CAM thường cho ra kết quả CAM tốt hơn, tập trung vào đúng vùng quan trong hơn trong ảnh input khi so sánh với Default CAM. Vi dụ:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img src='./images/grad-cam_1.png'>
+<img style="width: 400px" src='./images/grad-cam_1.png'>
 <p align="center" style="margin: 0; color: #888;"> So sánh Default CAM và Grad-CAM <br>
 Nguồn: <a href="https://www.mdpi.com/electronics/electronics-10-01541/article_deploy/html/images/electronics-10-01541-g004.png](https://www.mdpi.com/electronics/electronics-10-01541/article_deploy/html/images/electronics-10-01541-g004.png">MDPI</a>
 </p>
@@ -457,7 +456,7 @@ $$</p>
 </ul>
 <p>Grad-CAM đã hoạt động rất tốt và được dùng nhiều trong việc giải thích cho CNN. Tuy nhiên, đến năm 2021 thì có 2 tác giả đã chỉ ra rằng có những trường hợp Grad-CAM cho ra kết quả không thật sự đúng, khi mà CAM được sinh ra tập trung không đúng vào các phần quan trọng. Vi dụ trong y học mà các tác giả đưa ra như sau:</p>
 <p style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px" src='./images/grad-cam_2.png'>
+<img style="height: 220px" src='./images/grad-cam_2.png'>
 </p>
 <ul>
 <li>Lý do chính dẫn đến yếu tố này là ở phép toán GAP trong việc tính $\alpha_{c,i}$. Có những tình huống mà GAP sẽ làm mất đi một số điểm nổi bật ở trong một feature map.</li>

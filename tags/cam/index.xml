@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>cam on htrvu&#39;s Blog</title>
-        <link>http://example.org/tags/cam/</link>
+        <link>https://htrvu.github.io/tags/cam/</link>
         <description>Recent content in cam on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/tags/cam/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/cam/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
-        <link>http://example.org/post/cam/</link>
+        <link>https://htrvu.github.io/post/cam/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/post/cam/</guid>
+        <guid>https://htrvu.github.io/post/cam/</guid>
         <description>Giới thiệu Class Activation Map (CAM) là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là Attention Map.
 Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</description>
         </item>

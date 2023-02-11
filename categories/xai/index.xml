@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Explainable AI on htrvu&#39;s Blog</title>
-        <link>http://example.org/categories/xai/</link>
+        <link>https://htrvu.github.io/categories/xai/</link>
         <description>Recent content in Explainable AI on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/categories/xai/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/xai/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>CAM, Grad-CAM và Score-CAM trong CNN</title>
-        <link>http://example.org/post/cam/</link>
+        <link>https://htrvu.github.io/post/cam/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/post/cam/</guid>
+        <guid>https://htrvu.github.io/post/cam/</guid>
         <description>Giới thiệu Class Activation Map (CAM) là phương pháp phổ biến trong việc giải thích sự hoạt động của CNN. Nó cho ta biết rằng CNN sẽ tập trung vào những phần nào của ảnh input để dự đoán xác suất ảnh đó thụôc về một class nào đó. Thông thường, CAM còn được gọi là Attention Map.
 Để dễ hình dung hơn về CAM, ta có 2 ví dụ như sau:</description>
         </item>
         <item>
         <title>Giới thiệu về XAI</title>
-        <link>http://example.org/post/intro-xai/</link>
+        <link>https://htrvu.github.io/post/intro-xai/</link>
         <pubDate>Thu, 09 Feb 2023 15:30:31 +0700</pubDate>
         
-        <guid>http://example.org/post/intro-xai/</guid>
+        <guid>https://htrvu.github.io/post/intro-xai/</guid>
         <description>XAI là gì? Hầu hết các mô hình AI nói chung hay Deep Learning nói riêng luôn được người ta ví như là một chiếc hộp đen (black-box). Chúng ta xây dựng các mô hình với rất nhiều layer, từ convolution cho đến fully connected, sau đó sử dụng các optimizer như Adam, RMSprop,… (hoặc nói chung chung là gradient descent) để tối ưu mô hình, tức là tìm ra bộ trọng số sao cho hàm mất mát có giá trị nhỏ nhất có thể.</description>
         </item>
         

@@ -2,49 +2,49 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Categories on htrvu&#39;s Blog</title>
-        <link>http://example.org/categories/</link>
+        <link>https://htrvu.github.io/categories/</link>
         <description>Recent content in Categories on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Computer Vision</title>
-        <link>http://example.org/categories/cv/</link>
+        <link>https://htrvu.github.io/categories/cv/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/categories/cv/</guid>
-        <description>&lt;img src="http://example.org/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
+        <guid>https://htrvu.github.io/categories/cv/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
         </item>
         <item>
         <title>Deep Learning</title>
-        <link>http://example.org/categories/dl/</link>
+        <link>https://htrvu.github.io/categories/dl/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/categories/dl/</guid>
-        <description>&lt;img src="http://example.org/categories/dl/dl.jpg" alt="Featured image of post Deep Learning" /&gt;</description>
+        <guid>https://htrvu.github.io/categories/dl/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/dl/dl.jpg" alt="Featured image of post Deep Learning" /&gt;</description>
         </item>
         <item>
         <title>Explainable AI</title>
-        <link>http://example.org/categories/xai/</link>
+        <link>https://htrvu.github.io/categories/xai/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/categories/xai/</guid>
-        <description>&lt;img src="http://example.org/categories/xai/xai.jpeg" alt="Featured image of post Explainable AI" /&gt;</description>
+        <guid>https://htrvu.github.io/categories/xai/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/xai/xai.jpeg" alt="Featured image of post Explainable AI" /&gt;</description>
         </item>
         <item>
         <title>Machine Learning</title>
-        <link>http://example.org/categories/ml/</link>
+        <link>https://htrvu.github.io/categories/ml/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://example.org/categories/ml/</guid>
-        <description>&lt;img src="http://example.org/categories/ml/ml.jpg" alt="Featured image of post Machine Learning" /&gt;</description>
+        <guid>https://htrvu.github.io/categories/ml/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/ml/ml.jpg" alt="Featured image of post Machine Learning" /&gt;</description>
         </item>
         <item>
         <title>Natual Language Processing</title>
-        <link>http://example.org/categories/nlp/</link>
+        <link>https://htrvu.github.io/categories/nlp/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://example.org/categories/nlp/</guid>
-        <description>&lt;img src="http://example.org/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
+        <guid>https://htrvu.github.io/categories/nlp/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
         </item>
         
     </channel>

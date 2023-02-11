@@ -2,104 +2,104 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Tags on htrvu&#39;s Blog</title>
-        <link>http://example.org/tags/</link>
+        <link>https://htrvu.github.io/tags/</link>
         <description>Recent content in Tags on htrvu&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 09 Feb 2023 18:30:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>attention</title>
-        <link>http://example.org/tags/attention/</link>
+        <link>https://htrvu.github.io/tags/attention/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/tags/attention/</guid>
+        <guid>https://htrvu.github.io/tags/attention/</guid>
         <description></description>
         </item>
         <item>
         <title>cam</title>
-        <link>http://example.org/tags/cam/</link>
+        <link>https://htrvu.github.io/tags/cam/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/tags/cam/</guid>
+        <guid>https://htrvu.github.io/tags/cam/</guid>
         <description></description>
         </item>
         <item>
         <title>cnn</title>
-        <link>http://example.org/tags/cnn/</link>
+        <link>https://htrvu.github.io/tags/cnn/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/tags/cnn/</guid>
+        <guid>https://htrvu.github.io/tags/cnn/</guid>
         <description></description>
         </item>
         <item>
         <title>xai</title>
-        <link>http://example.org/tags/xai/</link>
+        <link>https://htrvu.github.io/tags/xai/</link>
         <pubDate>Thu, 09 Feb 2023 18:30:41 +0700</pubDate>
         
-        <guid>http://example.org/tags/xai/</guid>
+        <guid>https://htrvu.github.io/tags/xai/</guid>
         <description></description>
         </item>
         <item>
         <title>depthwise-separable-convolution</title>
-        <link>http://example.org/tags/depthwise-separable-convolution/</link>
+        <link>https://htrvu.github.io/tags/depthwise-separable-convolution/</link>
         <pubDate>Wed, 08 Feb 2023 18:13:00 +0700</pubDate>
         
-        <guid>http://example.org/tags/depthwise-separable-convolution/</guid>
+        <guid>https://htrvu.github.io/tags/depthwise-separable-convolution/</guid>
         <description></description>
         </item>
         <item>
         <title>mobilenet</title>
-        <link>http://example.org/tags/mobilenet/</link>
+        <link>https://htrvu.github.io/tags/mobilenet/</link>
         <pubDate>Wed, 08 Feb 2023 18:13:00 +0700</pubDate>
         
-        <guid>http://example.org/tags/mobilenet/</guid>
+        <guid>https://htrvu.github.io/tags/mobilenet/</guid>
         <description></description>
         </item>
         <item>
         <title>inception</title>
-        <link>http://example.org/tags/inception/</link>
+        <link>https://htrvu.github.io/tags/inception/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
-        <guid>http://example.org/tags/inception/</guid>
+        <guid>https://htrvu.github.io/tags/inception/</guid>
         <description></description>
         </item>
         <item>
         <title>inception-resnet</title>
-        <link>http://example.org/tags/inception-resnet/</link>
+        <link>https://htrvu.github.io/tags/inception-resnet/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
-        <guid>http://example.org/tags/inception-resnet/</guid>
+        <guid>https://htrvu.github.io/tags/inception-resnet/</guid>
         <description></description>
         </item>
         <item>
         <title>skip connection</title>
-        <link>http://example.org/tags/skip-connection/</link>
+        <link>https://htrvu.github.io/tags/skip-connection/</link>
         <pubDate>Wed, 08 Feb 2023 18:03:46 +0700</pubDate>
         
-        <guid>http://example.org/tags/skip-connection/</guid>
+        <guid>https://htrvu.github.io/tags/skip-connection/</guid>
         <description></description>
         </item>
         <item>
         <title>resnet</title>
-        <link>http://example.org/tags/resnet/</link>
+        <link>https://htrvu.github.io/tags/resnet/</link>
         <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
         
-        <guid>http://example.org/tags/resnet/</guid>
+        <guid>https://htrvu.github.io/tags/resnet/</guid>
         <description></description>
         </item>
         <item>
         <title>googlenet</title>
-        <link>http://example.org/tags/googlenet/</link>
+        <link>https://htrvu.github.io/tags/googlenet/</link>
         <pubDate>Wed, 08 Feb 2023 01:59:53 +0700</pubDate>
         
-        <guid>http://example.org/tags/googlenet/</guid>
+        <guid>https://htrvu.github.io/tags/googlenet/</guid>
         <description></description>
         </item>
         <item>
         <title>vgg</title>
-        <link>http://example.org/tags/vgg/</link>
+        <link>https://htrvu.github.io/tags/vgg/</link>
         <pubDate>Wed, 08 Feb 2023 01:52:02 +0700</pubDate>
         
-        <guid>http://example.org/tags/vgg/</guid>
+        <guid>https://htrvu.github.io/tags/vgg/</guid>
         <description></description>
         </item>
         
