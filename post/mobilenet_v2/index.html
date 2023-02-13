@@ -235,8 +235,7 @@
     <li><a href="#giới-thiệu">Giới thiệu</a></li>
     <li><a href="#bàn-về-relu">Bàn về ReLU</a></li>
     <li><a href="#linear-bottleneck">Linear bottleneck</a></li>
-    <li><a href="#inverted-residual-và-expansion-factor">Inverted residual và expansion factor</a></li>
-    <li><a href="#inverted-residual-block">Inverted Residual Block</a></li>
+    <li><a href="#inverted-residual-block-và-expansion-factor">Inverted residual block và expansion factor</a></li>
     <li><a href="#kiến-trúc-mobilenetv2">Kiến trúc MobileNetV2</a></li>
     <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
@@ -312,7 +311,7 @@
 
 
                 <time class="article-time--reading">
-                    8 minute read
+                    9 minute read
                 </time>
             </div>
         
@@ -330,10 +329,12 @@
     <h2 id="giới-thiệu">Giới thiệu</h2>
 <p>Từ sự thành công của MobileNet (2017) trong việc triển khai các mô hình Deep Learning trên các thiết bị biên (smartphone, embedded,…) nhờ vào việc sử dụng hiệu quả phép toán <strong>depthwise separable convolution</strong>, nhiều nghiên cứu dựa trên hướng phát triển này đã được tiến hành.</p>
 <p>Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào MobileNet thì ta sẽ thấy ngay rằng, nó chưa có cái <strong>skip connection</strong> nào cả 😀 Đúng z, skip connection đã cho thấy được sự hiệu quả của mình trong các mô hình như ResNet, Inception-ResNet, DenseNet,… tại sao ta không thử thêm vào MobileNet? Boom, thêm ngay!</p>
-<p>MobileNetV2 được công bố với sự kế thừa từ MobileNet và bổ sung thêm skip connection 🙂 Tất nhiên là không chỉ dừng ở đó :)) Các tác giả xây dựng MobileNetV2 dựa trên các <strong>inverted residual block</strong>, nơi mà các skip connection dùng để kết nối các <strong>bottleneck layer</strong> với nhau! Hơn nữa, ta còn có một điểm rất thú vị là các bottleneck layer này sử dụng activation function là <strong>linear</strong>!</p>
+<p>MobileNetV2 được công bố với sự kế thừa từ MobileNet và bổ sung thêm skip connection. Tất nhiên là không chỉ dừng ở đó 🙂 Các tác giả xây dựng MobileNetV2 dựa trên các <strong>inverted residual block</strong>, nơi mà các skip connection dùng để kết nối các <strong>bottleneck layer</strong> với nhau! Hơn nữa, ta còn có một điểm rất thú vị là các bottleneck layer này sử dụng activation function là <strong>linear</strong>!</p>
 <p>MobileNetV2 đạt được độ chính xác cao hơn MobileNet trên tập ImageNet, với số tham số ít hơn,  lượng bộ nhớ cần dùng tại mỗi layer là ít hơn. Từ sự ra đời của MobileNetV2, người ta cũng đã phát triển các mô hình hiệu quả trong bài toán Object Detection như SSDLite, hay Semantic Segmentation như Mobile DeepLabv3</p>
 <h2 id="bàn-về-relu">Bàn về ReLU</h2>
-<p>Ta biết rằng từ khi paper AlexNet giới thiệu activation function ReLU thì nó đã trở thành một activation function rất phổ biến và được dùng thường xuyên trong các mô hình Deep Learning. Công thức của nó là $ReLU(x) = \max(x, 0)$, tức là nó sẽ “vứt” những giá trị bé hơn 0 trong input. <strong>Điều này nghĩa là ta sẽ bị mất thông tin!</strong>. Nếu input truyền vào là một channel thì ta sẽ bị mất một lượng thông tin nhỏ (hoặc có thể là lớn) trên channel đó.</p>
+<p>Ta biết rằng từ khi paper AlexNet giới thiệu activation function ReLU thì nó đã trở thành một activation function rất phổ biến và được dùng thường xuyên trong các mô hình Deep Learning với điểm mạnh quan trọng là đạo hàm của nó rất đơn giản. Công thức của ReLU là</p>
+<p>$$ReLU(x) = \max(x, 0)$$</p>
+<p>, tức là nó sẽ “vứt” những giá trị bé hơn 0 trong input. <strong>Điều này nghĩa là ta sẽ bị mất thông tin!</strong>. Nếu input truyền vào là một channel thì ta sẽ bị mất một lượng thông tin nhỏ (hoặc có thể là lớn) trên channel đó.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 250px;" src='./images/relu.png'>
 <p align="center" style="margin: 0; color: #888;">Activation function ReLU <br>
@@ -360,12 +361,10 @@ Nguồn: <a href="https://www.researchgate.net/publication/333411007/figure/fig7
 <li>Nếu bạn thắc mắc là vì sao số channel thường tăng như vậy thì trong CNN, những conv layer đầu thường sẽ học những đặc trưng đơn giản như cạnh ngang, dọc, chéo, vị trí của đối tượng trong ảnh,… càng về sau thì sẽ có các đặc trưng cụ thể, nổi bật lên của đối tượng (ví dụ như tai mèo, mắt mèo, mũi mèo,…). Do đó, càng về sau thì ta nên có càng nhiều channel đễ học được nhiều đặc trưng.</li>
 </ul>
 <h2 id="linear-bottleneck">Linear bottleneck</h2>
-<p>Đầu tiên, ta sẽ nhắc lại về bottleneck layer. Đây là dạng layer thường được dùng với mục đích là “cô đọng kiến thức” của mô hình, hay nói rõ hơn là nén lượng thông tin lại sao cho vừa giữ được thông tin và vừa tiết kiệm tài nguyên (bộ nhớ, độ phức tạp tính toán).</p>
+<p>Đầu tiên, ta sẽ nhắc lại về <strong>bottleneck layer</strong>. Đây là dạng layer thường được dùng với mục đích là “cô đọng kiến thức” của mô hình, hay nói rõ hơn là nén lượng thông tin lại sao cho vừa giữ được thông tin và vừa tiết kiệm tài nguyên (bộ nhớ, độ phức tạp tính toán).</p>
 <p>Những phát hiện về ReLU như đã đề cập là nguồn gốc của các linear bottleneck được sử dụng trong MobileNetV2.</p>
-<ul>
-<li><em>Tại sao lại là linear mà không giữ ReLU rồi tăng số channel như những block trước?</em></li>
-</ul>
-<p>Việc giảm số channel trong các layer sẽ giảm lượng tham số của mô hình, từ đó giảm được độ phức tạp tính toán. Do đó, nếu xây dựng được một kiến trúc mà số lượng channel trong mỗi layer là nhỏ thì nó sẽ rất phù hợp cho các thiết bị biên. Các tác giả hướng đến việc giữ cho số channel của input và output của các block là <strong>nhỏ</strong>, tức là số channel chưa chắc đủ nhiều để ReLU không làm mất thông tin 😜.</p>
+<p><strong>Tại sao lại là linear mà không tiếp tục dùng ReLU rồi tăng số channel như những block trước?</strong></p>
+<p>Việc giảm số channel trong các layer sẽ giảm lượng tham số của mô hình, từ đó giảm được độ phức tạp tính toán. Do đó, nếu xây dựng được một kiến trúc mà số lượng channel trong mỗi layer là nhỏ thì nó sẽ rất phù hợp cho các thiết bị biên. Các tác giả hướng đến việc giữ cho số channel của input và output của các block là <strong>nhỏ</strong>, tức là số channel chưa chắc đủ nhiều để đảm bảo rằng ReLU không làm mất thông tin 😜.</p>
 <ul>
 <li><strong>Nếu mà toàn các output có channel nhỏ như vậy thì làm sao mà mô hình đạt hiệu quả được?</strong> Lí do là vì nó là output của các <strong>bottleneck</strong> nên vẫn ok 😀</li>
 </ul>
@@ -375,13 +374,18 @@ Nguồn: <a href="https://www.researchgate.net/publication/333411007/figure/fig7
 Nguồn: <a href="https://machinethink.net/images/mobilenet-v2/LowDimensionality.png">Machine Think</a>
 </p>
 </div>
-<h2 id="inverted-residual-và-expansion-factor">Inverted residual và expansion factor</h2>
+<h2 id="inverted-residual-block-và-expansion-factor">Inverted residual block và expansion factor</h2>
 <p><strong>Inverted residual block</strong> là thành phần chính xây dựng nên MobileNetV2. Trong block này, ta sẽ áp dụng cả dethwise separable convolution, linear bottleneck và skip connection.</p>
-<p>Tuy nhiên, lưu ý rằng số channel của input và output của các block này là rất nhỏ. Qua hình ở trên thì ta thấy chúng chỉ quanh quẩn 16, 24, 32. Do đó, trước khi áp dụng depthwise separable convolution lên input thì các tác giả thực hiện <strong>giải nén</strong> lượng kiến thức trong input (input này là output của một block trước đó, nơi mà kiến thức đã được nén lại bởi linear bottleneck).</p>
+<p>Tuy nhiên, lưu ý rằng số channel của input và output của các block này là rất nhỏ. Qua hình ở trên thì ta thấy chúng chỉ quanh quẩn 16, 24, 32. Do đó, trước khi áp dụng depthwise separable convolution lên input thì các tác giả thực hiện <strong>giải nén</strong> (expansion) lượng kiến thức trong input (input này là output của một block trước đó, nơi mà kiến thức đã được nén lại bởi linear bottleneck).</p>
 <ul>
-<li>Về mặt trực giác, lí do của thao tác này có thể hiểu là ta sẽ thực hiện convolution trên thông tin đầy đủ hơn để có thể phát hiện được càng nhiều đặc trưng càng tốt).</li>
-</ul>
+<li>
+<p>Về mặt trực giác, lí do của thao tác này có thể hiểu là ta sẽ thực hiện convolution trên thông tin đầy đủ hơn để có thể phát hiện được càng nhiều đặc trưng càng tốt).</p>
+</li>
+<li>
 <p>Việc giải nén thực chất là ta sử dụng một conv layer $1 \times 1$, với số lượng filter sẽ bằng với số lượng channel của input nhân với một siêu tham số. Siêu tham số này gọi là <strong>expansion factor</strong> và được kí hiệu là $t$.</p>
+</li>
+</ul>
+<p>Tiếp đến, theo sau phép toán depthwise separable convolution thì ta sẽ sử dụng linear bottleneck để tính ra output của block.</p>
 <p>Như vậy, điểm qua các layer sẽ có trong inverted residual block sẽ bao gồm:</p>
 <p align="center">
 <img style="max-height: 150px" src='./images/inverted_residual.png'>
@@ -391,12 +395,14 @@ Nguồn: <a href="https://machinethink.net/images/mobilenet-v2/LowDimensionality
 </ul>
 <p>Tùy theo giá trị số channel $k$ và $k&rsquo;$ có bằng nhau hay không mà ta sẽ áp dụng thêm skip connection. Hơn nữa, các skip connection trong inverted residual block được dùng để <strong>nối các bottleneck layer</strong> với nhau!</p>
 <ul>
-<li>VÌ sao lại là nối bottleneck chứ không phải nối các layer khác? Output của bottleneck là các “kiến thức” đã được cô đọng, đây là những gì mà mô hình đã học được và được biểu diễn trong một không gian ít chiều hơn. Do đó, ta vừa tiết kiệm được tài nguyên và vừa liên kết được các kiến thức quan trọng với nhau.</li>
+<li><strong>VÌ sao lại là nối bottleneck chứ không phải nối các layer khác?</strong> Output của bottleneck là các “kiến thức” đã được cô đọng, đây là những gì mà mô hình đã học được và được biểu diễn trong một không gian ít chiều hơn. Do đó, ta vừa tiết kiệm được tài nguyên và vừa liên kết được các kiến thức quan trọng với nhau.</li>
 </ul>
-<p>Nói thêm một chút về inverted residual block: Nếu expansion factor của ta &lt; 1 thì block này sẽ rất giống với block trong ResNet:</p>
-<p align="center">
-<img style="max-height: 250px" src='./images/inverted_vs_residual.png'>
+<p>Trong cài đặt, tùy theo giá trị <strong>stride</strong> của depthwise conv layer mà ta sẽ áp dụng skip connection hoặc là không. Cụ thể như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px" src='./images/inverted_residual_block.png'>
+<p align="center" style="margin: 0; color: #888;">Inverted Residual Block với stride=1 (có skip connection) và stride=2 (không có)
 </p>
+</div>
 <p>Ngoài ra, ta có thể thấy trong inverted residual block thì activation được dùng cho 2 layer đầu tiên là <strong>ReLU6</strong>. Đây là một biến thể của ReLU, nó giới hạn giá trị output nằm trong đoạn $[0, 6]$ nhằm đảm bảo sự ổn định trong tính toán với số chậm động.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-width: 800px;" src='./images/relu6.png'>
@@ -404,16 +410,26 @@ Nguồn: <a href="https://machinethink.net/images/mobilenet-v2/LowDimensionality
 Nguồn: <a href="https://raw.githubusercontent.com/mmuratarat/mmuratarat.github.io/master/_posts/images/relu-6.png">Mmuratarat</a>
 </p>
 </div>
-<h2 id="inverted-residual-block">Inverted Residual Block</h2>
-<p>Như đã đề cập, các inverted residual block được sử dụng trong MobileNetV2 có thể chứa skip connection hoặc không. Điều này sẽ phụ thuộc vào giá trị stride của <strong>depthwise conv layer.</strong></p>
+<p>Để dễ hình dung hơn về inverted residual block, ta cùng xem một ví dụ cho quá trình tính toán với expansion factor là 6:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="max-height: 400px" src='./images/inverted_residual_block.png'>
-<p align="center" style="margin: 0; color: #888;">Inverted Residual Block với stride=1 (có skip connection) và stride=2 (không có)
+<img style="max-height: 250px" src='./images/inverted_ex.png'>
+<p align="center" style="margin: 0; color: #888;">Nguồn: <a href='https://machinethink.net/images/mobilenet-v2/ExpandProject@2x.ng'>Machine Think</a>
 </p>
 </div>
-<p><strong>Lưu ý.</strong> Các tác giả có đề cập thêm đến <strong>luồng truyền thông tin</strong> của MobileNetV2, yếu tố mở ra những hướng phát triển tiếp theo trong tương lai. Ta thấy rằng inverted residual block đã tạo ra được <strong>sự độc lập</strong> giữa số channel của intput/output của block và của các layer nằm bên trong block:</p>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>
+<p>Các tác giả có đề cập thêm đến <strong>luồng truyền thông tin</strong> của MobileNetV2, yếu tố mở ra những hướng phát triển tiếp theo trong tương lai. Ta thấy rằng inverted residual block đã tạo ra được <strong>sự độc lập</strong> giữa số channel của intput/output của block và của các layer nằm bên trong block:</p>
 <ul>
 <li>Phần bên trong được gọi là <strong>layer transformation</strong> với những phép biến đổi phi tuyến. Ta hoàn toàn có thể nghiên cứu thêm những cách xây dựng bộ phận này để tăng độ hiệu quả của mô hình.</li>
+</ul>
+</li>
+<li>
+<p>Nếu expansion factor của ta &lt; 1 thì block này sẽ rất giống với block trong ResNet:</p>
+  <p align="center">
+  <img style="max-height: 200px" src='./images/inverted_vs_residual.png'>
+  </p>
+</li>
 </ul>
 <h2 id="kiến-trúc-mobilenetv2">Kiến trúc MobileNetV2</h2>
 <p>MobileNetV2 được xây dựng dựa trên việc sử dụng nhiều inverted residual block. Kiến trúc tổng quan của nó như sau:</p>
