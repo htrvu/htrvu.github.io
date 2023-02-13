@@ -328,37 +328,38 @@
     <h2 id="giới-thiệu">Giới thiệu</h2>
 <p>Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:</p>
 <p style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 220px;" src='./images/shallow_deep.png'>
+<img style="max-height: 220px;" src='./images/shallow_deep.png'>
 </p>
 <p>Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</p>
 <ul>
-<li>Overfitting</li>
-<li>Vanishing/exploding gradient. Vấn đề này thì ta đã có một số cách giải quyết phổ biến như thay đổi activation function, các phương pháp khởi tạo trọng số</li>
+<li>Overfitting: Mô hình càng sâu thường sẽ càng phức tạp nên nó rất dễ bị overfitting.</li>
+<li>Vanishing/exploding gradient. Vấn đề này thì ta đã có một số cách giải quyết phổ biến như thay đổi activation function, các phương pháp khởi tạo trọng số như Xavier, He Initialization.</li>
 </ul>
-<p>Đặc biêt hơn là vấn đề <strong>degradation</strong>: Accuracy tăng dần cho đến một độ sâu nhất định thì ngừng tăng (bão hòa) rồi sau đó sẽ giảm dần.</p>
-<p><strong>Lưu ý.</strong> Nhiều trường hợp degradation không phải do overfitting gây ra.</p>
-<p>Degradation cho chúng ta thấy rằng việc tối ưu các mô hình có độ sâu lớn là không hề dễ dàng.</p>
-<p>Trong quá trình xây dựng mô hình, từ một mô hình ban đầu, ta thêm một số layer vào thì tất nhiên là ta mong rằng <strong>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</strong>. Tuy nhiên, khi xảy ra degradation thì mong muốn đó đã không thể thành sự thật được. 😀</p>
+<p>Ngoài 2 vấn đề trên, ta có một vấn đề đặc biệt hơn là <strong>degradation</strong>: Accuracy tăng dần cho đến một độ sâu nhất định thì ngừng tăng (bão hòa) rồi sau đó sẽ giảm dần.</p>
+<ul>
+<li><strong>Lưu ý.</strong> Nhiều trường hợp degradation không phải do overfitting gây ra.</li>
+</ul>
+<p>Degradation cho chúng ta thấy rằng việc tối ưu các mô hình có độ sâu lớn là không hề dễ dàng. Trong quá trình xây dựng mô hình, từ một mô hình ban đầu, sau khi thêm một số layer vào thì tất nhiên là ta mong rằng <strong>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</strong>. Tuy nhiên, khi xảy ra degradation thì mong muốn đó đã không thể thành sự thật được. 😀</p>
 <p>ResNet được công bố nhằm giải quyết vấn đề degradation đối với các mô hình có độ sâu lớn. Khi nhắc đến ResNet thì ta sẽ lập tức nghĩ đến những mô hình với độ sâu rất khủng, thậm chỉ là lên đến 100, 200 layer.</p>
 <h2 id="hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</h2>
-<p>Nhắc lại về cái mong muốn ở trên, rằng <em>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</em>, ta có thể nghĩ ngay đến một phương pháp cực kì đơn giản: các layer phía sau sẽ là <strong>identity mapping</strong>, tức là input và output của nó sẽ giống hệt nhau. Với cách làm này thì hiển nhiên là ta đạt được mong muốn rồi, vì độ hiệu quả của mô hình mới và mô hình gốc sẽ y hệt nhau.</p>
+<p>Nhắc lại về cái mong muốn ở trên, rằng mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc, ta có thể nghĩ ngay đến một phương pháp cực kì đơn giản: các layer phía sau sẽ là <strong>identity mapping</strong>, tức là input và output của nó sẽ giống nhau. Với cách làm này thì hiển nhiên là ta đạt được mong muốn rồi, vì độ hiệu quả của mô hình mới và mô hình gốc rõ ràng sẽ y hệt nhau.</p>
 <ul>
-<li>Tuy nhiên, nếu chỉ muốn ngang đó thôi thì thêm layer vào làm gì :v Ta muốn đạt được kết quả tốt hơn!</li>
+<li>Tuy nhiên, nếu chỉ dừng lại ở đó thôi thì thêm layer vào làm gì :v Ta muốn đạt được kết quả tốt hơn!</li>
 </ul>
 <p>Các tác giả của paper ResNet giới thiệu một phương pháp gọi là <strong>deep residual learning</strong> (học phần dư).</p>
 <ul>
 <li>Giả sử ta có một block <strong>B</strong> các layer, input của nó là $x$. Với một mô hình thông thường, ta sẽ “học” một hàm số đầu ra mong muốn là $f(x)$. Lúc này, ban đầu thì ta hoàn toàn chưa có một thông tin gì về $f(x)$ cả, việc “học” sẽ xuất phát từ một đại lượng ngẫu nhiên.</li>
-<li>Đối với phương pháp deep residual learning, output của block <strong>B</strong> sẽ có dạng $h(x) = x + f(x)$, và ta sẽ đi học $f(x)$. Lúc này, ta gọi $f(x)$ là <strong>residual function</strong> (hàm phần dư)</li>
+<li>Đối với phương pháp deep residual learning, output của block <strong>B</strong> sẽ có dạng $h(x) = x + f(x)$, và ta sẽ đi học $f(x)$. Lúc này, $f(x)$ được gọi là <strong>residual function</strong> (hàm phần dư)</li>
 <li>Ta có các nhận xét sau:
 <ul>
-<li>Trong deep residual learning, ta đã có sự “gợi ý” cho hàm mong muốn thông qua giá trị input $x$<strong>.</strong> Đối với thông thường thì không có sự gợi ý nào, học từ một cái hoàn toàn ngẫu nhiên.</li>
+<li>Trong deep residual learning, ta đã có sự “gợi ý” cho hàm mong muốn thông qua giá trị input $x$<strong>.</strong> Đối với thông thường thì không có sự gợi ý nào được đưa ra cả.</li>
 <li>Việc học $f(x)$ như là một hàm phần dư là <strong>dễ hơn</strong> so với việc học hàm mong muốn. Nếu identity mapping là kết quả tối ưu thì ta có luôn $f(x)=0$</li>
 <li>Về mặt bản chất, với phương pháp deep residual learning, ta đã tác động vào lớp hàm chứa hàm mong muốn, sao cho lớp mới là lớn hơn (bao gồm) lớp cũ.</li>
 </ul>
 </li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/function_space.png'>
+<img style="max-height: 250px;" src='./images/function_space.png'>
 <p align="center" style="margin: 0; color: #888;">
 Lớp hàm chứa hàm mong muốn của phương pháp thông thường và phương pháp deep residual learning <br>
 Nguồn: <a href="https://d2l.aivivn.com/_images/functionclasses.svg">Dive into AI</a>
@@ -396,7 +397,7 @@ Nguồn: <a href="https://d2l.aivivn.com/_images/residual-block.svg">Dive into A
 </li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 250px;" src='./images/basic_block.png'>
+<img style="max-height: 250px;" src='./images/basic_block.png'>
 <p align="center" style="margin: 0; color: #888;">
 Basic Residual Block và Bottleneck Residual Block
 </p>
@@ -411,12 +412,12 @@ Nguồn: <a href="https://d2l.aivivn.com/_images/resnet-block.svg">Dive into AI<
 </p>
 </div>
 <h2 id="kiến-trúc-resnet">Kiến trúc ResNet</h2>
-<p>ResNet được tạo nên bằng cách sử dụng nhiều residual block liên tiếp nhau, tương tự như những gì mà GoogLeNet hay VGG đã thực hiện, Các tác giả của paper ResNet tạo ra nhiều phiên bản ResNet khác nhau với độ sâu tăng dần.</p>
+<p>ResNet được tạo nên bằng cách sử dụng nhiều residual block liên tiếp nhau, tương tự như những gì mà GoogLeNet hay VGG đã thực hiện. Các tác giả của paper ResNet tạo ra nhiều phiên bản ResNet khác nhau với độ sâu tăng dần.</p>
 <ul>
-<li>Dựa vào số lượng layer thì ta sẽ có tên các mô hình như ResNet18 (18 layer có trọng số), ResNet34,…</li>
+<li>Dựa vào <strong>số lượng layer có trọng số</strong> thì ta sẽ có tên các mô hình như ResNet18 (18 layer có trọng số), ResNet34,…</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px;" src='./images/resnet.png'>
+<img style="max-height: 350px;" src='./images/resnet.png'>
 <p align="center" style="margin: 0; color: #888;">
 Các phiên bản ResNet
 </p>
