@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
-<title>Inception-Reset (2016)</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình MobileNet V2'>
+<title>MobileNet V2 (2019)</title>
 
-<link rel='canonical' href='https://htrvu.github.io/post/inception-resnet/'>
+<link rel='canonical' href='https://htrvu.github.io/post/mobilenet_v2/'>
 
-<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='Inception-Reset (2016)'>
-<meta property='og:description' content='Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception'>
-<meta property='og:url' content='https://htrvu.github.io/post/inception-resnet/'>
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='MobileNet V2 (2019)'>
+<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình MobileNet V2'>
+<meta property='og:url' content='https://htrvu.github.io/post/mobilenet_v2/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='inception-resnet' /><meta property='article:tag' content='inception' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-08T18:03:46&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T18:03:46&#43;07:00'/>
-<meta name="twitter:title" content="Inception-Reset (2016)">
-<meta name="twitter:description" content="Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='mobilenet' /><meta property='article:tag' content='inverted-residual' /><meta property='article:tag' content='depthwise-separable-convolution' /><meta property='article:tag' content='skip-connection' /><meta property='article:published_time' content='2023-02-13T11:32:55&#43;07:00'/><meta property='article:modified_time' content='2023-02-13T11:32:55&#43;07:00'/>
+<meta name="twitter:title" content="MobileNet V2 (2019)">
+<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình MobileNet V2">
     <link rel="shortcut icon" href="/neural.png" />
 
     </head>
@@ -233,12 +233,12 @@
             <nav id="TableOfContents">
   <ol>
     <li><a href="#giới-thiệu">Giới thiệu</a></li>
-    <li><a href="#kiến-trúc-mô-hình">Kiến trúc mô hình</a>
-      <ol>
-        <li><a href="#inception-resnet-v1">Inception-ResNet V1</a></li>
-        <li><a href="#inception-resnet-v2">Inception-ResNet V2</a></li>
-      </ol>
-    </li>
+    <li><a href="#bàn-về-relu">Bàn về ReLU</a></li>
+    <li><a href="#linear-bottleneck">Linear bottleneck</a></li>
+    <li><a href="#inverted-residual-và-expansion-factor">Inverted residual và expansion factor</a></li>
+    <li><a href="#inverted-residual-block">Inverted Residual Block</a></li>
+    <li><a href="#kiến-trúc-mobilenetv2">Kiến trúc MobileNetV2</a></li>
+    <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
 </nav>
@@ -271,12 +271,12 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/inception-resnet/">Inception-Reset (2016)</a>
+            <a href="/post/mobilenet_v2/">MobileNet V2 (2019)</a>
         </h2>
     
         
         <h3 class="article-subtitle">
-            Giới thiệu mô hình Inception-ResNet, sự kết hợp giữa ResNet và Inception
+            Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình MobileNet V2
         </h3>
         
     </div>
@@ -297,7 +297,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">Feb 08, 2023</time>
+                <time class="article-time--published">Feb 13, 2023</time>
             </div>
         
 
@@ -312,7 +312,7 @@
 
 
                 <time class="article-time--reading">
-                    1 minute read
+                    8 minute read
                 </time>
             </div>
         
@@ -328,64 +328,115 @@
     
     
     <h2 id="giới-thiệu">Giới thiệu</h2>
-<p>Các mô hình thuộc họ Inception-ResNet được phát triển dựa trên ý tưởng là kết hợp <strong>skip connection</strong> vào các <strong>Inception block</strong> (các ý tưởng từ ResNet và GoogLeNet). Vì paper này chỉ mang tính thực nghiệm là chính nên mình sẽ không trình bày chi tiết 👀.</p>
-<h2 id="kiến-trúc-mô-hình">Kiến trúc mô hình</h2>
-<h3 id="inception-resnet-v1">Inception-ResNet V1</h3>
-<p>Về mặt tổng quan, Inception-ResNet V1 có kiến trúc như sau:</p>
-<div style="display: flex; justify-content: space-around;">
+<p>Từ sự thành công của MobileNet (2017) trong việc triển khai các mô hình Deep Learning trên các thiết bị biên (smartphone, embedded,…) nhờ vào việc sử dụng hiệu quả phép toán <strong>depthwise separable convolution</strong>, nhiều nghiên cứu dựa trên hướng phát triển này đã được tiến hành.</p>
+<p>Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào MobileNet thì ta sẽ thấy ngay rằng, nó chưa có cái <strong>skip connection</strong> nào cả 😀 Đúng z, skip connection đã cho thấy được sự hiệu quả của mình trong các mô hình như ResNet, Inception-ResNet, DenseNet,… tại sao ta không thử thêm vào MobileNet? Boom, thêm ngay!</p>
+<p>MobileNetV2 được công bố với sự kế thừa từ MobileNet và bổ sung thêm skip connection 🙂 Tất nhiên là không chỉ dừng ở đó :)) Các tác giả xây dựng MobileNetV2 dựa trên các <strong>inverted residual block</strong>, nơi mà các skip connection dùng để kết nối các <strong>bottleneck layer</strong> với nhau! Hơn nữa, ta còn có một điểm rất thú vị là các bottleneck layer này sử dụng activation function là <strong>linear</strong>!</p>
+<p>MobileNetV2 đạt được độ chính xác cao hơn MobileNet trên tập ImageNet, với số tham số ít hơn,  lượng bộ nhớ cần dùng tại mỗi layer là ít hơn. Từ sự ra đời của MobileNetV2, người ta cũng đã phát triển các mô hình hiệu quả trong bài toán Object Detection như SSDLite, hay Semantic Segmentation như Mobile DeepLabv3</p>
+<h2 id="bàn-về-relu">Bàn về ReLU</h2>
+<p>Ta biết rằng từ khi paper AlexNet giới thiệu activation function ReLU thì nó đã trở thành một activation function rất phổ biến và được dùng thường xuyên trong các mô hình Deep Learning. Công thức của nó là $ReLU(x) = \max(x, 0)$, tức là nó sẽ “vứt” những giá trị bé hơn 0 trong input. <strong>Điều này nghĩa là ta sẽ bị mất thông tin!</strong>. Nếu input truyền vào là một channel thì ta sẽ bị mất một lượng thông tin nhỏ (hoặc có thể là lớn) trên channel đó.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 600px"  src='./images/in_res_1.png'>
-<p align="center" style="margin: 0; color: #888;">
-Kiến trúc Inception-ResNet V1</p>
+<img style="max-height: 250px;" src='./images/relu.png'>
+<p align="center" style="margin: 0; color: #888;">Activation function ReLU <br>
+Nguồn: <a href="https://www.researchgate.net/publication/333411007/figure/fig7/AS:766785846525952@1559827400204/ReLU-activation-function.png">Research Gate</a>
+</p>
 </div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 600px" src='./images/stem_v1.png'>
-<p align="center" style="margin: 0; color: #888;">
-Stem của Inception-ResNet V1</p>
-</div>
-</div>
-<p>Ta sẽ đề cập đến các loại Inception-ResNet block và Reduction:</p>
+<p><strong>Vậy tại sao trước giờ ReLU vẫn luôn được sử dụng?</strong></p>
 <ul>
-<li><strong>Inception-ResNet block:</strong> Ta thấy rằng phần “Inception” trong các block này là đơn giản hơn khá nhiều so với các Inception block nguyên mẫu.</li>
+<li>Điều quan trọng là chúng ta có rất nhiều channel và giữa các channel này có những mối liên hệ nhất định. Do đó, việc mất thông tin ở một channel này có thể được channel khác bù đắp. Như vậy là ok.</li>
 </ul>
-<div style="display: flex; justify-content: space-around;">
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_a.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-A V1</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_b.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-B V1</p>
-</div>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_c.png'>
-<p align="center" style="margin: 0; color: #888;">
-Inception-ResNet-C V1</p>
-</div>
-</div>
+<p>Để minh họa cho yếu tố làm mất thông tin, các tác giả đưa ra ví dụ sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-width: 800px;" src='./images/relu_lost.png'>
+</p>
 <ul>
-<li><strong>Reduction:</strong> Chúng thực hiện nhiệm vụ giảm kích thước (width, height) của các tensor đi một nửa. Kiến trúc của chúng rất giống với các Inception block</li>
+<li>Ban đầu, input của ta ở không gian 2 chiều. Qua phép biến đổi bằng một ma trận $T$ bất kì và áp dụng ReLU, ta có các output ở các không gian có số chiều khác nhau là 2, 3, 5, 15, 30. Để xác định xem thông tin có bị mất hay không, ta chiếu các output này về lại không gian 2 chiều bằng cách dùng ma trận nghịch đảo $T^{-1}$. Khi đó, kết quả thu được là các hình tương ứng ở trên. Rõ ràng là tính chất ban đầu của input đã bị mất.</li>
 </ul>
-<div style="display: flex; justify-content: space-around;">
+<p>Gỉa sử từ một input $D_F \times D_F \times M$, qua <strong>một số layer</strong> thì ta có output $D_F \times D_F \times N$ và ta chuẩn bị áp dụng ReLU cho output. Các tác giả chứng minh được rằng ReLU sẽ không làm mất thông tin ban đầu của input nếu như $N &lt; M$. Điều này có thể phát biểu bằng lời là nếu một input có thể được embedded (hay là nén) vào một không gian ít chiều hơn (số channel ít hơn) thì việc áp dụng ReLU lên kết quả nén đó sẽ không làm mất thông tin.</p>
+<ul>
+<li>Ở ví dụ phía trên thì ta đã có $N \geq M$ và thông tin thật sự là đã bị mất.</li>
+</ul>
+<p>Từ nhận xét trên, ta thấy rằng không phải lúc nào xài ReLU cũng tốt. Nếu ngẫm lại, trong các kiến trúc như VGG, ResNet, Inception, MobileNet thì số channel của chúng <em>hầu như</em> luôn tăng qua từng block (chính là cụm “một số layer”) nhưng activation function được sử dụng luôn là ReLU. Điều này là vì chúng có rất nhiều channel (tăng theo bội 2) nên mọi thứ vẫn ổn 😀</p>
+<ul>
+<li>Nếu bạn thắc mắc là vì sao số channel thường tăng như vậy thì trong CNN, những conv layer đầu thường sẽ học những đặc trưng đơn giản như cạnh ngang, dọc, chéo, vị trí của đối tượng trong ảnh,… càng về sau thì sẽ có các đặc trưng cụ thể, nổi bật lên của đối tượng (ví dụ như tai mèo, mắt mèo, mũi mèo,…). Do đó, càng về sau thì ta nên có càng nhiều channel đễ học được nhiều đặc trưng.</li>
+</ul>
+<h2 id="linear-bottleneck">Linear bottleneck</h2>
+<p>Đầu tiên, ta sẽ nhắc lại về bottleneck layer. Đây là dạng layer thường được dùng với mục đích là “cô đọng kiến thức” của mô hình, hay nói rõ hơn là nén lượng thông tin lại sao cho vừa giữ được thông tin và vừa tiết kiệm tài nguyên (bộ nhớ, độ phức tạp tính toán).</p>
+<p>Những phát hiện về ReLU như đã đề cập là nguồn gốc của các linear bottleneck được sử dụng trong MobileNetV2.</p>
+<ul>
+<li><em>Tại sao lại là linear mà không giữ ReLU rồi tăng số channel như những block trước?</em></li>
+</ul>
+<p>Việc giảm số channel trong các layer sẽ giảm lượng tham số của mô hình, từ đó giảm được độ phức tạp tính toán. Do đó, nếu xây dựng được một kiến trúc mà số lượng channel trong mỗi layer là nhỏ thì nó sẽ rất phù hợp cho các thiết bị biên. Các tác giả hướng đến việc giữ cho số channel của input và output của các block là <strong>nhỏ</strong>, tức là số channel chưa chắc đủ nhiều để ReLU không làm mất thông tin 😜.</p>
+<ul>
+<li><strong>Nếu mà toàn các output có channel nhỏ như vậy thì làm sao mà mô hình đạt hiệu quả được?</strong> Lí do là vì nó là output của các <strong>bottleneck</strong> nên vẫn ok 😀</li>
+</ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_reduce_a.png'>
-<p align="center" style="margin: 0; color: #888;">
-Reduction-A</p>
+<img style="max-width: 800px;" src='./images/num_channels.png'>
+<p align="center" style="margin: 0; color: #888;">Số channel trong các layer của MobileNetV2<br>
+Nguồn: <a href="https://machinethink.net/images/mobilenet-v2/LowDimensionality.png">Machine Think</a>
+</p>
 </div>
+<h2 id="inverted-residual-và-expansion-factor">Inverted residual và expansion factor</h2>
+<p><strong>Inverted residual block</strong> là thành phần chính xây dựng nên MobileNetV2. Trong block này, ta sẽ áp dụng cả dethwise separable convolution, linear bottleneck và skip connection.</p>
+<p>Tuy nhiên, lưu ý rằng số channel của input và output của các block này là rất nhỏ. Qua hình ở trên thì ta thấy chúng chỉ quanh quẩn 16, 24, 32. Do đó, trước khi áp dụng depthwise separable convolution lên input thì các tác giả thực hiện <strong>giải nén</strong> lượng kiến thức trong input (input này là output của một block trước đó, nơi mà kiến thức đã được nén lại bởi linear bottleneck).</p>
+<ul>
+<li>Về mặt trực giác, lí do của thao tác này có thể hiểu là ta sẽ thực hiện convolution trên thông tin đầy đủ hơn để có thể phát hiện được càng nhiều đặc trưng càng tốt).</li>
+</ul>
+<p>Việc giải nén thực chất là ta sử dụng một conv layer $1 \times 1$, với số lượng filter sẽ bằng với số lượng channel của input nhân với một siêu tham số. Siêu tham số này gọi là <strong>expansion factor</strong> và được kí hiệu là $t$.</p>
+<p>Như vậy, điểm qua các layer sẽ có trong inverted residual block sẽ bao gồm:</p>
+<p align="center">
+<img style="max-height: 150px" src='./images/inverted_residual.png'>
+</p>
+<ul>
+<li><strong>Lưu ý.</strong> Layer “linear 1x1 conv2d” chính là <strong>linear bottleneck</strong>.</li>
+</ul>
+<p>Tùy theo giá trị số channel $k$ và $k&rsquo;$ có bằng nhau hay không mà ta sẽ áp dụng thêm skip connection. Hơn nữa, các skip connection trong inverted residual block được dùng để <strong>nối các bottleneck layer</strong> với nhau!</p>
+<ul>
+<li>VÌ sao lại là nối bottleneck chứ không phải nối các layer khác? Output của bottleneck là các “kiến thức” đã được cô đọng, đây là những gì mà mô hình đã học được và được biểu diễn trong một không gian ít chiều hơn. Do đó, ta vừa tiết kiệm được tài nguyên và vừa liên kết được các kiến thức quan trọng với nhau.</li>
+</ul>
+<p>Nói thêm một chút về inverted residual block: Nếu expansion factor của ta &lt; 1 thì block này sẽ rất giống với block trong ResNet:</p>
+<p align="center">
+<img style="max-height: 250px" src='./images/inverted_vs_residual.png'>
+</p>
+<p>Ngoài ra, ta có thể thấy trong inverted residual block thì activation được dùng cho 2 layer đầu tiên là <strong>ReLU6</strong>. Đây là một biến thể của ReLU, nó giới hạn giá trị output nằm trong đoạn $[0, 6]$ nhằm đảm bảo sự ổn định trong tính toán với số chậm động.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="height: 350px" src='./images/v1_reduce_b.png'>
-<p align="center" style="margin: 0; color: #888;">
-Reduction-B</p>
+<img style="max-width: 800px;" src='./images/relu6.png'>
+<p align="center" style="margin: 0; color: #888;">Activation function RELU6<br>
+Nguồn: <a href="https://raw.githubusercontent.com/mmuratarat/mmuratarat.github.io/master/_posts/images/relu-6.png">Mmuratarat</a>
+</p>
 </div>
+<h2 id="inverted-residual-block">Inverted Residual Block</h2>
+<p>Như đã đề cập, các inverted residual block được sử dụng trong MobileNetV2 có thể chứa skip connection hoặc không. Điều này sẽ phụ thuộc vào giá trị stride của <strong>depthwise conv layer.</strong></p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px" src='./images/inverted_residual_block.png'>
+<p align="center" style="margin: 0; color: #888;">Inverted Residual Block với stride=1 (có skip connection)) và stride=2 (không có)
+</p>
 </div>
-<h3 id="inception-resnet-v2">Inception-ResNet V2</h3>
-<p>Phiên bản thứ hai của Inception-ResNet có kiến trúc tổng thể giống hệt với phiên bản đầu tiên, ta chỉ có một số thay đổi ở các block Inception-ResNet và Reduction</p>
+<p><strong>Lưu ý.</strong> Các tác giả có đề cập thêm đến <strong>luồng truyền thông tin</strong> của MobileNetV2, yếu tố mở ra những hướng phát triển tiếp theo trong tương lai. Ta thấy rằng inverted residual block đã tạo ra được <strong>sự độc lập</strong> giữa số channel của intput/output của block và của các layer nằm bên trong block:</p>
+<ul>
+<li>Phần bên trong được gọi là <strong>layer transformation</strong> với những phép biến đổi phi tuyến. Ta hoàn toàn có thể nghiên cứu thêm những cách xây dựng bộ phận này để tăng độ hiệu quả của mô hình.</li>
+</ul>
+<h2 id="kiến-trúc-mobilenetv2">Kiến trúc MobileNetV2</h2>
+<p>MobileNetV2 được xây dựng dựa trên việc sử dụng nhiều inverted residual block. Kiến trúc tổng quan của nó như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px" src='./images/mobilenet_v2.png'>
+</p>
+<p>Trong đó:</p>
+<ul>
+<li>$t$ là expansion factor.</li>
+<li>$c$ là số output channel của phần bottleneck trong inverted residual block.</li>
+<li>$n$ là số lần sử dụng block.</li>
+<li>$s$ là stride của <em>block đầu tiên</em> trong dãy $t$ block liên tiếp nhau, các block còn lại trong dãy có stride 1.</li>
+<li>Toàn bộ filter được sử dụng đều là $3 \times 3$.</li>
+</ul>
+<h2 id="cài-đặt">Cài đặt</h2>
+<p>Các bạn có thể tham khảo phần cài đặt MobileNetV2 bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
+    >sau</a>.</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
-<li>Paper Inception-ResNet: <a class="link" href="https://arxiv.org/abs/1602.07261"  target="_blank" rel="noopener"
-    >https://arxiv.org/abs/1602.07261</a></li>
+<li>Paper MobileNetV2: <a class="link" href="https://arxiv.org/abs/1801.04381"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1801.04381</a></li>
+<li><a class="link" href="https://machinethink.net/blog/mobilenet-v2/"  target="_blank" rel="noopener"
+    >MachineThink, MobileNet version 2</a></li>
 </ul>
 
 </section>
@@ -397,9 +448,11 @@ Reduction-B</p>
         
             <a href="/tags/cnn/">cnn</a>
         
-            <a href="/tags/inception-resnet/">inception-resnet</a>
+            <a href="/tags/mobilenet/">mobilenet</a>
         
-            <a href="/tags/inception/">inception</a>
+            <a href="/tags/inverted-residual/">inverted-residual</a>
+        
+            <a href="/tags/depthwise-separable-convolution/">depthwise-separable-convolution</a>
         
             <a href="/tags/skip-connection/">skip connection</a>
         
@@ -446,6 +499,19 @@ Reduction-B</p>
             
                 
 <article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
     <a href="/post/densenet/">
         
         
@@ -459,51 +525,38 @@ Reduction-B</p>
             
                 
 <article class="">
-    <a href="/post/resnet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Resnet (2015)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/post/googlenet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">GoogLeNet - Inception V1 (2014)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/post/mobilenet_v2/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">MobileNet V2 (2019)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
     <a href="/post/cam/">
         
         
 
         <div class="article-details">
             <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/inception-resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Inception-Reset (2016)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Resnet (2015)</h2>
         </div>
     </a>
 </article>

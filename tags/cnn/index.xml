@@ -6,7 +6,16 @@
         <description>Recent content in cnn on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 11 Feb 2023 18:09:08 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/cnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 13 Feb 2023 11:32:55 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/cnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>MobileNet V2 (2019)</title>
+        <link>https://htrvu.github.io/post/mobilenet_v2/</link>
+        <pubDate>Mon, 13 Feb 2023 11:32:55 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/mobilenet_v2/</guid>
+        <description>Giới thiệu Từ sự thành công của MobileNet (2017) trong việc triển khai các mô hình Deep Learning trên các thiết bị biên (smartphone, embedded,…) nhờ vào việc sử dụng hiệu quả phép toán depthwise separable convolution, nhiều nghiên cứu dựa trên hướng phát triển này đã được tiến hành.
+Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào MobileNet thì ta sẽ thấy ngay rằng, nó chưa có cái skip connection nào cả 😀 Đúng z, skip connection đã cho thấy được sự hiệu quả của mình trong các mô hình như ResNet, Inception-ResNet, DenseNet,… tại sao ta không thử thêm vào MobileNet?</description>
+        </item>
+        <item>
         <title>DenseNet (2018)</title>
         <link>https://htrvu.github.io/post/densenet/</link>
         <pubDate>Sat, 11 Feb 2023 18:09:08 +0700</pubDate>
