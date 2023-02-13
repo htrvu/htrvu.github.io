@@ -329,27 +329,27 @@
 <ul>
 <li>Thay đổi (tăng, giảm) kích thước của conv filter</li>
 <li>Thay đổi stride, padding của conv layer</li>
-<li>Train và test trên các input với nhiều kích thước ảnh khác nhau</li>
+<li>Train và test trên các input với nhiều độ phân giải (resolution) ảnh khác nhau</li>
 </ul>
 <p>Trong năm 2014, VGG là một trong những kết quả nghiên cứu nổi bật nhất, và nó tập trung vào một vấn đề khác với các hướng trên là <strong>độ sâu</strong> (depth, hay là số layer) của mô hình. VGG đã đạt được các kết quả rất tốt trên tập ImageNet và các dataset khác, trong các task như classification, localization,…</p>
 <p>Ngoài ra, ta có thể đưa ra nhận xét như sau về AlexNet:</p>
 <ul>
 <li>Dù AlexNet đã chứng minh được CNN có thể đạt độ hiệu quả tốt, nó lại không cung cấp một <strong>khuôn mẫu</strong> nào cho việc nghiên cứu, thiết kế các mạng mới.</li>
-<li>Theo thời gian, các nhà nghiên cứu đã thay đổi suy nghĩ từ quy mô những neuron riêng lẻ sang các tầng, rồi sau đó là các <strong>khối</strong> gồm các tầng <strong>lặp lại theo khuôn mẫu</strong>.</li>
+<li>Theo thời gian, các nhà nghiên cứu đã thay đổi suy nghĩ từ quy mô những neuron riêng lẻ sang các tầng, rồi sau đó là các <strong>khối</strong> (block) gồm các tầng <strong>lặp lại theo khuôn mẫu</strong>.</li>
 </ul>
-<p>Kiến trúc của VGG là một trong những kiến trúc phổ biến đầu tiên được xây dựng theo tiêu chí như vậy.</p>
+<p>Kiến trúc của VGG là một trong những kiến trúc phổ biến đầu tiên được xây dựng theo ý tưởng như vậy.</p>
 <h2 id="vgg-block">VGG block</h2>
-<p>Điểm nổi bật của VGG là ta chỉ dùng duy nhất một kích thước filter trong mọi conv layer là 3 x 3, và ta dần tăng độ sâu của mô hình bằng các conv layer. Hơn nữa, ta còn áp dụng nhiều conv layer <strong>liền nhau</strong> rồi mới dùng đến max pooling (ta có thể gọi đây là <strong>VGG block</strong>)</p>
+<p>Điểm nổi bật của VGG là ta chỉ dùng duy nhất một kích thước filter trong mọi conv layer là $3 \times 3$, và ta dần tăng độ sâu của mô hình bằng các conv layer. Hơn nữa, ta còn áp dụng nhiều conv layer <strong>liền nhau</strong> rồi mới dùng đến max pooling. Ta có thể gọi một block gồm những layer như thế là <strong>VGG block</strong>.</p>
 <ul>
-<li>Các tác giả có đề cập đến một vấn đề cho cách áp dụng này như sau: <em>Việc dùng nhiều conv layer 3 x 3 liền nhau như vậy so với dùng một conv layer với filter lớn hơn (ví dụ 7 x 7) như hầu hết các mô hình đã được công bố vào thời điểm trước đó thì có gì “tốt” hơn, khi mà features map sau cùng ta thu được có thể có cùng kích thước?</em></li>
+<li>Các tác giả có đề cập đến một vấn đề cho cách áp dụng này như sau: Việc dùng nhiều conv layer 3 x 3 liền nhau như vậy so với dùng một conv layer với filter lớn hơn (ví dụ 7 x 7) như hầu hết các mô hình đã được công bố vào thời điểm trước đó thì có gì “tốt” hơn, khi mà features map sau cùng ta thu được có thể có cùng kích thước?</li>
 <li>Để trả lời, ta có 2 ý chính như sau:
 <ul>
 <li>Giảm số lượng tham số của mô hình (đặt tính là biết nhaa 😜)</li>
-<li>Dùng nhiều conv layer thì ta có khả năng sẽ phát hiện được nhiều feature có ích hơn, từ đó decision function sẽ ok hơn.</li>
+<li>Dùng nhiều conv layer thì ta có khả năng sẽ phát hiện được nhiều feature có ích hơn (hai conv layer sẽ tạo thành một &ldquo;hàm hợp&rdquo;), từ đó decision function sẽ ok hơn.</li>
 </ul>
 </li>
 </ul>
-<p>Ngoài ra, VGG block sử dụng padding 1 (giữ nguyên kích thước input), theo sau đó là max pooling với pool size 2 x 2 và stride 2 (giảm kích thước input đi một nửa). Kiến trúc của nó có thể được mô tả như hình bên dưới:</p>
+<p>Ngoài ra, VGG block sử dụng padding 1 (giữ nguyên kích thước input), theo sau đó là max pooling với pool size $2 \times 2$ và stride 2 (giảm kích thước input đi một nửa). Kiến trúc của nó có thể được mô tả như hình bên dưới:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height:220px;" src='./images/vgg_block.png'>
 <p align="center" style="margin: 0; color: #888">
@@ -357,9 +357,9 @@ VGG block <br>
 Nguồn: <a style="display: inline;" href="https://d2l.aivivn.com/_images/vgg.svg](https://d2l.aivivn.com/_images/vgg.svg">Dive intro AI</a>
 </p>
 </div>
-<p>Trong các bài toán áp dụng VGG, đôi khi ta có thể gặp VGG block với một conv layer 1 x 1 ở trước max pooling. Block dạng này thường được sử dụng với mục đích chính là bổ sung thêm một phép biến đổi tuyến tính nữa. Tuy nhiên, trong thực nghiệm thì các tác giả đã cho thấy rằng việc sử dụng block dạng này không hiệu quả hơn so với toàn các conv layer với filter 3 x 3 (cùng số lượng layer).</p>
+<p>Trong các bài toán áp dụng VGG, đôi khi ta có thể gặp VGG block với một conv layer $1 \times 1$ ở trước max pooling. Block dạng này thường được sử dụng với mục đích chính là bổ sung thêm một phép biến đổi tuyến tính nữa. Tuy nhiên, trong thực nghiệm thì các tác giả đã cho thấy rằng việc sử dụng block dạng này không hiệu quả hơn so với toàn các conv layer với filter $3 \times 3$ (cùng số lượng layer).</p>
 <h2 id="kiến-trúc-vgg">Kiến trúc VGG</h2>
-<p>Bằng cách kết hợp nhiều VGG block với nhau, các tác giả đã tạo ra nhiều phiên bản VGG khác nhau, với số layer có trọng số là trong đoạn 11 - 19. Trong paper VGG, các tác giả đã đưa ra 6 kiến trúc với độ sâu tăng dần và tiến hành so sánh với nhau. Điểm chung của các kiến trúc này là phần fully connected đều có 3 layer, và toàn bộ layer đều sử dụng activation <strong>ReLU.</strong></p>
+<p>Bằng cách kết hợp nhiều <strong>VGG block</strong> với nhau, các tác giả đã tạo ra nhiều phiên bản VGG khác nhau, với số layer có trọng số là trong đoạn 11 - 19. Trong paper VGG, ta có 6 kiến trúc với độ sâu tăng dần và tiến hành so sánh với nhau. Điểm chung của các kiến trúc này là phần fully connected đều có 3 layer, và toàn bộ layer đều sử dụng activation <strong>ReLU.</strong></p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img src='./images/vgg_versions.png'>
 <p align="center" style="margin: 0; color: #888">
@@ -368,11 +368,12 @@ Các phiên bản VGG
 </div>
 <p>Ta có một số nhận xét như sau:</p>
 <ul>
-<li>Số lượng conv layer trong các VGG block của các phiên bản là tăng dần. Để ý đến B, C và D thì:
+<li>Số lượng conv layer trong các VGG block của các phiên bản là tăng dần.</li>
+<li>Để ý đến B, C và D thì:
 <ul>
-<li>C = B + conv layer 1 x 1</li>
-<li>D = C + đổi conv layer 1 x 1 thành 3 x 3</li>
-<li>Khi test, ta có B &lt; C &lt; D. Do đó, việc thêm phép biến đổi tuyến tính bằng conv layer 1 x 1 giúp mô hình hoạt động tốt hơn, nhưng nó vẫn không bằng với việc là ta thêm luôn conv layer 3 x 3.</li>
+<li>C = B + conv layer $1 \times 1$ trong mỗi VGG block</li>
+<li>D = C + đổi conv layer $1 \times 1$ thành $3 \times 3$</li>
+<li>Khi thực nghiệm, ta có B &lt; C &lt; D. Do đó, việc thêm phép biến đổi tuyến tính bằng conv layer $1 \times 1$ giúp mô hình hoạt động tốt hơn, nhưng nó vẫn không bằng với việc là ta thêm luôn conv layer $3 \times 3$ 🤔.</li>
 </ul>
 </li>
 <li>Độ rộng (số channel) trong từng block được tăng theo <strong>bội 2</strong>. Ý tưởng này được sử dụng rất rộng rãi trong thời điểm này và cả về sau</li>
@@ -388,7 +389,7 @@ Nguồn: <a href="https://miro.medium.com/max/827/1*UeAhoKM0kJfCPA03wt5H0A.png">
 </div>
 <h2 id="cài-đặt">Cài đặt</h2>
 <p>Các bạn có thể tham khảo phần cài đặt VGG bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
-    >sau</a></p>
+    >sau</a>.</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li>Paper VGG: <a class="link" href="https://arxiv.org/abs/1409.1556"  target="_blank" rel="noopener"
