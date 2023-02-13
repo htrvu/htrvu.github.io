@@ -320,7 +320,7 @@
 
 
                 <time class="article-time--reading">
-                    8 minute read
+                    7 minute read
                 </time>
             </div>
         
@@ -349,11 +349,7 @@
 <li>Cung cấp hai siêu tham số cho phép ta điều chỉnh trade-off giữa độ chính xác và độ trễ, kích thước mô hình: width multiplier (liên quan đến số channel trong từng layer) và resolution multiplier (width và height trong từng layer)</li>
 </ul>
 <h2 id="depthwise-separable-convolutions">Depthwise separable convolutions</h2>
-<p>MobileNet được xây dựng từ các layer convolution khá đặc biệt, chúng được gọi là <strong>depthwise separable convolutions.</strong></p>
-<ul>
-<li><em>Dạng layer này đã được giới thiệu trước đó và ứng dụng vào mô hình Xception, một phiên bản cải tiến của InceptionV3.</em></li>
-</ul>
-<p>Depthwise separable convolution được tạo ra từ hai phép toán:</p>
+<p>MobileNet được xây dựng từ các layer convolution khá đặc biệt, chúng được gọi là <strong>depthwise separable convolutions.</strong> Depthwise separable convolution được tạo ra từ hai phép toán:</p>
 <ul>
 <li><strong>Depthwise convolution:</strong> Áp dụng từng filter cho từng channel của input. Nếu input có bao nhiêu channel thì ta sẽ có bấy nhiêu filter.</li>
 <li><strong>Pointwise convolution:</strong> Đây thực chất là convolution layer thông thường với filter 1 x 1. Nó được dùng để tổng hợp các kết quả từ phép toán depthwise convolution và tính ra output, thông qua các phép toán tổ hợp tuyến tính.</li>
@@ -368,7 +364,7 @@ Nguồn: <a href="https://www.researchgate.net/publication/358585116/figure/fig1
 <ul>
 <li><strong>Convolution thông thường:</strong> Mỗi filter sẽ tương tác với toàn bộ channel của input.
 <ul>
-<li>Giả sử input của ta là $D_F \times D_F \times M$, một filter $3 \times 3$ được áp dụng thì filter sẽ trở thành $3 \times 3 \times M$, ta thực hiện convolution trên từng channel và sau đó cộng $M$ ma trận lại với nhau, thu được kết quả $D_F \times D_F$. Nếu dùng $N$ filter thì ta sẽ có kết quả cuối cùng là $D_F \times D_F \times N$</li>
+<li>Giả sử input của ta là $D_F \times D_F \times M$, một filter $3 \times 3$ được áp dụng thì filter này sẽ trở thành một tensor với shape $3 \times 3 \times M$, ta thực hiện convolution trên từng channel và sau đó cộng $M$ ma trận lại với nhau, thu được kết quả $D_F \times D_F$. Nếu sử dụng $N$ filter để tính thì ta sẽ có kết quả cuối cùng là $D_F \times D_F \times N$.</li>
 </ul>
 </li>
 <li><strong>Depthwise separable convolution:</strong> Ban đầu, các channel được tính toán độc lập với từng filter riêng, sau đó mới kết hợp lại sau nhờ vào pointwise convolution.
@@ -392,7 +388,7 @@ Nguồn: <a href="https://www.researchgate.net/publication/358585116/figure/fig1
 <p>Giả sử input của ta là feature maps $\bold{F}: D_F \times D_F \times M$, output cuối cùng là $\bold{G}: D_F \times D_F \times N$.</p>
 <ul>
 <li>
-<p>Với convolution thông thường:
+<p><strong>Với convolution thông thường:</strong>
 Giả sử ta dùng $N$ filter $\bold{K}: D_K \times D_K$, stride là 1, padding sao cho kích thước width và height không đổi. Khi đó, độ phức tạp tính toán sẽ là</p>
 <p>$$
 O_1 = D_K \times D_K \times D_F \times D_F \times M \times N
@@ -400,7 +396,7 @@ $$</p>
 <p>, vì với mỗi filter thì: mỗi lần tính toán ta phải thực hiện $D_K \times D_K$ phép toán nhân, sau đó cộng chúng lại; ta tính tại $D_F \times D_F$ vị trí trên $M$ channel của input, và ta sử dụng $N$ filter.</p>
 </li>
 <li>
-<p>Với depthwise separable convolution:
+<p><strong>Với depthwise separable convolution:</strong>
 Ở bước depthwise convolution thì ta dùng $M$ filter $\bold{K}: D_K \times D_K$, stride là 1, padding phù hợp. Khi đó, độ phức tạp tính toán sẽ là</p>
 <p>$$
 D_K \times D_K \times D_F \times D_F \times M
@@ -457,11 +453,11 @@ Nguồn: <a href="https://www.researchgate.net/publication/346607345/figure/fig1
 </ul>
 <p><strong>Note:</strong></p>
 <ul>
-<li>Trong bảng trên có vẻ có một chỗ gõ nhầm. Để ý đến layer “Conv dw / s2” đầu tiên từ dưới lên, nếu đây là s2 thì input size của layer “Conv / s1” tiếp theo phải bị giảm size chứ không phải $7 \times 7$. Do đó, trong cài đặt thì mình đổi lại thành “Conv dw / s1”.</li>
+<li>Trong bảng trên có vẻ có một chỗ gõ nhầm. Để ý đến layer “Conv dw / s2” đầu tiên từ phía dưới lên, nếu đây là s2 thì input size của layer “Conv / s1” tiếp theo phải bị giảm size chứ không phải $7 \times 7$. Do đó, trong cài đặt mô hình ở bên dưới thì mình đã đổi nó thành “Conv dw / s1”.</li>
 </ul>
 <h2 id="cài-đặt">Cài đặt</h2>
 <p>Các bạn có thể tham khảo phần cài đặt MobileNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
-    >sau</a></p>
+    >sau</a>.</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li>Paper MobileNet: <a class="link" href="https://arxiv.org/abs/1704.04861"  target="_blank" rel="noopener"
