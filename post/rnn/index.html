@@ -435,15 +435,15 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 <ul>
 <li>Không phải câu input nào cũng có độ dài $T_x$ như nhau, output cũng vậy.</li>
 <li>Nếu các câu này có nhiều từ thì mô hình sẽ có rất nhiều trọng số.</li>
-<li>Mô hình không học được sự “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu. Ví dụ, đoạn “tôi đi học” xuất hiện trong câu input thì cho dù nó bắt đầu ở vị trí nào đi nữa, ta vẫn nên học được các đặc trưng rất tương tự nhau. Đây cũng là một trong những vấn đề dẫn đến CNN được áp dụng nhiều hơn vào dữ liệu ảnh chứ không phải là MLP.</li>
+<li>Mô hình không học được sự “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu. Ví dụ, cụm từ “tôi đi học” xuất hiện trong câu input thì cho dù nó bắt đầu ở vị trí nào đi nữa, ta vẫn nên học được các đặc trưng rất tương tự nhau. Đây cũng là một trong những vấn đề dẫn đến CNN được áp dụng nhiều hơn vào dữ liệu ảnh chứ không phải là MLP.</li>
 </ul>
 <h3 id="ý-tưởng-của-rnn">Ý tưởng của RNN</h3>
 <p>Vì sequence data có một đặc điểm là <strong>thứ tự của các giá trị trong input</strong> là rất quan trọng nên ta thường thiên về hướng <strong>lần lượt xử lý trên từng vị trí một</strong>. Đồng thời, khi đi đến các vị trí sau thì ta cũng nên có những <strong>thông tin đã trích xuất được từ các vị trí trước</strong>. Ý tưởng của RNN chính là như vậy.</p>
-<p>Ta mô tả sơ lược về cách hoạt động của RNN như sau:</p>
+<p>Sơ lược về cách hoạt động của RNN được mô tả như sau:</p>
 <ul>
 <li>Với điều kiện giả sử $T_x=T_y$, ta sẽ thực hiện tính toán $T_x$ lần, tại thời điểm (hay là vị trí) thứ $i$ thì từ $x^{&lt; i &gt;}$ (input) ta tính ra $y^{&lt; i &gt;}$ (output).</li>
 <li>Hơn nữa, để thực hiện thao tác <strong>lưu giữ các thông tin cho đến thời điểm hiện tại</strong> và đưa nó qua các thời điểm sau, ta cũng cần tính thêm một giá trị là  $h^{&lt; i &gt;}$ (giả sử luôn $h^{&lt;0&gt;} = 0$). Lúc này, ta gọi $h^{&lt; i &gt;}$ là <strong>trạng thái ẩn</strong> (hidden state)</li>
-<li>Như vậy, tại mỗi thời điểm thì ta cần tính ra $h^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$, dựa vào input là $x^{&lt; i &gt;}$ và thông tin từ những thời điểm trước được tổng hợp vào $h^{&lt;i - 1&gt;}$.</li>
+<li>Như vậy, tại mỗi thời điểm thì ta cần tính ra $h^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$, dựa vào 2 input là $x^{&lt; i &gt;}$ và thông tin từ những thời điểm trước được tổng hợp tại $h^{&lt;i - 1&gt;}$.</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 200px;" src='./images/rnn-1.png'>
@@ -464,24 +464,24 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 </p>
 </div>
 <h3 id="sự-chia-sẻ-trọng-số-giữa-các-thời-điểm">Sự chia sẻ trọng số giữa các thời điểm</h3>
-<p>Qua mô tả về cách hoạt động của RNN ở phần trước, ta thấy rằng nếu ở mỗi thời điểm mà ta cần dùng một bộ trọng số khác nhau thì lượng tham số của mô hình RNN sẽ lớn không kém gì MLP ở phần 3.1 😀 Ta không nên làm như vậy.</p>
-<p>Trong RNN, giữa các thời điểm sẽ có sự chia sẻ trọng số, tức là mọi thời điểm đều dùng cùng một bộ trọng số $(\bold{W}_{xh}, \bold{W}_{hh}, \bold{W}_{ho})$ để tính toán $\bold{O}_t$ và $\bold{H}_t$. Lợi ích của cách biểu diễn này bao gồm:</p>
+<p>Qua mô tả về cách hoạt động của RNN ở phần trước, ta thấy rằng nếu ở mỗi thời điểm mà ta cần dùng một bộ trọng số khác nhau thì lượng tham số của mô hình RNN sẽ lớn không kém gì MLP ở phần <strong>3.1</strong> 😀</p>
+<p>Trong RNN, giữa các thời điểm sẽ có sự <strong>chia sẻ trọng số</strong>, tức là mọi thời điểm đều dùng cùng một bộ trọng số $(\bold{W}_{xh}, \bold{W}_{hh}, \bold{W}_{ho})$ để tính toán $\bold{O}_t$ và $\bold{H}_t$. Lợi ích của việc chia sẻ trọng số bao gồm:</p>
 <ul>
 <li>Số lượng trọng số trong RNN sẽ giảm đi rất nhiều lần so với MLP</li>
-<li>Ta cũng có thể khắc phục được nhược điểm “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu.</li>
+<li>Ta cũng có thể khắc phục được nhược điểm của MLP trong việc “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu.</li>
 </ul>
-<p>Khi đó, từ hình ở phần 3.2, sau khi chú thích vị trí các ma trận trọng số được sử dụng thì ta có hình sau:</p>
+<p>Khi đó, từ hình ở phần <strong>3.2</strong>, sau khi chú thích vị trí các ma trận trọng số được sử dụng thì ta có hình sau:</p>
 <p style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 230px;" src='./images/rnn-3.png'>
 </p>
 <p>Thay vì phải biểu diễn đủ các thời điểm, ta có thể viết gọn lại RNN như hình bên dưới:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="max-height: 300px;" src='./images/rnn-4.png'>
+<img style="max-height: 250px;" src='./images/rnn-4.png'>
 <p align="center" style="margin: 0; color: #888;"> Biểu diễn gọn hơn của Recurrent Neural Network
 </p>
 </div>
 <h3 id="quá-trình-feed-forward">Quá trình feed-forward</h3>
-<p>Đầu tiên, ta sẽ xem hidden state ban đầu là $\bold{H}_0 = \bold{0}$. Để đơn giản, ta sex bỏ qua các giá trị bias ứng với $\bold{H}_t$ và $\bold{O}_t$. Khi đó, quá trình feed-forward tại thời điểm $t &gt; 0$ diễn ra như sau:</p>
+<p>Đầu tiên, ta sẽ xem hidden state ban đầu là $\bold{H}_0 = \bold{0}$. Để đơn giản, ta sẽ bỏ qua các giá trị bias ứng với $\bold{H}_t$ và $\bold{O}_t$. Khi đó, quá trình feed-forward tại thời điểm $t &gt; 0$ diễn ra như sau:</p>
 <p>$$\begin{equation}
 \bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1})
 \end{equation}$$
@@ -489,11 +489,11 @@ $$\begin{equation}
 \bold{O}_t = \phi_o (\bold{W}_{ho} \bold{H}_t)
 \end{equation}$$</p>
 <p>, với $\phi_h$ và $\phi_o$ là các activation function. Thông thường, $\phi_h$ là $ReLU$  hoặc $\tanh$ và $\phi_o$ thường là $\text{softmax}$.</p>
-<p>Như vậy, từ $\bold{X}_{t}$ và $\bold{H}_{t-1}$ ta sẽ tính được $\bold{H}_{t}$ và từ $\bold{H}_{t}$ thì ta sẽ tính được $\bold{O}_{t}$.</p>
+<p>Như vậy, từ $\bold{X}_{t}$ và $\bold{H}_{t-1}$ ta sẽ tính được $\bold{H}_{t}$, và từ $\bold{H}_{t}$ thì ta sẽ tính được $\bold{O}_{t}$.</p>
 <p><strong>Nhận xét.</strong></p>
 <ul>
 <li>
-<p>Ta có thể nhận thấy rất rõ sự khác biệt giữa feed-forward trong RNN so với MLP. Với MLP thì nó chỉ cần hai phép toán là có luôn kết quả cuối cùng:</p>
+<p>Ta có thể nhận thấy rất rõ sự khác biệt giữa feed-forward trong RNN so với MLP. Với MLP thì nó chỉ cần hai phép toán (xem như phần hidden layers chỉ có 1 layer) là có luôn kết quả cuối cùng:</p>
 <p>$$\begin{equation*}
 \bold{H} = \phi_h (\bold{X} \bold{W}_{xh}^\top  )
 \end{equation*}$$
