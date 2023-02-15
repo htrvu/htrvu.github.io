@@ -564,13 +564,13 @@ $$</p>
 \frac{\partial L}{\partial \bold{W}_{hh}} = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \frac{\partial \bold{H}_t}{\partial \bold{W}_{hh}} \right ) =  = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \bold{H}_{t-1}^\top \right )
 \end{equation}$$</p>
 <h3 id="vấn-đề-vanishing-và-exploding-gradients-trong-rnn">Vấn đề vanishing và exploding gradients trong RNN</h3>
-<p>Qua các biểu thức $(6)$ và $(7)$ thì nếu giá trị $T$ lớn (tức là câu input gồm nhiều từ) thì sẽ có hai trường hợp xảy ra đối với các gradient $\dfrac{\partial L}{\partial \bold{W}_{xh}}$ và $\dfrac{\partial L}{\partial \bold{W}_{ho}}$:</p>
+<p>Qua các biểu thức $(6)$ và $(7)$, ta thấy rằng nếu giá trị $T$ lớn (tức là câu input gồm rất nhiều từ) thì sẽ có hai trường hợp xảy ra đối với các giá trị gradient $\dfrac{\partial L}{\partial \bold{W}_{xh}}$ và $\dfrac{\partial L}{\partial \bold{W}_{ho}}$:</p>
 <ul>
 <li><strong>Vanishing:</strong> Trong quá trình tính $\bold{W}_{hh}^\top$ có nhiều giá trị nhỏ hơn 1 được nhân với nhau.</li>
 <li><strong>Exploding:</strong> Ngược lại (lớn hơn 1).</li>
 </ul>
-<p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ.
-Đối với hiện tượng vanishing trong RNN, ta có thể diễn đạt nó một cách văn vở hơn là mô hình đã bị “quên” những thông tin tích lũy từ phía trước.</p>
+<p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ.</p>
+<p>Đối với hiện tượng vanishing trong RNN, ta có thể diễn đạt nó một cách văn vở hơn là mô hình đã bị “quên” những thông tin tích lũy từ phía trước.</p>
 <ul>
 <li>
 <p>Ví dụ, ta có hai câu sau:</p>
@@ -578,7 +578,7 @@ $$</p>
 <li>The <strong>cat</strong>, which always … (very long descriptions) …, <strong>was</strong> very cute</li>
 <li>The <strong>cats</strong>, which always … (very long descriptions) …, <strong>were</strong> very cute</li>
 </ol>
-<p>Thông thường, ta động từ to-be gì ở trước “very cute” sẽ phụ thuộc vào danh từ ở đầu câu (”cat” hay “cats”). Tuy nhiên, nếu RNN bị vanishing gradient thì nó sẽ không thể nhớ được trước đó là cat hay cats để mà chọn động từ to-be cho đúng. 😀</p>
+<p>Thông thường, động từ to-be ở trước “very cute” sẽ phụ thuộc vào danh từ ở đầu câu (”cat” hay “cats”). Tuy nhiên, nếu RNN bị vanishing gradient thì nó sẽ không thể nhớ được trước đó là một con mèo hay nhiều con mèo để mà chọn động từ to-be cho đúng. 😀</p>
 </li>
 </ul>
 <p>Yếu tố này đã mở ra một hướng phát triển cho RNN là ta sẽ cố gắng tính toán thêm những phép toán khác để duy trì được các thông tin từ trước, từ phía xa mà RNN hiện tại không thể ghi nhớ được. Từ đó, ta có sự ra đời của <strong>Gated Recurrent Unit (GRU)</strong> và <strong>Long Short-Term Memory (LSTM)</strong>.</p>
