@@ -6,7 +6,16 @@
         <description>Recent content in Deep Learning on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 13 Feb 2023 11:32:55 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/dl/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 15 Feb 2023 11:17:46 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/dl/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>EfficientNet (2020)</title>
+        <link>https://htrvu.github.io/post/efficientnet/</link>
+        <pubDate>Wed, 15 Feb 2023 11:17:46 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/efficientnet/</guid>
+        <description>Giới thiệu Ta biết rằng, hầu hết các mô hình CNN thường được xây dựng từ một phiên bản ban đầu (có thể là dựa theo một nguồn tài nguyên nào đó), sau đó chúng được scale dần lên để đạt được độ chính xác tốt hơn, và tất nhiên là độ phức tạp cũng tăng theo
+Ví dụ: Với ResNet thì ta có ResNet18 cho đến ResNet152, DenseNet thì DenseNet121 cho đến 201, MobileNet thì ta có siêu tham số width multiplier để điều chỉnh số channel trong từng layer và resolutiom multiplier để điều chỉnh kích thước tại các layer,… Những cách làm đó gọi là model scaling.</description>
+        </item>
+        <item>
         <title>MobileNet V2 (2019)</title>
         <link>https://htrvu.github.io/post/mobilenet_v2/</link>
         <pubDate>Mon, 13 Feb 2023 11:32:55 +0700</pubDate>
@@ -21,7 +30,7 @@ Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào M
         <pubDate>Sat, 11 Feb 2023 18:09:08 +0700</pubDate>
         
         <guid>https://htrvu.github.io/post/densenet/</guid>
-        <description>Skip connection và concatenate Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các Skip Connection khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng Skip Connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối 1 feature map vào làm input của một layer sau đó, và chúng đều sử dụng phép toán cộng.</description>
+        <description>Skip connection và concatenate Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các skip connection khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng skip connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối 1 feature map vào làm input của một layer sau đó, và chúng đều sử dụng phép toán cộng.</description>
         </item>
         <item>
         <title>CAM, Grad-CAM và Score-CAM trong CNN</title>

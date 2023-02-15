@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu phương pháp Compoung Scaling, ý tưởng và kiến trúc của họ mô hình EfficientNet'>
+<title>EfficientNet (2020)</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/efficientnet/'>
+
+<link rel="stylesheet" href="/scss/style.min.8191399262444ab68b72a18c97392f5349be20a1615d77445be51e974c144cff.css"><meta property='og:title' content='EfficientNet (2020)'>
+<meta property='og:description' content='Giới thiệu phương pháp Compoung Scaling, ý tưởng và kiến trúc của họ mô hình EfficientNet'>
+<meta property='og:url' content='https://htrvu.github.io/post/efficientnet/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='efficientnet' /><meta property='article:tag' content='compound scaling' /><meta property='article:tag' content='grid search' /><meta property='article:published_time' content='2023-02-15T11:17:46&#43;07:00'/><meta property='article:modified_time' content='2023-02-15T11:17:46&#43;07:00'/>
+<meta name="twitter:title" content="EfficientNet (2020)">
+<meta name="twitter:description" content="Giới thiệu phương pháp Compoung Scaling, ý tưởng và kiến trúc của họ mô hình EfficientNet">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu">Giới thiệu</a></li>
+    <li><a href="#bài-toán-model-scaling">Bài toán model scaling</a></li>
+    <li><a href="#phương-pháp-compound-scaling">Phương pháp compound scaling</a></li>
+    <li><a href="#họ-mô-hình-efficientnet">Họ mô hình EfficientNet</a>
+      <ol>
+        <li><a href="#neural-architecture-search">Neural architecture search</a></li>
+        <li><a href="#kiến-trúc-mô-hình">Kiến trúc mô hình</a></li>
+      </ol>
+    </li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/efficientnet/">EfficientNet (2020)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu phương pháp Compoung Scaling, ý tưởng và kiến trúc của họ mô hình EfficientNet
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 15, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    8 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Ta biết rằng, hầu hết các mô hình CNN thường được xây dựng từ một phiên bản ban đầu (có thể là dựa theo một nguồn tài nguyên nào đó), sau đó chúng được scale dần lên để đạt được độ chính xác tốt hơn, và tất nhiên là độ phức tạp cũng tăng theo</p>
+<ul>
+<li>Ví dụ: Với ResNet thì ta có ResNet18 cho đến ResNet152, DenseNet thì DenseNet121 cho đến 201, MobileNet thì ta có siêu tham số width multiplier để điều chỉnh số channel trong từng layer và resolutiom multiplier để điều chỉnh kích thước tại các layer,…</li>
+</ul>
+<p>Những cách làm đó gọi là <strong>model scaling</strong>. Tuy nhiên, ta nhận thấy rằng những thao tác model scaling trước đó chỉ tập trung vào một trong 3 yếu tố: <strong>depth - $d$</strong> (số layer), <strong>width - $w$</strong> (số channel) và <strong>resolution - $r$</strong>. Hơn nữa, việc điều chỉnh cũng <strong>không theo một nguyên tắc nào</strong> mà còn mang đậm tính chất ngẫu nhiên, “hên xui”, cần phải thử nghiệm rất nhiều lần mới có thể đạt được một độ chính xác mong muốn. Khi đó thì số lượng tham số của các mô hình cũng tăng chóng mặt!</p>
+<p>Các tác giả của paper đã cho thấy kết quả thực nghiệm rằng việc điều chỉnh một trong 3 yếu tố có thể tăng độ chính xác nhưng chỉ tăng đến một mức nào đó thôi, sau đó nó sẽ bị bão hòa. Ví dụ như ở hình bên dưới:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px" src='./images/compare.png'>
+</p>
+<p>Ta có thể đưa ra các nhận xét như sau:</p>
+<ul>
+<li>Nếu mô hình có width lớn (mỗi layer có nhiều channel) thì nó có thể học được nhiều loại đặc trưng khác nhau. Nhưng nếu mô hình không đủ sâu thì các đặc trưng đó cũng chưa phải đặc trưng ở mức high-level (nổi bật cho đối tượng)</li>
+<li>Nếu mô hình có depth lớn thì nó có thể học được các đặc trưng high-level nhưng nếu không có width lớn thì cũng không học được nhiều loại đặc trưng*</li>
+<li>Về mặt trực giác, nếu ta đưa vào mô hình một bức ảnh có resolution cao thì mô hình nên có depth lớn để có thể dần học các đặc trưng từ các feature maps có resolution lớn, đồng thời cũng vì sẽ có nhiều đặc trưng hơn nên ta cần width lớn. Do đó, model scaling nên tập trung vào việc điều chỉnh đồng thời cả 3 yếu tố $d$, $w$, $r$.</li>
+</ul>
+<p>Paper công bố EfficientNet có tên là “EfficientNet: <strong>Rethinking Model Scaling</strong> for Convolutional Neural Networks”. Các tác giả tập trung vào việc đi tìm một phương pháp model scaling hiệu quả, <strong>có nguyên tắc</strong>, điều chỉnh đồng thời cả 3 yếu tố như đã đề cập. Phương pháp được giới thiệu có tên là <strong>compound scaling.</strong></p>
+<p>&ldquo;Nguyên tắc&rdquo; trong phương pháp này rất đơn giản, ta sẽ cùng điều chỉnh $d$, $w$, $r$ của toàn bộ network <strong>theo</strong> <strong>cùng một hệ số</strong> gọi là <strong>compound coefficient</strong> (kí hiệu là $\phi$).</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px" src='./images/illustrate.png'>
+<p align="center" style="margin: 0; color: #888;">
+Minh họa cho các phương pháp model scaling. (a) là mô hình ban đầu. (b)-(d) thực hiện điều chỉnh một trong ba yếu tố. (e) là phương pháp được đề xuất, nó tiến hành điều chỉnh cả ba.
+</p>
+</div>
+<p>Tất nhiên là model scaling chỉ phát huy tác dụng khi mà mô hình ban đầu là đủ tốt. Từ phương pháp compound scaling, các tác giả đã áp dụng nó cho ResNet, MobileNet để chứng tỏ độ hiệu quả của phương pháp. Sau đó, một họ mô hình mới được đề xuất là EfficientNet, vớ 8 phiên bản từ B0 đến B7 với độ phức tạp và độ chính xác tăng dần trên tập ImageNet. EfficientNet-B7 đã trở thành SOTA (state-of-the-art) với độ phức tạp nhỏ hơn <strong>rất nhiều lần</strong> so với mô hình SOTA trước đó.</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px" src='./images/compare_2.png'>
+</p>
+<h2 id="bài-toán-model-scaling">Bài toán model scaling</h2>
+<p>Giả sử conv layer thứ $i$ được định nghĩa là hàm số $Y_i = F_i(X_i)$, với input $X_i$ có shape là $\left (H_i, W_i, C_i \right)$. Khi đó, một CNN $N$ có thể được biểu diễn là</p>
+<p>$$
+N = F_k \bigodot  F_{k-1} \bigodot  \cdots F_1(X_1) = \bigodot_{j=1,&hellip;,k} F_j(X_1)
+$$</p>
+<p>Thông thường, các mạng CNN thường được xây dựng theo kiểu gồm nhiều giai đoạn, mỗi giai đoạn là sự lặp lại các block có cùng dạng cấu trúc, chỉ khác nhau một số chi tiết như số layer trong block, kích thước của filter,… Ví dụ, ResNet được xây dựng dựa trên các residual block, MobileNet thì là các depthwise separable block,… Do đó, ta có thể viết lại $N$ thành</p>
+<p>$$
+N = \bigodot_{i=1,&hellip;,s} F_i ^ {L_i}(X_{(H_i, W_i, C_i})
+$$</p>
+<p>, với $F_i$ là layer được lặp lại $L_i$ lần trong giai đoạn thứ $i$, với input là $X$ có shape $(H_i, W_i, C_i)$.</p>
+<p>Bài toán model scaling sẽ <strong>cố định layer $F_i$</strong> và đi điều chỉnh các giá trị $L_i, H_i, W_i, C_i$, sao cho mô hình <strong>thỏa mãn các ràng buộc về tài nguyên</strong> và <strong>đạt độ chính xác cao nhất có thể</strong>.</p>
+<ul>
+<li>Điều chỉnh $L_i$ $\Leftrightarrow$ Điều chỉnh depth</li>
+<li>Điều chỉnh $C_i$ $\Leftrightarrow$ Điều chỉnh width</li>
+<li>Đều chỉnh $H_i, W_i$ $\Leftrightarrow$ Điều chỉnh resolution</li>
+</ul>
+<p>Để giảm không gian tìm kiếm, ta sẽ điều chỉnh các giá trị trên của toàn bộ layer trong mô hình theo cùng một tỉ lệ. Khi đó, bài toán của ta là bài toán tối ưu như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 180px" src='./images/formula.png'>
+</p>
+<p>, với $d, w, r$ là hệ số để điều chỉnh depth, width, resolution; $\hat{F_i}, \hat{L_i}, \hat{H_i}, \hat{W_i}, \hat{C_i}$ là các giá trị ban đầu của mô hình baseline.</p>
+<h2 id="phương-pháp-compound-scaling">Phương pháp compound scaling</h2>
+<p>Phương pháp này sử dụng <strong>compound coefficient $\phi$</strong> để điều chỉnh depth, width, resolution theo nguyên tắc như sau:</p>
+<ul>
+<li>
+<p>Với mô hình baseline ban đầu, ta thực hiện <strong>grid search</strong> để tìm ra bộ 3 giá trị tỉ lệ $(d, w, r) = (\alpha, \beta, \gamma)$ tốt nhất có thể, sao cho</p>
+<p>$$
+\alpha \cdot \beta^2 \cdot \gamma^2 \approx 2 \text{  và  } \alpha \geq 1, \beta \geq 1, \gamma \geq 1
+$$</p>
+</li>
+<li>
+<p>Sau đó, ta sẽ scale mô hình lên theo hệ số $\phi$ với</p>
+<p>$$
+d = \alpha ^ \phi, ; w = \beta^\phi, ; r = \gamma^\phi
+$$</p>
+</li>
+</ul>
+<p>Về mặt trực giác, ta có thể xem $\phi$ như là cách mà chúng ta cho biết lượng tài nguyên dành cho model scaling là bao nhiêu, còn các giá trị $\alpha, \beta, \gamma$ là cách chúng ta phân phối tài nguyên đó cho depth, width và resolution. Giải thích cho các ràng buộc cho $\alpha, \beta, \gamma$ được trình bày như sau:</p>
+<ul>
+<li>Tất nhiên là để thực hiện được việc scale mô hình lên thì giá trị của chúng phải không nhỏ hơn 1</li>
+<li>Ngoài ra, một phép toán convolution sẽ có độ phức tạp tỉ lệ thuận với $d, w^2, r^2$. Do đó, nếu ta scale model lên theo hệ số $\phi$ thì độ phức tạp sẽ tăng lên một lượng bằng $(\alpha \cdot \beta^2 \cdot \gamma^2)^\phi$. Các tác giả mong muốn độ phức tạp tăng khoảng $2^\phi$, do đó ta có ràng buộc $\alpha \cdot \beta^2 \cdot \gamma^2 \approx 2$.</li>
+</ul>
+<h2 id="họ-mô-hình-efficientnet">Họ mô hình EfficientNet</h2>
+<h3 id="neural-architecture-search">Neural architecture search</h3>
+<p>EfficientNet là một họ các mô hình rất đặc biệt:</p>
+<ul>
+<li>
+<p>Thứ nhất, chúng được xây dựng bằng “máy” 😀 Vào năm 2017, một ma thuật đã được công bố trong paper “Neural architecture search with reinforcement learning” của chính tác giả <strong>Quoc V. Le</strong>, nó giúp chúng ta xây một kiến trúc phù hợp nhất có thể dựa theo độ chính xác, độ phức tạp mà chúng ta yêu cầu.</p>
+<ul>
+<li>
+<p>Với họ EfficientNet, các tác giả tập trung vào việc giới hạn độ phức tạp (cụ thể là FLOPS). Mục tiêu tối ưu của reinforcement learning là</p>
+<p>$$
+ACC(m) \times \left ( \frac{FLOPS(m)}{T} \right )^w
+$$</p>
+<p>, với $m$ là mô hình, $ACC$ và $FLOPS$ là độ chính xác và độ phức tạp, $T$ là FLOPS mong muốn và nó bằng $400 \times 10^6$, $w=-0.07$ là hằng số điều chỉnh trade-off giữa $ACC$ và $FLOPS$</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Thứ hai, từ một mô hình ban đầu là <strong>EfficientNet-B0</strong>, ta tiến hành scale theo 2 bước:</p>
+<ul>
+<li>Bước 1: Cố định $\phi = 1$, giả sử lượng tài nguyên mà ta có thể sử dụng là nhiều gấp đôi hiện tại. Khi đó, thực hiện grid search để tìm các giá trị $(d, w, r) = (\alpha, \beta, \gamma)$ tốt nhất</li>
+<li>Bước 2: Từ các giá trị $(d, w, r) = (\alpha, \beta, \gamma)$ tìm được, tiến hành scale theo các giá trị $\phi$ lớn hơn để có được các phiên bản B1-B7.</li>
+</ul>
+</li>
+</ul>
+<p>Ở đây, ta hoàn toàn có thể tăng $\phi$ lên rồi lại grid search nhưng lúc này chi phí thực hiện là rất lớn. Do đó, các tác giả chỉ grid search một lần rồi sau đó chỉ cần tăng $\phi$.</p>
+<h3 id="kiến-trúc-mô-hình">Kiến trúc mô hình</h3>
+<p>Đầu tiên, tổng quan kiến trúc của EfficientNet-B0 như sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px" src='./images/efficientnet.png'>
+</p>
+<ul>
+<li>Trong đó:
+<ul>
+<li><strong>MBConv</strong> chính là inverted residual block trong MobileNetV2, cùng với một số cải tiến như trong paper “Squeeze-and-excitation networks”</li>
+</ul>
+</li>
+</ul>
+<p>Các mô hình EfficientNet-B1 cho đến B7 chính là kết quả của việc áp dụng compound scaling lên EfficientNet-B0.</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Paper EfficientNet: <a class="link" href="https://arxiv.org/abs/1905.11946"  target="_blank" rel="noopener"
+    >https://arxiv.org/abs/1905.11946</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/cnn/">cnn</a>
+        
+            <a href="/tags/efficientnet/">efficientnet</a>
+        
+            <a href="/tags/compound-scaling/">compound scaling</a>
+        
+            <a href="/tags/grid-search/">grid search</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/densenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">DenseNet (2018)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/inception-resnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Inception-Reset (2016)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

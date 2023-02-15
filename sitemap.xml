@@ -3,19 +3,37 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://htrvu.github.io/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/cnn/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/compound-scaling/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/cv/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/dl/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/efficientnet/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/efficientnet/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/grid-search/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/</loc>
+    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/depthwise-separable-convolution/</loc>
     <lastmod>2023-02-13T11:32:55+07:00</lastmod>
@@ -29,13 +47,7 @@
     <loc>https://htrvu.github.io/post/mobilenet_v2/</loc>
     <lastmod>2023-02-13T11:32:55+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/post/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/skip-connection/</loc>
-    <lastmod>2023-02-13T11:32:55+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/</loc>
     <lastmod>2023-02-13T11:32:55+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/densenet/</loc>

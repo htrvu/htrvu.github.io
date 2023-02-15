@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>compound scaling on Hoang Trong Vu</title>
+        <link>https://htrvu.github.io/tags/compound-scaling/</link>
+        <description>Recent content in compound scaling on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 15 Feb 2023 11:17:46 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/compound-scaling/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>EfficientNet (2020)</title>
+        <link>https://htrvu.github.io/post/efficientnet/</link>
+        <pubDate>Wed, 15 Feb 2023 11:17:46 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/efficientnet/</guid>
+        <description>Giới thiệu Ta biết rằng, hầu hết các mô hình CNN thường được xây dựng từ một phiên bản ban đầu (có thể là dựa theo một nguồn tài nguyên nào đó), sau đó chúng được scale dần lên để đạt được độ chính xác tốt hơn, và tất nhiên là độ phức tạp cũng tăng theo
+Ví dụ: Với ResNet thì ta có ResNet18 cho đến ResNet152, DenseNet thì DenseNet121 cho đến 201, MobileNet thì ta có siêu tham số width multiplier để điều chỉnh số channel trong từng layer và resolutiom multiplier để điều chỉnh kích thước tại các layer,… Những cách làm đó gọi là model scaling.</description>
+        </item>
+        
+    </channel>
+</rss>

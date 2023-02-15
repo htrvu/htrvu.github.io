@@ -327,10 +327,10 @@
     
     
     <h2 id="giới-thiệu">Giới thiệu</h2>
-<p>Từ sự thành công của MobileNet (2017) trong việc triển khai các mô hình Deep Learning trên các thiết bị biên (smartphone, embedded,…) nhờ vào việc sử dụng hiệu quả phép toán <strong>depthwise separable convolution</strong>, nhiều nghiên cứu dựa trên hướng phát triển này đã được tiến hành.</p>
-<p>Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào MobileNet thì ta sẽ thấy ngay rằng, nó chưa có cái <strong>skip connection</strong> nào cả 😀 Đúng z, skip connection đã cho thấy được sự hiệu quả của mình trong các mô hình như ResNet, Inception-ResNet, DenseNet,… tại sao ta không thử thêm vào MobileNet? Boom, thêm ngay!</p>
+<p>Từ sự thành công của <a class="link" href="https://htrvu.github.io/post/mobilenet/" >MobileNet</a> (2017) trong việc triển khai các mô hình Deep Learning trên các thiết bị biên (smartphone, embedded,…) nhờ vào việc sử dụng hiệu quả phép toán <strong>depthwise separable convolution</strong>, nhiều nghiên cứu dựa trên hướng phát triển này đã được tiến hành.</p>
+<p>Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào MobileNet thì ta sẽ thấy ngay rằng, nó chưa có cái <strong>skip connection</strong> nào cả 😀 Đúng z, skip connection đã cho thấy được sự hiệu quả của mình trong các mô hình như <a class="link" href="https://htrvu.github.io/post/resnet/" >ResNet</a>, <a class="link" href="https://htrvu.github.io/post/inception-resnet/" >Inception-ResNet</a>, <a class="link" href="https://htrvu.github.io/post/densenet/" >DenseNet</a>,… tại sao ta không thử thêm vào MobileNet? Boom, thêm ngay!</p>
 <p>MobileNetV2 được công bố với sự kế thừa từ MobileNet và bổ sung thêm skip connection. Tất nhiên là không chỉ dừng ở đó 🙂 Các tác giả xây dựng MobileNetV2 dựa trên các <strong>inverted residual block</strong>, nơi mà các skip connection dùng để kết nối các <strong>bottleneck layer</strong> với nhau! Hơn nữa, ta còn có một điểm rất thú vị là các bottleneck layer này sử dụng activation function là <strong>linear</strong>!</p>
-<p>MobileNetV2 đạt được độ chính xác cao hơn MobileNet trên tập ImageNet, với số tham số ít hơn,  lượng bộ nhớ cần dùng tại mỗi layer là ít hơn. Từ sự ra đời của MobileNetV2, người ta cũng đã phát triển các mô hình hiệu quả trong bài toán Object Detection như SSDLite, hay Semantic Segmentation như Mobile DeepLabv3</p>
+<p>MobileNetV2 đạt được độ chính xác cao hơn MobileNet trên tập ImageNet, với số tham số ít hơn,  lượng bộ nhớ cần dùng tại mỗi layer là ít hơn. Từ sự ra đời của mô hình này, người ta cũng đã phát triển các mô hình hiệu quả trong bài toán Object Detection như SSDLite, hay Semantic Segmentation như Mobile DeepLabv3</p>
 <h2 id="bàn-về-relu">Bàn về ReLU</h2>
 <p>Ta biết rằng từ khi paper AlexNet giới thiệu activation function ReLU thì nó đã trở thành một activation function rất phổ biến và được dùng thường xuyên trong các mô hình Deep Learning với điểm mạnh quan trọng là đạo hàm của nó rất đơn giản. Công thức của ReLU là</p>
 <p>$$ReLU(x) = \max(x, 0)$$</p>
@@ -528,6 +528,19 @@ Nguồn: <a href="https://raw.githubusercontent.com/mmuratarat/mmuratarat.github
             
                 
 <article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
     <a href="/post/densenet/">
         
         
@@ -565,19 +578,6 @@ Nguồn: <a href="https://raw.githubusercontent.com/mmuratarat/mmuratarat.github
 </article>
 
             
-                
-<article class="">
-    <a href="/post/resnet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Resnet (2015)</h2>
-        </div>
-    </a>
-</article>
-
-            
         </div>
     </div>
 </aside>
@@ -588,6 +588,10 @@ Nguồn: <a href="https://raw.githubusercontent.com/mmuratarat/mmuratarat.github
     
 
 <div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
 <script>
     
 

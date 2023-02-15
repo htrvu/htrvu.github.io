@@ -330,7 +330,7 @@
     
     
     <h2 id="skip-connection-và-concatenate">Skip connection và concatenate</h2>
-<p>Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các <strong>Skip Connection</strong> khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng Skip Connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối <strong>1 feature map</strong> vào làm input của một layer sau đó, và chúng đều sử dụng <strong>phép toán cộng</strong>.</p>
+<p>Trước đó, kiến trúc <a class="link" href="https://htrvu.github.io/post/resnet/" >ResNet</a> được công bố và nó đã cho thấy được sức mạnh của các <strong>skip connection</strong> khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng skip connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối <strong>1 feature map</strong> vào làm input của một layer sau đó, và chúng đều sử dụng <strong>phép toán cộng</strong>.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height: 200px" src='./images/residual_block.png'>
 <p align="center" style="margin: 0; color: #888;">
@@ -338,7 +338,7 @@ Residual block trong ResNet sử dụng skip connection với phép toán cộng
 Nguồn: <a href="https://idiotdeveloper.com/wp-content/uploads/2021/09/residual_block.png">Idiot Developer</a>
 </p>
 </div>
-<p>Công thức về Skip Connection trong block trên có thể được viết như sau:</p>
+<p>Công thức về skip connection trong block trên có thể được viết như sau:</p>
 <p>$$ x_l = H_l(x_{l - 1}) + x_{l-1} $$</p>
 <p>, với $H_l$ là phép biến đổi phi tuyến ở layer thứ $l$, $x_l$ là output của layer thứ $l$.</p>
 <p>Paper DenseNet giới thiệu một kiến trúc với ý tưởng là feature-map tại layer $l$ sẽ sử dụng <strong>toàn bộ feature-maps ở phía trước</strong> (layer $l - 1, l - 2,&hellip;$) để làm input, và chúng sử dụng <strong>concatenate</strong> (thay vì phép toán cộng như ResNet). Với tư tưởng như vậy, các feature-maps ta có được có thể xem là một trạng thái có <strong>phạm vi toàn cục</strong> và bất kì layer nào cũng có thể sử dụng trạng thái này trong việc tính toán ra feature-maps của nó. Nếu viết theo kiểu công thức thì ta sẽ có</p>
@@ -596,6 +596,19 @@ Nguồn: <a href="https://blog.kakaocdn.net/dn/df23Nq/btqTSTNVNN6/aggJ9KW2Gimtpx
             
                 
 <article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
     <a href="/post/mobilenet_v2/">
         
         
@@ -620,19 +633,6 @@ Nguồn: <a href="https://blog.kakaocdn.net/dn/df23Nq/btqTSTNVNN6/aggJ9KW2Gimtpx
 </article>
 
             
-                
-<article class="">
-    <a href="/post/mobilenet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">MobileNet (2017)</h2>
-        </div>
-    </a>
-</article>
-
-            
         </div>
     </div>
 </aside>
@@ -643,6 +643,10 @@ Nguồn: <a href="https://blog.kakaocdn.net/dn/df23Nq/btqTSTNVNN6/aggJ9KW2Gimtpx
     
 
 <div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
 <script>
     
 

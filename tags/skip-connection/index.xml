@@ -21,7 +21,7 @@ Dựa theo các “kinh nghiệm” có được của bản thân, nhìn vào M
         <pubDate>Sat, 11 Feb 2023 18:09:08 +0700</pubDate>
         
         <guid>https://htrvu.github.io/post/densenet/</guid>
-        <description>Skip connection và concatenate Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các Skip Connection khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng Skip Connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối 1 feature map vào làm input của một layer sau đó, và chúng đều sử dụng phép toán cộng.</description>
+        <description>Skip connection và concatenate Trước đó, kiến trúc ResNet được công bố và nó đã cho thấy được sức mạnh của các skip connection khi chúng được thêm vào các mô hình từ sâu cho đến rất sâu (ví dụ như ResNet152). Ta thấy rằng những kiến trúc áp dụng skip connection trước đây đều có một điểm chung là trong một block thì ta sẽ có những điểm nối 1 feature map vào làm input của một layer sau đó, và chúng đều sử dụng phép toán cộng.</description>
         </item>
         <item>
         <title>Inception-Reset (2016)</title>
