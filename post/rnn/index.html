@@ -513,7 +513,8 @@ L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
 <li>Thực ra là ta có chia $L$ cho $T$ nữa nhưng để cho gọn thì thôi bỏ qua 😜</li>
 </ul>
 <p>Những gì ta cần thực hiện trong quá trình BPTT là tính đạo hàm của $L$ theo các ma trận trọng số $\bold{W}_{xh}$, $\bold{W}_{hh}$ và $\bold{W}_{ho}$. Điều đặc biệt ở đây là trong quá trình feed-forward thì $\bold{H}_{t-1}$ sẽ lại được dùng để tính $\bold{H}_t$ chứ nó không đi một “mạch&quot; từ $\bold{X}$ đến $\bold{H}$ rồi từ $\bold{H}$ đến $\bold{O}$ như trong feed-forward của MLP thông thường.</p>
-<p>Để công thức được gọn nhẹ hơn, ta sẽ giả sử luôn các activation function $\phi_h$ và $\phi_o$ là hàm đồng nhất, tức là $(f(\bold{x}) = \bold{x})$.</p>
+<p>Để công thức được gọn nhẹ hơn, ta sẽ giả sử luôn các activation function $\phi_h$ và $\phi_o$ là hàm đồng nhất, tức là</p>
+<p>$$\phi_h(\bold{x}) = \phi_o(\bold{x}) = \bold{x}$$</p>
 <p><strong>Quá trình BPPT diễn ra như sau:</strong></p>
 <ul>
 <li>
