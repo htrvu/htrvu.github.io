@@ -6,21 +6,29 @@
         <description>Recent content in Categories on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 15 Feb 2023 11:17:46 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 15 Feb 2023 21:42:44 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Deep Learning</title>
+        <link>https://htrvu.github.io/categories/dl/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/categories/dl/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/dl/dl.jpg" alt="Featured image of post Deep Learning" /&gt;</description>
+        </item>
+        <item>
+        <title>Natual Language Processing</title>
+        <link>https://htrvu.github.io/categories/nlp/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/categories/nlp/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
+        </item>
+        <item>
         <title>Computer Vision</title>
         <link>https://htrvu.github.io/categories/cv/</link>
         <pubDate>Wed, 15 Feb 2023 11:17:46 +0700</pubDate>
         
         <guid>https://htrvu.github.io/categories/cv/</guid>
         <description>&lt;img src="https://htrvu.github.io/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
-        </item>
-        <item>
-        <title>Deep Learning</title>
-        <link>https://htrvu.github.io/categories/dl/</link>
-        <pubDate>Wed, 15 Feb 2023 11:17:46 +0700</pubDate>
-        
-        <guid>https://htrvu.github.io/categories/dl/</guid>
-        <description>&lt;img src="https://htrvu.github.io/categories/dl/dl.jpg" alt="Featured image of post Deep Learning" /&gt;</description>
         </item>
         <item>
         <title>Explainable AI</title>
@@ -37,14 +45,6 @@
         
         <guid>https://htrvu.github.io/categories/ml/</guid>
         <description>&lt;img src="https://htrvu.github.io/categories/ml/ml.jpg" alt="Featured image of post Machine Learning" /&gt;</description>
-        </item>
-        <item>
-        <title>Natual Language Processing</title>
-        <link>https://htrvu.github.io/categories/nlp/</link>
-        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-        
-        <guid>https://htrvu.github.io/categories/nlp/</guid>
-        <description>&lt;img src="https://htrvu.github.io/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
         </item>
         
     </channel>

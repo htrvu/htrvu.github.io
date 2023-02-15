@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>rnn on Hoang Trong Vu</title>
+        <link>https://htrvu.github.io/tags/rnn/</link>
+        <description>Recent content in rnn on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 15 Feb 2023 21:42:44 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/rnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Recurrent Neural Network</title>
+        <link>https://htrvu.github.io/post/rnn/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/rnn/</guid>
+        <description>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài vì mình đã trình bày kỹ quá trình back-propagation. Mong các bạn đọc hết nhé! 😀
+Sơ lược về Natural Language Processing Bên cạnh Computer Vision (CV - Thị giác máy tính) thì Natural Language Processing (NLP - Xử lý ngôn ngữ tự nhiên) cũng là một mảng rất quan trọng và được nghiên cứu rộng rãi trong Deep Learning.</description>
+        </item>
+        
+    </channel>
+</rss>

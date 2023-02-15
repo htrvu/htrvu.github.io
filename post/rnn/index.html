@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu về sequence data, sequence models và mô hình RNN'>
+<title>Recurrent Neural Network</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/rnn/'>
+
+<link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Recurrent Neural Network'>
+<meta property='og:description' content='Giới thiệu về sequence data, sequence models và mô hình RNN'>
+<meta property='og:url' content='https://htrvu.github.io/post/rnn/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='rnn' /><meta property='article:tag' content='sequence-data' /><meta property='article:tag' content='sequence-models' /><meta property='article:published_time' content='2023-02-15T21:42:44&#43;07:00'/><meta property='article:modified_time' content='2023-02-15T21:42:44&#43;07:00'/>
+<meta name="twitter:title" content="Recurrent Neural Network">
+<meta name="twitter:description" content="Giới thiệu về sequence data, sequence models và mô hình RNN">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#sơ-lược-về-natural-language-processing">Sơ lược về Natural Language Processing</a></li>
+    <li><a href="#sequence-data-sequence-models">Sequence data, sequence models</a>
+      <ol>
+        <li><a href="#sequence-data">Sequence data</a></li>
+        <li><a href="#sequence-models">Sequence models</a></li>
+      </ol>
+    </li>
+    <li><a href="#recurrent-neural-network-rnn">Recurrent Neural Network (RNN)</a>
+      <ol>
+        <li><a href="#hạn-chế-của-mô-hình-multi-layers-percentron">Hạn chế của mô hình Multi-layers Percentron</a></li>
+        <li><a href="#ý-tưởng-của-rnn">Ý tưởng của RNN</a></li>
+        <li><a href="#sự-chia-sẻ-trọng-số-giữa-các-thời-điểm">Sự chia sẻ trọng số giữa các thời điểm</a></li>
+        <li><a href="#quá-trình-feed-forward">Quá trình feed-forward</a></li>
+        <li><a href="#back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</a></li>
+        <li><a href="#vấn-đề-vanishing-và-exploding-gradients-trong-rnn">Vấn đề vanishing và exploding gradients trong RNN</a></li>
+      </ol>
+    </li>
+    <li><a href="#các-dạng-mô-hình-rnn">Các dạng mô hình RNN</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/nlp/" style="background-color: #2a9d8f; color: #fff;">
+                Natual Language Processing
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/rnn/">Recurrent Neural Network</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu về sequence data, sequence models và mô hình RNN
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 15, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    14 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài vì mình đã trình bày kỹ quá trình <strong>back-propagation</strong>. Mong các bạn đọc hết nhé! 😀</p>
+<h2 id="sơ-lược-về-natural-language-processing">Sơ lược về Natural Language Processing</h2>
+<p>Bên cạnh <strong>Computer Vision</strong> (CV - Thị giác máy tính) thì <strong>Natural Language Processing</strong> (NLP - Xử lý ngôn ngữ tự nhiên) cũng là một mảng rất quan trọng và được nghiên cứu rộng rãi trong Deep Learning. Các sản phẩm nổi tiếng trên thế giới liên quan đến chữ viết, giọng nói, âm thanh như Google Dịch, Google Assistant, Siri, Alexa, ChatGPT… đều là các thành quả của việc áp dụng NLP vào thực tế.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 500px;" src='./images/nlp.png'>
+<p align="center" style="margin: 0; color: #888;">
+Nguồn: <a href="https://datasciencedojo.com/wp-content/uploads/MicrosoftTeams-image-34-1-1030x1030.jpg">Data Science Dojo</a>
+</p>
+</div>
+<p>Tuy NLP và CV là hai lĩnh vực nghiên cứu khác nhau nhưng chúng có những mối quan hệ rất đặc biệt và thú vị. Ta có thể đem ý tưởng của CV qua NLP, ví dụ như sử dụng phép toán convolution trong xử lý tính toán với văn bản, và ngược lại là đem ý tưởng của NLP qua CV, mà đặc biệt nổi tiếng gần đây là sử dụng Attention, Transformer trong CV. Việc kết hợp NLP và CV đã tạo ra nhiều kết quả rất nổi bật trong các ứng dụng như Image Captioning, Text-to-Image.</p>
+<ul>
+<li>Nếu mà kể tên ra thì ta có thể nhắc đến ngay mô hình rất ảo diệu là <strong>Stable Diffusion</strong> 😀</li>
+</ul>
+<p>Nền móng của NLP bắt nguồn từ những mô hình toán học và xác suất, đặc biệt là <strong>mô hình Markov</strong>. Khi Deep Learning bắt đầu phát triển mạnh mẽ, ta đã có thêm những mô hình khác với độ hiệu quả rất tuyệt vời như <strong>Recurrent Neural Network</strong>, <strong>Sequence to Sequence</strong>, <strong>Attention Mechanism</strong> và <strong>Transformer</strong>. Trong đó, Recurrent Neural Network, hay là RNN, là sự khởi đầu thú vị của Deep Learning trong NLP. Mô hình RNN cũng là sẽ chủ đề của bài viết này.</p>
+<h2 id="sequence-data-sequence-models">Sequence data, sequence models</h2>
+<h3 id="sequence-data">Sequence data</h3>
+<p>Ta có thể hiểu <strong>sequence data</strong> (dữ liệu dạng chuỗi) là dạng dữ liệu mà các giá trị trong đó được sắp xếp theo một trình tự không gian/thời gian nào đó và chúng có những mối liên hệ với nhau. Ví dụ:</p>
+<ul>
+<li><strong>Văn bản:</strong> Đây là dạng sequence data rất phổ biến. Các từ trong câu tất nhiên là được sắp xếp theo một trình tự nhất định để tạo ra được một câu có nghĩa</li>
+<li><strong>Âm thanh:</strong> Một đoạn ghi âm giọng nói, một bản nhạc</li>
+<li><strong>Video:</strong> Các frame (ảnh) của video theo các thời điểm liên tiếp nhau</li>
+<li><strong>Sinh học:</strong> Trình tự của một đoạn gen, dãy protein,…</li>
+<li><strong>Time series:</strong> Các dữ liệu thu thập theo thời gian như thị trường chứng khoán</li>
+</ul>
+<div>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/data_text.png'>
+<p align="center" style="margin: 0; color: #888;">Văn bản</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px"  src='./images/data_audio.png'>
+<p align="center" style="margin: 0; color: #888;">
+Âm thanh</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px"  src='./images/data_video.png'>
+<p align="center" style="margin: 0; color: #888;">
+Video</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px"  src='./images/data_time-series.png'>
+<p align="center" style="margin: 0; color: #888;">
+Time series</p>
+</div>
+</div>
+<p><strong>Lưu ý:</strong></p>
+<ul>
+<li>
+<p>Tùy theo dạng dữ liệu mà ta sẽ có cách “số hóa&quot; chúng sao cho các mô hình có thể tiến hành “học” được. Vì sao cần phải làm vậy? Vì máy tính chỉ hiểu được những con số, mà cụ thể hơn là chỉ hiểu 0 và 1 😀</p>
+</li>
+<li>
+<p>Trong bài viết này, mình sẽ tạm thời chưa đề cập đến điều này. Đối với dữ liệu dạng văn bản, các bạn có thể xem bài viết tiếp theo về <strong>Word Embeddings</strong> nhé.</p>
+</li>
+</ul>
+<h3 id="sequence-models">Sequence models</h3>
+<p>Khác với các dữ liệu dạng hình ảnh mà ta thường thấy trong Computer Vision, Natural Language Processing sẽ tập trung vào việc xử lý các dữ liệu dạng chuỗi. Do đó, các mô hình trong NLP thường được gọi là <strong>sequence model.</strong></p>
+<p>Để có sự phân biệt rõ hơn giữa sequence model và các model trong CV, ta thường xét đến <strong>input</strong> và <strong>các thức tính toán</strong> của chúng.</p>
+<ul>
+<li>Với model trong CV, input của ta sẽ là <strong>một</strong> ảnh xám hoặc là RGB (ma trận nhiều chiều). Trong quá trình tính toán, ta có thể thực hiện <strong>tính toán song song</strong> trên các giá trị đầu vào.</li>
+<li>Trong khi đó, sequence model sẽ nhận vào input là dữ liệu ở <strong>các giai đoạn khác nhau</strong>, mỗi giai đoạn thì ta sẽ có một vector hay một ma trận nhiều chiều. Khi tính toán, ta sẽ <strong>tính toán tuần tự từng giai đoạn một</strong>.
+<ul>
+<li>Ví dụ, với input là một câu văn bản thì từng giai đoạn sẽ ứng với từng từ, mỗi từ có thể được biểu diễn bởi một số hoặc một vector.</li>
+</ul>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 280px;" src='./images/sequence-model.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa sequence model <br>
+Nguồn: <a href="https://jeddy92.github.io/images/ts_intro/seq2seq_lang.png">Jeddy92</a>
+</p>
+</div>
+<p>Ta có minh họa input và output của các sequence model trong một vài bài toán phổ biến như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/sequence-model-2.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa sequence model <br>
+Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
+</p>
+</div>
+<h2 id="recurrent-neural-network-rnn">Recurrent Neural Network (RNN)</h2>
+<p>Để cho dễ diễn đạt, ta sẽ xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$, output là một câu có độ dài $T_y$ và những từ tương tứng là $y^{&lt; i &gt;}$.</p>
+<ul>
+<li>Thông thường, ta sẽ giả sử $T_x = T_y$ để bài toán đơn giản hơn một chút. Để thực hiện được thì chỉ đơn giản là padding các giá trị như số 0 vào để chúng bằng nhau thôi 😜</li>
+<li>Nếu bạn đang thắc mắc là có bài toán nào dạng như này thì hãy nghĩ đến Machine Translation.</li>
+</ul>
+<h3 id="hạn-chế-của-mô-hình-multi-layers-percentron">Hạn chế của mô hình Multi-layers Percentron</h3>
+<p>Một cách tự nhiên, ta hoàn toàn có thể xây dựng một mô hình <strong>MLP</strong> (Multi-layers Perceptron) với input layer có $T_x$ neurons, output layer có $T_y$ neurons như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/mlp.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa sử dụng MLP cho bài toán <br>
+Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
+</p>
+</div>
+<p>Với MLP thì ta đã thực hiện tính toán song song, tức là tính luôn trên toàn bộ input và cho ra output. Tuy nhiên, cách tiếp này có những hạn chế khá nghiêm trọng:</p>
+<ul>
+<li>Không phải câu input nào cũng có độ dài $T_x$ như nhau, output cũng vậy.</li>
+<li>Nếu các câu này có nhiều từ thì mô hình sẽ có rất nhiều trọng số.</li>
+<li>Mô hình không học được sự “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu. Ví dụ, đoạn “tôi đi học” xuất hiện trong câu input thì cho dù nó bắt đầu ở vị trí nào đi nữa, ta vẫn nên học được các đặc trưng rất tương tự nhau. Đây cũng là một trong những vấn đề dẫn đến CNN được áp dụng nhiều hơn vào dữ liệu ảnh chứ không phải là MLP.</li>
+</ul>
+<h3 id="ý-tưởng-của-rnn">Ý tưởng của RNN</h3>
+<p>Vì sequence data có một đặc điểm là <strong>thứ tự của các giá trị trong input</strong> là rất quan trọng nên ta thường thiên về hướng <strong>lần lượt xử lý trên từng vị trí một</strong>. Đồng thời, khi đi đến các vị trí sau thì ta cũng nên có những <strong>thông tin đã trích xuất được từ các vị trí trước</strong>. Ý tưởng của RNN chính là như vậy.</p>
+<p>Ta mô tả sơ lược về cách hoạt động của RNN như sau:</p>
+<ul>
+<li>Với điều kiện giả sử $T_x=T_y$, ta sẽ thực hiện tính toán $T_x$ lần, tại thời điểm (hay là vị trí) thứ $i$ thì từ $x^{&lt; i &gt;}$ (input) ta tính ra $y^{&lt; i &gt;}$ (output).</li>
+<li>Hơn nữa, để thực hiện thao tác <strong>lưu giữ các thông tin cho đến thời điểm hiện tại</strong> và đưa nó qua các thời điểm sau, ta cũng cần tính thêm một giá trị là  $h^{&lt; i &gt;}$ (giả sử luôn $h^{&lt;0&gt;} = 0$). Lúc này, ta gọi $h^{&lt; i &gt;}$ là <strong>trạng thái ẩn</strong> (hidden state)</li>
+<li>Như vậy, tại mỗi thời điểm thì ta cần tính ra $h^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$, dựa vào input là $x^{&lt; i &gt;}$ và thông tin từ những thời điểm trước được tổng hợp vào $h^{&lt;i - 1&gt;}$.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/rnn-1.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa ban đầu cho RNN<br>
+Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
+</p>
+</div>
+<p>Nhìn vào hình trên, ta có thể suy ra rằng những trọng số mà RNN cần học là ma trận trọng số của hidden layer ở các thời điểm. Để thuận tiện cho các phần sau, ta sẽ quy ước kí hiệu như sau:</p>
+<ul>
+<li>Vector input, output và hidden state tại thời điểm $t$ lần lượt là $\bold{X}_t \in \mathbb{R}^d$, $\bold{O}_t  \in \mathbb{R}^o$ và $\bold{H}_t \in \mathbb{R}^h$.</li>
+<li>Ma trận trọng số cho phép tính liên quan giữa $\bold{X}_t$ và $\bold{H}_t$ là $\bold{W}^{t}_{ xh } \in \mathbb{R}^{ h \times d }$.</li>
+<li>Tương tự như trên, ta có $\bold{W}^{t}_{hh}  \in \mathbb{R}^{h \times h}$ và $\bold{W}^{t}_{ho}  \in \mathbb{R}^{o \times h}$.</li>
+</ul>
+<p>Khi đó, ta có thể biểu diễn RNN như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 230px;" src='./images/rnn-2.png'>
+<p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://d2l.ai/_images/rnn.svg">Dive into DL</a>
+</p>
+</div>
+<h3 id="sự-chia-sẻ-trọng-số-giữa-các-thời-điểm">Sự chia sẻ trọng số giữa các thời điểm</h3>
+<p>Qua mô tả về cách hoạt động của RNN ở phần trước, ta thấy rằng nếu ở mỗi thời điểm mà ta cần dùng một bộ trọng số khác nhau thì lượng tham số của mô hình RNN sẽ lớn không kém gì MLP ở phần 3.1 😀 Ta không nên làm như vậy.</p>
+<p>Trong RNN, giữa các thời điểm sẽ có sự chia sẻ trọng số, tức là mọi thời điểm đều dùng cùng một bộ trọng số $(\bold{W}_{xh}, \bold{W}_{hh}, \bold{W}_{ho})$ để tính toán $\bold{O}_t$ và $\bold{H}_t$. Lợi ích của cách biểu diễn này bao gồm:</p>
+<ul>
+<li>Số lượng trọng số trong RNN sẽ giảm đi rất nhiều lần so với MLP</li>
+<li>Ta cũng có thể khắc phục được nhược điểm “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu.</li>
+</ul>
+<p>Khi đó, từ hình ở phần 3.2, sau khi chú thích vị trí các ma trận trọng số được sử dụng thì ta có hình sau:</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 230px;" src='./images/rnn-3.png'>
+</p>
+<p>Thay vì phải biểu diễn đủ các thời điểm, ta có thể viết gọn lại RNN như hình bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/rnn-4.png'>
+<p align="center" style="margin: 0; color: #888;"> Biểu diễn gọn hơn của Recurrent Neural Network
+</p>
+</div>
+<h3 id="quá-trình-feed-forward">Quá trình feed-forward</h3>
+<p>Đầu tiên, ta sẽ xem hidden state ban đầu là $\bold{H}_0 = \bold{0}$. Để đơn giản, ta sex bỏ qua các giá trị bias ứng với $\bold{H}_t$ và $\bold{O}_t$. Khi đó, quá trình feed-forward tại thời điểm $t &gt; 0$ diễn ra như sau:</p>
+<p>$$\begin{equation}
+\bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1})
+\end{equation}$$
+$$\begin{equation}
+\bold{O}_t = \phi_o (\bold{W}_{ho} \bold{H}_t)
+\end{equation}$$</p>
+<p>, với $\phi_h$ và $\phi_o$ là các activation function. Thông thường, $\phi_h$ là $ReLU$  hoặc $\tanh$ và $\phi_o$ thường là $\text{softmax}$.</p>
+<p>Như vậy, từ $\bold{X}_{t}$ và $\bold{H}_{t-1}$ ta sẽ tính được $\bold{H}_{t}$ và từ $\bold{H}_{t}$ thì ta sẽ tính được $\bold{O}_{t}$.</p>
+<p><strong>Nhận xét.</strong></p>
+<ul>
+<li>
+<p>Ta có thể nhận thấy rất rõ sự khác biệt giữa feed-forward trong RNN so với MLP. Với MLP thì nó chỉ cần hai phép toán là có luôn kết quả cuối cùng:</p>
+<p>$$\begin{equation*}
+\bold{H} = \phi_h (\bold{X} \bold{W}_{xh}^\top  )
+\end{equation*}$$
+$$\begin{equation*}
+\bold{O} = \phi_o (\bold{H} \bold{W}^\top _{ho} )
+\end{equation*}$$</p>
+<p>, với $\bold{X} \in \mathbb{R}^{n \times d}$ và $\bold{H}  \in \mathbb{R}^{n \times h}$ là các ma trận ứng với toàn bộ giá trị input và hidden state (trong RNN thì $\bold{X}_t$ và $\bold{H}_t$ là các vector).</p>
+</li>
+</ul>
+<h3 id="back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</h3>
+<p>Khi mà feed-forward trong RNN diễn ra khác với MLP thì tất nhiên là back-propagation cũng khác 😀 Thuật toán back-propagation trong sequence model được gọi là <strong>Back-propagation Through Time</strong> (BPTT).</p>
+<p>Đầu tiên, ta sẽ đề cập đến cost <strong>function</strong>. Giả sử output của RNN là $\bold{O}$ và label là $\bold{Y}$. Kí hiệu $l(\bold{O}_t, \bold{Y}_t)$ là loss tại thời điểm $t$. Khi đó cost function của ta là</p>
+<p>$$\begin{equation}
+L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
+\end{equation}$$</p>
+<ul>
+<li>Thực ra là ta có chia $L$ cho $T$ nữa nhưng để cho gọn thì thôi bỏ qua 😜</li>
+</ul>
+<p>Những gì ta cần thực hiện trong quá trình BPTT là tính đạo hàm của $L$ theo các ma trận trọng số $\bold{W}_{xh}$, $\bold{W}_{hh}$ và $\bold{W}_{ho}$. Điều đặc biệt ở đây là trong quá trình feed-forward thì $\bold{H}_{t-1}$ sẽ lại được dùng để tính $\bold{H}_t$ chứ nó không đi một “mạch&quot; từ $\bold{X}$ đến $\bold{H}$ rồi từ $\bold{H}$ đến $\bold{O}$ như trong feed-forward của MLP thông thường.</p>
+<p>Để công thức được gọn nhẹ hơn, ta sẽ giả sử luôn các activation function $\phi_h$ và $\phi_o$ là hàm đồng nhất, tức là $(f(\bold{x}) = \bold{x})$.</p>
+<p><strong>Quá trình BPPT diễn ra như sau:</strong></p>
+<ul>
+<li>
+<p>Đầu tiên, dễ nhất là tính đạo hàm $L$ theo $\bold{W}_{ho}$ 😀 Từ phương trình $(3)$ thì ta có ngay</p>
+<p>$$\begin{equation}
+\frac{\partial L}{\partial \bold{O}_{t}} = \frac{\partial l(\bold{O}_t, \bold{Y}_t)}{\partial \bold{O}_{t}}
+\end{equation}$$</p>
+<p>Do đó, kết hợp $(2)$ và $(4)$ thì</p>
+<p>$$
+\frac{\partial L}{\partial \bold{W}_{ho}} = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{O}_{t}} \frac{\partial \bold{O}_t}{\partial \bold{W}_{ho}}  \right ) = \sum_{t=1}^{T} \left (  \frac{\partial L}{\partial \bold{O}_{t}}\bold{H}_t^\top \right )
+$$</p>
+<p><strong>Lưu ý.</strong> Cách tính giá trị của $\dfrac{\partial l(\bold{O}_t, \bold{Y}_t)}{\partial \bold{O}_{t}}$ trong phương trình $(4)$ sẽ phụ thuộc vào hàm $l$ và thường thì nó rất dễ tính 😜</p>
+</li>
+<li>
+<p>Tiếp theo, ta có nhận xét sau:</p>
+<ul>
+<li>$\bold{H}_T$ chỉ tham gia vào một biểu thức trong quá trình feed-forward (để tính ra $\bold{O}_T$)</li>
+<li>$\bold{H}_{t}$ với $t &lt; T$ thì tham gia vào hai biểu thức (tính $\bold{H}_{t +1}$ và $\bold{O}_t$)</li>
+</ul>
+<p>Do đó, cách tính $\dfrac{\partial L}{\partial \bold{H}_{t}}$ sẽ có sự khác biệt tùy theo giá trị $t$.</p>
+<ul>
+<li>
+<p>Với $t = T$: Từ $(2)$ và $(4)$ ta có</p>
+<p>$$
+\frac{\partial L}{\partial \bold{H}_{T}} = \frac{\partial L}{\partial \bold{O}_{T}} \frac{\partial \bold{O}_T}{\partial \bold{H}_{T}} = \bold{W}_{ho}^\top \frac{\partial L}{\partial \bold{O}_{T}}
+$$</p>
+</li>
+<li>
+<p>Với $t &lt; T$: Từ $(1), (2)$ và $(4)$ thì</p>
+<p>$$
+\frac{\partial L}{\partial \bold{H}_{t}} = \frac{\partial L}{\partial \bold{O}_{t}} \frac{\partial \bold{O}_t}{\partial \bold{H}_{t}} + \frac{\partial L}{\partial \bold{H}_{t+1}} \frac{\partial \bold{H}_{t+1}}{\partial \bold{H}_{t}} = \bold{W}_{ho}^\top \frac{\partial L}{\partial \bold{O}_{t}}  + \bold{W}_{hh}^\top \frac{\partial L}{\partial \bold{H}_{t+1}}
+$$</p>
+<p>Cứ tiếp tục biến đổi tiếp với $\dfrac{\partial L}{\partial \bold{H}_{t+1}}$ và cứ như thế cho đến $T$, ta sẽ có</p>
+<p>$$\begin{equation}
+\frac{\partial L}{\partial \mathbf{H}_t}= \sum_{i=t}^T {\left(\mathbf{W}_{hh}^\top\right)}^{T-i} \mathbf{W}_{ho}^\top \frac{\partial L}{\partial \mathbf{O}_{T+t-i}}
+\end{equation}$$</p>
+<p>, và để ý rằng biểu thức $(5)$ cũng đúng với $t = T$.</p>
+</li>
+</ul>
+<p>Vậy từ $(1)$ và $(5)$ thì</p>
+</li>
+</ul>
+<p>$$\begin{equation}
+\frac{\partial L}{\partial \bold{W}_{xh}} = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \frac{\partial \bold{H}_t}{\partial \bold{W}_{xh}} \right ) =  = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \bold{X}_t^\top \right )
+\end{equation}$$</p>
+<p>$$\begin{equation}
+\frac{\partial L}{\partial \bold{W}_{hh}} = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \frac{\partial \bold{H}_t}{\partial \bold{W}_{hh}} \right ) =  = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{H}_{t}} \bold{H}_{t-1}^\top \right )
+\end{equation}$$</p>
+<h3 id="vấn-đề-vanishing-và-exploding-gradients-trong-rnn">Vấn đề vanishing và exploding gradients trong RNN</h3>
+<p>Qua các biểu thức $(6)$ và $(7)$ thì nếu giá trị $T$ lớn (tức là câu input gồm nhiều từ) thì sẽ có hai trường hợp xảy ra đối với các gradient $\dfrac{\partial L}{\partial \bold{W}_{xh}}$ và $\dfrac{\partial L}{\partial \bold{W}_{ho}}$:</p>
+<ul>
+<li><strong>Vanishing:</strong> Trong quá trình tính $\bold{W}_{hh}^\top$ có nhiều giá trị nhỏ hơn 1 được nhân với nhau.</li>
+<li><strong>Exploding:</strong> Ngược lại (lớn hơn 1).</li>
+</ul>
+<p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ.
+Đối với hiện tượng vanishing trong RNN, ta có thể diễn đạt nó một cách văn vở hơn là mô hình đã bị “quên” những thông tin tích lũy từ phía trước.</p>
+<ul>
+<li>
+<p>Ví dụ, ta có hai câu sau:</p>
+<ol>
+<li>The <strong>cat</strong>, which always … (very long descriptions) …, <strong>was</strong> very cute</li>
+<li>The <strong>cats</strong>, which always … (very long descriptions) …, <strong>were</strong> very cute</li>
+</ol>
+<p>Thông thường, ta động từ to-be gì ở trước “very cute” sẽ phụ thuộc vào danh từ ở đầu câu (”cat” hay “cats”). Tuy nhiên, nếu RNN bị vanishing gradient thì nó sẽ không thể nhớ được trước đó là cat hay cats để mà chọn động từ to-be cho đúng. 😀</p>
+</li>
+</ul>
+<p>Yếu tố này đã mở ra một hướng phát triển cho RNN là ta sẽ cố gắng tính toán thêm những phép toán khác để duy trì được các thông tin từ trước, từ phía xa mà RNN hiện tại không thể ghi nhớ được. Từ đó, ta có sự ra đời của <strong>Gated Recurrent Unit (GRU)</strong> và <strong>Long Short-Term Memory (LSTM)</strong>.</p>
+<h2 id="các-dạng-mô-hình-rnn">Các dạng mô hình RNN</h2>
+<p>Chúng ta để ý rằng dạng mô hình RNN mình đã trình bày ở phần trước đang nhận input là một câu và output của nó cũng là một câu. Dạng mô hình này còn gọi là <strong>many-to-many.</strong> Tùy vào bài toán cần giải quyết mà ta có các dạng như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/rnn-types.png'>
+<p align="center" style="margin: 0; color: #888;"> Các dạng của mô hình RNN<br>
+Nguồn: <a href="https://static.javatpoint.com/tutorial/tensorflow/images/tensorflow-types-of-rnn.png](https://static.javatpoint.com/tutorial/tensorflow/images/tensorflow-types-of-rnn.png">Javatpoint</a>
+</p>
+</div>
+<ul>
+<li><strong>One-to-one:</strong> Cái này thì rất thường thấy, ví dụ như Image Classification.</li>
+<li><strong>One-to-many:</strong> Có thể lấy ví dụ như bài toán sinh ra văn bản hoặc âm nhạc. Ta cung cấp input là một từ bất kì và mô hình sẽ tạo ra từ kế tiếp, ta lại đem từ này vào làm input để có từ tiếp theo.</li>
+<li><strong>Many-to-one:</strong> Bài toán Sentiment Anylysis, Mail fitlering,…</li>
+<li><strong>Many-to-many:</strong> Chủ yếu là bài toán Machine Translation.</li>
+</ul>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://arxiv.org/abs/1912.05911"  target="_blank" rel="noopener"
+    >Robin M. Schmidtm, Recurrent Neural Networks (RNNs): A gentle Introduction and Overview</a></li>
+<li><a class="link" href="https://d2l.ai/chapter_recurrent-neural-networks/rnn.html"  target="_blank" rel="noopener"
+    >Dive into DL, Recurrent Neural Network</a></li>
+<li><a class="link" href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning"  target="_blank" rel="noopener"
+    >DeepLearning.AI, Deep Learning Specialization, 5. Sequence Models</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/rnn/">rnn</a>
+        
+            <a href="/tags/sequence-data/">sequence-data</a>
+        
+            <a href="/tags/sequence-models/">sequence-models</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/densenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">DenseNet (2018)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

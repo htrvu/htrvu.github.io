@@ -6,7 +6,31 @@
         <description>Recent content in Tags on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 15 Feb 2023 11:17:46 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 15 Feb 2023 21:42:44 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>rnn</title>
+        <link>https://htrvu.github.io/tags/rnn/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/rnn/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>sequence-data</title>
+        <link>https://htrvu.github.io/tags/sequence-data/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/sequence-data/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>sequence-models</title>
+        <link>https://htrvu.github.io/tags/sequence-models/</link>
+        <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/sequence-models/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>cnn</title>
         <link>https://htrvu.github.io/tags/cnn/</link>
         <pubDate>Wed, 15 Feb 2023 11:17:46 +0700</pubDate>

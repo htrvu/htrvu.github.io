@@ -3,10 +3,34 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://htrvu.github.io/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/dl/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/nlp/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/rnn/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/rnn/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/sequence-data/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/sequence-models/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/</loc>
+    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/cnn/</loc>
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
@@ -17,9 +41,6 @@
     <loc>https://htrvu.github.io/categories/cv/</loc>
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/categories/dl/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/efficientnet/</loc>
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
@@ -27,12 +48,6 @@
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/grid-search/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/post/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/</loc>
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/depthwise-separable-convolution/</loc>
@@ -116,8 +131,6 @@
     <loc>https://htrvu.github.io/page/links/</loc>
   </url><url>
     <loc>https://htrvu.github.io/categories/ml/</loc>
-  </url><url>
-    <loc>https://htrvu.github.io/categories/nlp/</loc>
   </url><url>
     <loc>https://htrvu.github.io/page/search/</loc>
   </url>
