@@ -410,17 +410,17 @@ Time series</p>
 Nguồn: <a href="https://jeddy92.github.io/images/ts_intro/seq2seq_lang.png">Jeddy92</a>
 </p>
 </div>
-<p>Ta có minh họa input và output của các sequence model trong một vài bài toán phổ biến như sau:</p>
+<p>Sequence models được sử dụng cho nhiều bài toán phổ biến trong thực tế như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 350px;" src='./images/sequence-model-2.png'>
-<p align="center" style="margin: 0; color: #888;"> Minh họa sequence model <br>
+<p align="center" style="margin: 0; color: #888;">
 Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
 </p>
 </div>
 <h2 id="recurrent-neural-network-rnn">Recurrent Neural Network (RNN)</h2>
-<p>Để cho dễ diễn đạt, ta sẽ xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$, output là một câu có độ dài $T_y$ và những từ tương tứng là $y^{&lt; i &gt;}$.</p>
+<p>Để cho dễ diễn đạt, ta xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$, output là một câu có độ dài $T_y$ và những từ tương tứng là $y^{&lt; i &gt;}$.</p>
 <ul>
-<li>Thông thường, ta sẽ giả sử $T_x = T_y$ để bài toán đơn giản hơn một chút. Để thực hiện được thì chỉ đơn giản là padding các giá trị như số 0 vào để chúng bằng nhau thôi 😜</li>
+<li>Thông thường thì ta sẽ giả sử luôn $T_x = T_y$ để bài toán đơn giản hơn một chút. Để thực hiện được thì chỉ đơn giản là padding/truncate để chúng bằng nhau thôi 😜</li>
 <li>Nếu bạn đang thắc mắc là có bài toán nào dạng như này thì hãy nghĩ đến Machine Translation.</li>
 </ul>
 <h3 id="hạn-chế-của-mô-hình-multi-layers-percentron">Hạn chế của mô hình Multi-layers Percentron</h3>
@@ -451,7 +451,8 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
 </p>
 </div>
-<p>Nhìn vào hình trên, ta có thể suy ra rằng những trọng số mà RNN cần học là ma trận trọng số của hidden layer ở các thời điểm. Để thuận tiện cho các phần sau, ta sẽ quy ước kí hiệu như sau:</p>
+<p>Nhìn vào hình trên, ta có thể suy ra rằng những trọng số mà RNN cần học là ma trận trọng số của hidden layer ở các thời điểm.</p>
+<p>Để thuận tiện cho các phần sau, ta sẽ quy ước kí hiệu như sau:</p>
 <ul>
 <li>Vector input, output và hidden state tại thời điểm $t$ lần lượt là $\bold{X}_t \in \mathbb{R}^d$, $\bold{O}_t  \in \mathbb{R}^o$ và $\bold{H}_t \in \mathbb{R}^h$.</li>
 <li>Ma trận trọng số cho phép tính liên quan giữa $\bold{X}_t$ và $\bold{H}_t$ là $\bold{W}^{t}_{ xh } \in \mathbb{R}^{ h \times d }$.</li>
@@ -505,7 +506,7 @@ $$\begin{equation*}
 </ul>
 <h3 id="back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</h3>
 <p>Khi mà feed-forward trong RNN diễn ra khác với MLP thì tất nhiên là back-propagation cũng khác 😀 Thuật toán back-propagation trong sequence model được gọi là <strong>Back-propagation Through Time</strong> (BPTT).</p>
-<p>Đầu tiên, ta sẽ đề cập đến cost <strong>function</strong>. Giả sử output của RNN là $\bold{O}$ và label là $\bold{Y}$. Kí hiệu $l(\bold{O}_t, \bold{Y}_t)$ là loss tại thời điểm $t$. Khi đó cost function của ta là</p>
+<p>Đầu tiên, ta sẽ đề cập đến <strong>cost function</strong>. Giả sử output của RNN tại thời điểm $t$ là $\bold{O}_t$ và label là $\bold{Y}_t$. Kí hiệu $l(\bold{O}_t, \bold{Y}_t)$ là loss tại thời điểm $t$. Khi đó cost function của ta là</p>
 <p>$$\begin{equation}
 L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
 \end{equation}$$</p>
@@ -518,7 +519,7 @@ L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
 <p><strong>Quá trình BPPT diễn ra như sau:</strong></p>
 <ul>
 <li>
-<p>Đầu tiên, dễ nhất là tính đạo hàm $L$ theo $\bold{W}_{ho}$ 😀 Từ phương trình $(3)$ thì ta có ngay</p>
+<p>Đầu tiên, dễ nhất là tính đạo hàm $L$ theo $\bold{W}_{ho}$ 😀 Từ biểu thức $(3)$ thì ta có ngay</p>
 <p>$$\begin{equation}
 \frac{\partial L}{\partial \bold{O}_{t}} = \frac{\partial l(\bold{O}_t, \bold{Y}_t)}{\partial \bold{O}_{t}}
 \end{equation}$$</p>
@@ -526,7 +527,7 @@ L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
 <p>$$
 \frac{\partial L}{\partial \bold{W}_{ho}} = \sum_{t=1}^{T} \left ( \frac{\partial L}{\partial \bold{O}_{t}} \frac{\partial \bold{O}_t}{\partial \bold{W}_{ho}}  \right ) = \sum_{t=1}^{T} \left (  \frac{\partial L}{\partial \bold{O}_{t}}\bold{H}_t^\top \right )
 $$</p>
-<p><strong>Lưu ý.</strong> Cách tính giá trị của $\dfrac{\partial l(\bold{O}_t, \bold{Y}_t)}{\partial \bold{O}_{t}}$ trong phương trình $(4)$ sẽ phụ thuộc vào hàm $l$ và thường thì nó rất dễ tính 😜</p>
+<p><strong>Lưu ý.</strong> Cách tính giá trị của $\dfrac{\partial l(\bold{O}_t, \bold{Y}_t)}{\partial \bold{O}_{t}}$ trong biểu thức $(4)$ sẽ phụ thuộc vào hàm $l$ và thường thì nó rất dễ tính 😜</p>
 </li>
 <li>
 <p>Tiếp theo, ta có nhận xét sau:</p>
@@ -551,7 +552,7 @@ $$</p>
 <p>$$\begin{equation}
 \frac{\partial L}{\partial \mathbf{H}_t}= \sum_{i=t}^T {\left(\mathbf{W}_{hh}^\top\right)}^{T-i} \mathbf{W}_{ho}^\top \frac{\partial L}{\partial \mathbf{O}_{T+t-i}}
 \end{equation}$$</p>
-<p>, và để ý rằng biểu thức $(5)$ cũng đúng với $t = T$.</p>
+<p>Để ý rằng biểu thức $(5)$ cũng đúng với $t = T$.</p>
 </li>
 </ul>
 <p>Vậy từ $(1)$ và $(5)$ thì</p>
@@ -566,7 +567,7 @@ $$</p>
 <h3 id="vấn-đề-vanishing-và-exploding-gradients-trong-rnn">Vấn đề vanishing và exploding gradients trong RNN</h3>
 <p>Qua các biểu thức $(6)$ và $(7)$, ta thấy rằng nếu giá trị $T$ lớn (tức là câu input gồm rất nhiều từ) thì sẽ có hai trường hợp xảy ra đối với các giá trị gradient $\dfrac{\partial L}{\partial \bold{W}_{xh}}$ và $\dfrac{\partial L}{\partial \bold{W}_{ho}}$:</p>
 <ul>
-<li><strong>Vanishing:</strong> Trong quá trình tính $\bold{W}_{hh}^\top$ có nhiều giá trị nhỏ hơn 1 được nhân với nhau.</li>
+<li><strong>Vanishing:</strong> Trong quá trình tính $\left ( \bold{W}_{hh}^\top \right ) ^ {T-i}$ có nhiều giá trị nhỏ hơn 1 được nhân với nhau.</li>
 <li><strong>Exploding:</strong> Ngược lại (lớn hơn 1).</li>
 </ul>
 <p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ.</p>
