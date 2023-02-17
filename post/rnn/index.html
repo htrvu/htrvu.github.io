@@ -247,6 +247,7 @@
         <li><a href="#quá-trình-feed-forward">Quá trình feed-forward</a></li>
         <li><a href="#back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</a></li>
         <li><a href="#vấn-đề-vanishing-và-exploding-gradients-trong-rnn">Vấn đề vanishing và exploding gradients trong RNN</a></li>
+        <li><a href="#quá-trình-huấn-luyện-và-sử-dụng-mô-hình-rnn-trong-thực-tế">Quá trình huấn luyện và sử dụng mô hình RNN trong thực tế</a></li>
       </ol>
     </li>
     <li><a href="#các-dạng-mô-hình-rnn">Các dạng mô hình RNN</a></li>
@@ -323,7 +324,7 @@
 
 
                 <time class="article-time--reading">
-                    14 minute read
+                    15 minute read
                 </time>
             </div>
         
@@ -583,6 +584,28 @@ $$</p>
 </li>
 </ul>
 <p>Yếu tố này đã mở ra một hướng phát triển cho RNN là ta sẽ cố gắng tính toán thêm những phép toán khác để duy trì được các thông tin từ trước, từ phía xa mà RNN hiện tại không thể ghi nhớ được. Từ đó, ta có sự ra đời của <strong>Gated Recurrent Unit (GRU)</strong> và <strong>Long Short-Term Memory (LSTM)</strong>.</p>
+<h3 id="quá-trình-huấn-luyện-và-sử-dụng-mô-hình-rnn-trong-thực-tế">Quá trình huấn luyện và sử dụng mô hình RNN trong thực tế</h3>
+<p>Đối với các mô hình ML hay CNN thông thường, những thao tác diễn ra trong bước huấn luyện (training) và sử dụng trong thực tế (testing) là rất giống nhau: Từ một intput cho ra một output và chỉ như vậy là xong (ta tạm bỏ qua back-propagation).</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/cnn.jpg'>
+<p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://towardsdatascience.com/convolutional-neural-network-a-step-by-step-guide-a8b4c88d6943">Towards Data Science</a>
+</p>
+</div>
+<p>Tuy nhiên, trong RNN thì training và testing sẽ có sự khác biệt khá rõ rệt. Đối với training, ở mỗi thời điểm thì ta sẽ luôn có input và label ứng với thời điểm đó. Tuy nhiên, trong testing thì ta chỉ có duy nhất input cho <strong>thời điểm đầu tiên</strong> và input của những thời điểm sau chính là output của thời điểm trước đó.</p>
+<p>Ta xét ví dụ với bài toán xây dựng mô hình RNN sinh ra đoạn văn bản như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/rnn-practice.png'>
+<p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://ml-lectures.org/_images/generative_RNN2.png">ML Lectures</a>
+</p>
+</div>
+<ul>
+<li>
+<p>Trong training, từ một câu có $T_x$ từ là $x_1, x_2,&hellip;, x_{T_x}$ thì ta sẽ tạo ra được một training sample với $(T_x + 1)$ thời điểm, ở thời điểm $t$ thì input và label lần lượt là $x_t$ và $x_{t+1}$ (giả sử  $x_0$ và $x_{T_x + 1}$ lần lượt là các từ đặc biệt nhằm báo hiệu bắt đầu và kết thúc đoạn).</p>
+</li>
+<li>
+<p>Trong testing, từ một từ ban đầu là $x_1$ (thường là từ bắt đầu đoạn văn bản), ta sẽ có testing sample với 1 thời điểm. Sau khi qua RNN, ta có thêm từ mới là $y_1$. Sau đó, $y_1$ được sử dụng như là input của thời điểm thứ hai, đưa qua RNN và có tiếp từ $y_2$. Quá trình cứ lặp lại cho đến khi đã sinh ra đủ số từ chúng ta cần hoặc là từ được sinh ra chính là từ kết thúc đoạn.</p>
+</li>
+</ul>
 <h2 id="các-dạng-mô-hình-rnn">Các dạng mô hình RNN</h2>
 <p>Chúng ta để ý rằng dạng mô hình RNN mình đã trình bày ở phần trước đang nhận input là một câu và output của nó cũng là một câu. Dạng mô hình này còn gọi là <strong>many-to-many.</strong> Tùy vào bài toán cần giải quyết mà ta có các dạng như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -594,7 +617,7 @@ Nguồn: <a href="https://static.javatpoint.com/tutorial/tensorflow/images/tenso
 <ul>
 <li><strong>One-to-one:</strong> Cái này thì rất thường thấy, ví dụ như Image Classification.</li>
 <li><strong>One-to-many:</strong> Có thể lấy ví dụ như bài toán sinh ra văn bản hoặc âm nhạc. Ta cung cấp input là một từ bất kì và mô hình sẽ tạo ra từ kế tiếp, ta lại đem từ này vào làm input để có từ tiếp theo.</li>
-<li><strong>Many-to-one:</strong> Bài toán Sentiment Anylysis, Mail fitlering,…</li>
+<li><strong>Many-to-one:</strong> Bài toán Sentiment Analysis, Mail fitlering,…</li>
 <li><strong>Many-to-many:</strong> Chủ yếu là bài toán Machine Translation.</li>
 </ul>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
