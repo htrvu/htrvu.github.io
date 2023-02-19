@@ -324,7 +324,7 @@
 
 
                 <time class="article-time--reading">
-                    15 minute read
+                    16 minute read
                 </time>
             </div>
         
@@ -419,24 +419,29 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 </p>
 </div>
 <h2 id="recurrent-neural-network-rnn">Recurrent Neural Network (RNN)</h2>
-<p>Để cho dễ diễn đạt, ta xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$, output là một câu có độ dài $T_y$ và những từ tương tứng là $y^{&lt; i &gt;}$.</p>
+<p>Để cho dễ diễn đạt, ta xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$ có $D$ chiều, output là một câu có độ dài $T_y$ và những từ tương ứng được biểu diễn là $y^{&lt; i &gt;}$ (tương tự như $x^{&lt; i &gt;}$).</p>
 <ul>
 <li>Thông thường thì ta sẽ giả sử luôn $T_x = T_y$ để bài toán đơn giản hơn một chút. Để thực hiện được thì chỉ đơn giản là padding/truncate để chúng bằng nhau thôi 😜</li>
 <li>Nếu bạn đang thắc mắc là có bài toán nào dạng như này thì hãy nghĩ đến Machine Translation.</li>
 </ul>
 <h3 id="hạn-chế-của-mô-hình-multi-layers-percentron">Hạn chế của mô hình Multi-layers Percentron</h3>
-<p>Một cách tự nhiên, ta hoàn toàn có thể xây dựng một mô hình <strong>MLP</strong> (Multi-layers Perceptron) với input layer có $T_x$ neurons, output layer có $T_y$ neurons như sau:</p>
+<p>Một cách tự nhiên, ta hoàn toàn có thể xây dựng một mô hình <strong>MLP</strong> (Multi-layers Perceptron) với input layer có $T_x \times D$ neurons, output layer cũng có $T_y \times D$ neurons và ở giữa là các hidden layer.</p>
+<p>Nhằm mục đích minh họa, mình sẽ chỉ biểu diễn mỗi vector $x^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$ là một neuron. Khi đó, kiến trúc của mô hình MLP sẽ có dạng như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 200px;" src='./images/mlp.png'>
-<p align="center" style="margin: 0; color: #888;"> Minh họa sử dụng MLP cho bài toán <br>
+<p align="center" style="margin: 0; color: #888;"> Minh họa sử dụng MLP cho bài toán đặt ra<br>
 Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning">deeplearning.ai</a>
 </p>
 </div>
 <p>Với MLP thì ta đã thực hiện tính toán song song, tức là tính luôn trên toàn bộ input và cho ra output. Tuy nhiên, cách tiếp này có những hạn chế khá nghiêm trọng:</p>
 <ul>
 <li>Không phải câu input nào cũng có độ dài $T_x$ như nhau, output cũng vậy.</li>
-<li>Nếu các câu này có nhiều từ thì mô hình sẽ có rất nhiều trọng số.</li>
-<li>Mô hình không học được sự “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu. Ví dụ, cụm từ “tôi đi học” xuất hiện trong câu input thì cho dù nó bắt đầu ở vị trí nào đi nữa, ta vẫn nên học được các đặc trưng rất tương tự nhau. Đây cũng là một trong những vấn đề dẫn đến CNN được áp dụng nhiều hơn vào dữ liệu ảnh chứ không phải là MLP.</li>
+<li>Nếu các câu này có nhiều từ và mỗi từ được biểu diễn bởi vector có số chiều lớn thì mô hình sẽ có rất rất nhiều trọng số.</li>
+<li>Mô hình không học được sự “chia sẻ đặc trưng” giữa các vị trí khác nhau trong câu. Ví dụ, cụm từ “tôi đi học” xuất hiện trong câu input thì cho dù nó bắt đầu ở vị trí nào đi nữa, ta vẫn nên học được các đặc trưng rất tương tự nhau.
+<ul>
+<li><strong>Lưu ý.</strong> Đây cũng là một trong những vấn đề dẫn đến mô hình CNN được áp dụng nhiều hơn trong lĩnh vực Computer Vision chứ không phải là MLP.</li>
+</ul>
+</li>
 </ul>
 <h3 id="ý-tưởng-của-rnn">Ý tưởng của RNN</h3>
 <p>Vì sequence data có một đặc điểm là <strong>thứ tự của các giá trị trong input</strong> là rất quan trọng nên ta thường thiên về hướng <strong>lần lượt xử lý trên từng vị trí một</strong>. Đồng thời, khi đi đến các vị trí sau thì ta cũng nên có những <strong>thông tin đã trích xuất được từ các vị trí trước</strong>. Ý tưởng của RNN chính là như vậy.</p>
