@@ -232,7 +232,7 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#one-hot-encoding">One-hot encoding</a>
+    <li><a href="#one-hot-encoding">One-hot Encoding</a>
       <ol>
         <li><a href="#ý-tưởng">Ý tưởng</a></li>
         <li><a href="#hạn-chế-one-hot-encoding">Hạn chế one-hot encoding</a></li>
@@ -343,14 +343,14 @@
     <section class="article-content">
     
     
-    <p>Trong bài viết về RNN, mình đã đề cập khá kỹ về mô hình này nhưng để ứng dụng được nó vào các bài toán thì ta cần phải làm thêm bước “số hóa” dữ liệu từ văn bản sao cho máy tính có thể hiểu được.</p>
+    <p>Trong bài viết về <a class="link" href="https://htrvu.github.io/post/rnn/" >Recurrent Neural Network</a>, mình đã đề cập khá kỹ về mô hình này nhưng để ứng dụng được nó vào các bài toán thì ta cần phải làm thêm bước “số hóa” dữ liệu từ văn bản sao cho máy tính có thể hiểu được.</p>
 <ul>
 <li>Nếu máy tính hiểu được càng nhiều về các từ thì nghĩa là cách số hóa càng có hiệu quả. Do đó, ta cần quan tâm đến vấn đề “hiểu”. Hiểu như thế nào là đủ tốt? 😀</li>
 </ul>
-<p>Đối với NLP, ta có những phương pháp (hay có thể nói là kỹ thuật) biểu diễn từ phổ biến là <strong>one-hot encoding</strong>, <strong>TF-IDF</strong> và <strong>Word Embedding</strong>. Nội dung của bài viết này sẽ tập trung vào one-hot encoding và Word Embedding.</p>
-<h2 id="one-hot-encoding">One-hot encoding</h2>
+<p>Đối với NLP, ta có những phương pháp (hay có thể nói là kỹ thuật) biểu diễn từ phổ biến là <strong>One-hot Encoding</strong>, <strong>TF-IDF</strong> và <strong>Word Embedding</strong>. Nội dung của bài viết này sẽ tập trung vào One-hot Encoding và Word Embedding.</p>
+<h2 id="one-hot-encoding">One-hot Encoding</h2>
 <h3 id="ý-tưởng">Ý tưởng</h3>
-<p><strong>Từ điển (vocabulary)</strong> là một thành phần không thể thiếu của mọi hệ thống ngôn ngữ. Những từ ta dùng thường ngày hầu như là sẽ nằm ở một vị trí nào đó trong từ điển (có thể các từ địa phương thì sẽ không có). One-hot encoding là phương pháp biểu diễn từ bằng chính thông tin vị trí này.</p>
+<p><strong>Từ điển (vocabulary)</strong> là một thành phần không thể thiếu của mọi hệ thống ngôn ngữ. Những từ ta dùng thường ngày hầu như là sẽ nằm ở một vị trí nào đó trong từ điển (có thể các từ địa phương thì sẽ không có). One-hot Encoding là phương pháp biểu diễn từ bằng chính thông tin vị trí này.</p>
 <ul>
 <li>Với những từ không có trong từ điển thì ta thường sử dụng một giá trị vị trí đặc biệt để cho biết từ đó là <strong>unknown</strong>.</li>
 </ul>
