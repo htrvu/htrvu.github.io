@@ -243,10 +243,9 @@
         <li><a href="#ý-tưởng-1">Ý tưởng</a></li>
         <li><a href="#tính-chất-của-word-embedding">Tính chất của Word Embedding</a></li>
         <li><a href="#sử-dụng-word-embedding-trong-rnn">Sử dụng Word Embedding trong RNN</a></li>
-        <li><a href="#học-word-embedding">Học Word Embedding</a>
+        <li><a href="#embedding-matrix">Embedding matrix</a></li>
+        <li><a href="#word2vec">Word2vec</a>
           <ol>
-            <li><a href="#embedding-matrix">Embedding matrix</a></li>
-            <li><a href="#word2vec">Word2vec</a></li>
             <li><a href="#skip-gram">Skip-gram</a></li>
             <li><a href="#cbow-continuous-bag-of-words">CBoW (Continuous Bag of Words)</a></li>
             <li><a href="#trích-xuất-embedding-matrix">Trích xuất embedding matrix</a></li>
@@ -510,8 +509,7 @@ word-embedding-with-rnn.png</li>
 <ul>
 <li>Khi sử dụng Word Embedding trong RNN thì thường ta sẽ dùng theo hướng <strong>transfer learning</strong> hoặc <strong>fine-tuning</strong>. Điều này có nghĩa là các embedding vector của mỗi từ có thể đã được cung cấp sẵn, ta chỉ việc đem vào dùng trong mô hình là đủ và nếu cần thiết thì cũng sẽ tiếp tục huấn luyện trên nền tảng đã có.</li>
 </ul>
-<h3 id="học-word-embedding">Học Word Embedding</h3>
-<h4 id="embedding-matrix">Embedding matrix</h4>
+<h3 id="embedding-matrix">Embedding matrix</h3>
 <p>Ở các phần trên thì ta chỉ mới nêu sơ lược về phương pháp Word Embedding chứ chưa đề cập đến việc làm thế nào để xây dựng được các vector biểu diễn từ như vậy. Đầu tiên, thứ chúng ta cần xây dựng trong Word Embedding được gọi là <strong>embedding matrix</strong> (kí hiệu là $E$), với số dòng là số đặc trưng được dùng để mô tả cho mỗi từ và số cột bằng với số từ trong từ điển.</p>
 <ul>
 <li>
@@ -535,7 +533,7 @@ $$</p>
 <li><strong>GloVe</strong> (Global Vector for word representations): Mạnh hơn Word2vec, có sử dụng thêm những kỹ thuật liên quan đến xác suất thống kê.</li>
 </ol>
 <p>Trong bài viết này, mình sẽ tập trung vào word2vec.</p>
-<h4 id="word2vec">Word2vec</h4>
+<h3 id="word2vec">Word2vec</h3>
 <p>Word2vec là một mô hình rất đơn giản và nổi tiếng trong việc tạo embedding matrix. Ý tưởng của word2vec xuất phát từ hai nhận xét sau:</p>
 <ul>
 <li>Hai từ thường xuất hiện trong các ngữ cảnh tương tự nhau thì có thể có quan hệ gần gũi nhau về mặt ngữ nghĩa.</li>
@@ -553,7 +551,7 @@ $$</p>
 </div>
 <p><strong>Lưu ý.</strong></p>
 <ul>
-<li>Từ phương pháp word2vec, ta sẽ có <strong>hai embedding vector cho mỗi từ</strong>, ứng với hai trường hợp là từ đó đóng vai trò target word và context word. Lý do là ví trong mỗi tình huống thì ngữ nghĩa của nó có thể sẽ khác nhau.</li>
+<li>Từ phương pháp word2vec, ta sẽ có <strong>hai embedding vector cho mỗi từ</strong>, ứng với hai trường hợp là từ đó đóng vai trò target word và context word. Lý do là vì trong mỗi tình huống thì ngữ nghĩa của nó có thể sẽ khác nhau.</li>
 </ul>
 <p>Trong word2vec, ta sẽ đi xây dựng một mô hình <strong>MLP (Multi-layer Perceptron</strong>, hay nói cách khác là Neural Network) chỉ gồm <strong>1 hidden layer</strong>, với mục đích có thể là:</p>
 <ol>
@@ -609,7 +607,7 @@ $$</p>
 </ul>
 <p>$$P_0 = P(\text{&ldquo;học&rdquo;} | \overline{word})$$</p>
 <ul>
-<li>Để dễ mình họa, ta xét hai context words “em”, “toán” của target word “học”. Khi đó, mô hình CBoW sẽ có dạng như hình bên dưới, với $\bold{V}$ và $\bold{U}$ là ma trận trọng số giữa layer input-hidden và hidden-output. Lưu ý rằng, sau khi tính ra output tại hidden layer của các context word thì ta sẽ thực hiện thao tác <strong>tính trung bình</strong> để có một vector trung bình, sau đó mới tính ra predicted word.</li>
+<li>Để dễ minh họa, ta xét hai context words “em”, “toán” của target word “học”. Khi đó, mô hình CBoW sẽ có dạng như hình bên dưới, với $\bold{V}$ và $\bold{U}$ là ma trận trọng số giữa layer input-hidden và hidden-output. Lưu ý rằng, sau khi tính ra output tại hidden layer của các context word thì ta sẽ thực hiện thao tác <strong>tính trung bình</strong> để có một vector trung bình, sau đó mới tính ra predicted word.</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 350px;" src='./images/cbow.png'>
@@ -637,15 +635,15 @@ $$</p>
 <p>Nghe rất là ảo, nhưng mà nó có tồn tại 😅 Điều này xảy ra phần lớn là do kho dữ liệu văn bản mà chúng ta sử dụng để xây dựng embedding matrix.</p>
 <p>Để lấy ví dụ, mình sẽ xét trường hợp liên quan đến <strong>giới tính</strong>. Cùng quay lại bài toán Analogy Reasoning trong phần <strong>2.2</strong>:</p>
 <ul>
-<li>Với 3 từ “man”, “woman” và “king” thì ta có thể tìm được từ “queen” sao cho quan hệ giữa “king” và “queen” sẽ tương tự với “man&quot; và “woman”.</li>
-<li>Bây giờ giả sử ta có “man”, “doctor”, “woman” và cần tìm từ X sao cho quan hệ giữa X và “woman” tương tự như “man&quot; và “doctor”. Nếu kho dữ liệu liên quan phần lớn đến việc người đàn ông là trụ cột trong gia đình (xã hội thời xa xưa) thì kết quả X rất có thể là “babysitter” (người trông trẻ). Như vậy, đã có vấn đề thiên vị (biasing) nam giới.</li>
+<li>Với 3 từ “man”, “woman” và “king” thì ta có thể tìm được từ “queen” sao cho quan hệ giữa “king” và “queen” sẽ tương tự như giữa “man&quot; và “woman”.</li>
+<li>Bây giờ giả sử ta có “man”, “doctor”, “woman” và cần tìm từ X sao cho quan hệ giữa “woman” và X tương tự như giữa “man&quot; và “doctor”. Nếu kho dữ liệu liên quan phần lớn đến việc người đàn ông là trụ cột trong gia đình (xã hội thời xa xưa) thì kết quả X rất có thể là “babysitter” (người trông trẻ). Như vậy, đã có vấn đề thiên vị cho nam giới.</li>
 </ul>
 <p>Để hạn chế vấn đề này, ta có một số phương pháp như <strong>Hard Debiasing</strong>, <strong>Soft Debiasing</strong>. Mình sẽ không đề cập đến những phương pháp này ở đây, các bạn có thể tự tìm đọc nhé 😀 Nó phần lớn là liên quan đến các phép biến đổi toán học.</p>
 <p>Dưới đây là minh họa cho vấn đề thiên vị mà mình đã lấy ví dụ ở trên để cho các bạn dễ hình dung:</p>
 <ul>
 <li>Đầu tiên, hướng thay đổi giới tính là từ trái qua phải. Vì vấn đề thiên vị đang xảy ra liên quan đến giới tính nên ta gọi đây là <strong>bias direction</strong>.</li>
 <li>Trước khi điều chỉnh, ta thấy embedding vector của doctor nghiêng về phía bên nam giới hơn, tương tự như babysitter.</li>
-<li>Sau khi hạn chế vấn đề thiên vị điều chỉnh, các embedding vector của doctor và baby sitter nên nghiêng về phía “công bằng” hơn đối với hai giới tính, tức là hướng <strong>trực giao</strong> với bias direction.</li>
+<li>Sau khi hạn chế vấn đề thiên vị điều chỉnh, các embedding vector của doctor và baby sitter nên nghiêng về phía “công bằng” hơn đối với hai giới tính, tức là hướng <strong>trực giao</strong> với hướng bias direction  tại vị trí trung bình.</li>
 </ul>
 <div>
 <div style="display: flex; justify-content: space-around;">
