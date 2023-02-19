@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Mô tả bản chất ý tưởng skip connection, giới thiệu kiến trúc và cách cài đặt mô hình ResNet.'>
 <title>Resnet (2015)</title>
 
 <link rel='canonical' href='https://htrvu.github.io/post/resnet/'>
 
 <link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Resnet (2015)'>
-<meta property='og:description' content='Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.'>
+<meta property='og:description' content='Mô tả bản chất ý tưởng skip connection, giới thiệu kiến trúc và cách cài đặt mô hình ResNet.'>
 <meta property='og:url' content='https://htrvu.github.io/post/resnet/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='cnn' /><meta property='article:tag' content='resnet' /><meta property='article:tag' content='skip connection' /><meta property='article:published_time' content='2023-02-08T17:41:09&#43;07:00'/><meta property='article:modified_time' content='2023-02-08T17:41:09&#43;07:00'/>
 <meta name="twitter:title" content="Resnet (2015)">
-<meta name="twitter:description" content="Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.">
+<meta name="twitter:description" content="Mô tả bản chất ý tưởng skip connection, giới thiệu kiến trúc và cách cài đặt mô hình ResNet.">
     <link rel="shortcut icon" href="/neural.png" />
 
     </head>
@@ -232,9 +232,20 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li><a href="#giới-thiệu">Giới thiệu</a></li>
-    <li><a href="#hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</a></li>
-    <li><a href="#residual-block">Residual block</a></li>
+    <li><a href="#khó-khăn-trong-huấn-luyện-mô-hình-lớn">Khó khăn trong huấn luyện mô hình lớn</a></li>
+    <li><a href="#hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</a>
+      <ol>
+        <li><a href="#ý-tưởng-về-hàm-phần-dư">Ý tưởng về hàm phần dư</a></li>
+        <li><a href="#skip-connection">Skip connection</a></li>
+        <li><a href="#vấn-đề-exploding-gradient">Vấn đề exploding gradient</a></li>
+      </ol>
+    </li>
+    <li><a href="#residual-block">Residual block</a>
+      <ol>
+        <li><a href="#các-loại-residual-block">Các loại residual block</a></li>
+        <li><a href="#thứ-tự-thực-hiện-các-phép-toán">Thứ tự thực hiện các phép toán</a></li>
+      </ol>
+    </li>
     <li><a href="#kiến-trúc-resnet">Kiến trúc ResNet</a></li>
     <li><a href="#cài-đặt">Cài đặt</a></li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
@@ -274,7 +285,7 @@
     
         
         <h3 class="article-subtitle">
-            Giới thiệu ý tưởng, kiến trúc và cách cài đặt mô hình ResNet. Mô tả ý nghĩa đằng sau và sức mạnh của skip connection.
+            Mô tả bản chất ý tưởng skip connection, giới thiệu kiến trúc và cách cài đặt mô hình ResNet.
         </h3>
         
     </div>
@@ -310,7 +321,7 @@
 
 
                 <time class="article-time--reading">
-                    7 minute read
+                    11 minute read
                 </time>
             </div>
         
@@ -325,35 +336,51 @@
     <section class="article-content">
     
     
-    <h2 id="giới-thiệu">Giới thiệu</h2>
+    <h2 id="khó-khăn-trong-huấn-luyện-mô-hình-lớn">Khó khăn trong huấn luyện mô hình lớn</h2>
 <p>Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:</p>
 <p style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 220px;" src='./images/shallow_deep.png'>
 </p>
 <p>Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</p>
 <ul>
-<li>Overfitting: Mô hình càng sâu thường sẽ càng phức tạp nên nó rất dễ bị overfitting.</li>
-<li>Vanishing/exploding gradient. Vấn đề này thì ta đã có một số cách giải quyết phổ biến như thay đổi activation function, các phương pháp khởi tạo trọng số như Xavier, He Initialization.</li>
+<li><strong>Overfitting:</strong> Mô hình càng sâu thường sẽ càng phức tạp nên nó rất dễ bị overfitting.</li>
+<li><strong>Vanishing/exploding gradient:</strong> Vấn đề này thì ta đã có một số cách giải quyết phổ biến như thay đổi activation function, các phương pháp khởi tạo trọng số như He Initialization.
+<ul>
+<li>Trong He Initialization, tại mỗi layer thì ta khởi tạo các giá trị bias với gái trị 0, các trọng số sẽ tuân theo phân phối chuẩn với kỳ vọng 0, phương sai $\dfrac{2}{D_h}$, trong đó $D_h$ là số units của layer liền trước layer hiện tại.</li>
+</ul>
+</li>
 </ul>
 <p>Ngoài 2 vấn đề trên, ta có một vấn đề đặc biệt hơn là <strong>degradation</strong>: Accuracy tăng dần cho đến một độ sâu nhất định thì ngừng tăng (bão hòa) rồi sau đó sẽ giảm dần.</p>
-<ul>
-<li><strong>Lưu ý.</strong> Nhiều trường hợp degradation không phải do overfitting gây ra.</li>
-</ul>
+<p>Lưu ý rằng, nhiều trường hợp degradation không phải do overfitting gây ra. Khi mô hình có độ phức tạp đủ lớn, những sự thay đổi dù là rất nhỏ trong trọng số cũng sẽ gây ra sự biến thiên lớn trong giá trị của gradient, điều này dẫn đến các bước cập nhật trọng số qua những lần chạy gradient descent sẽ không mang lại lợi ích gì nhiều mà còn có thể khiến quá trình huấn luyện &ldquo;đi lạc&rdquo;.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 220px;" src='./images/degradation.png'>
+<p align="center" style="margin: 0; color: #888;">Sự biến thiên của gradient khi trọng số thay đổi trong các mô hình<br>(a) Mô hình chỉ có 1 hidden layer; (b) Mô hình có độ sâu lớn với 24 hidden layers<br>
+Nguồn: <a href="https://github.com/udlbook/udlbook">Understanding Deep Learning - Simon J.D. Prince</a>
+</p>
+</div>
 <p>Degradation cho chúng ta thấy rằng việc tối ưu các mô hình có độ sâu lớn là không hề dễ dàng. Trong quá trình xây dựng mô hình, từ một mô hình ban đầu, sau khi thêm một số layer vào thì tất nhiên là ta mong rằng <strong>mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc</strong>. Tuy nhiên, khi xảy ra degradation thì mong muốn đó đã không thể thành sự thật được. 😀</p>
 <p>ResNet được công bố nhằm giải quyết vấn đề degradation đối với các mô hình có độ sâu lớn. Khi nhắc đến ResNet thì ta sẽ lập tức nghĩ đến những mô hình với độ sâu rất khủng, thậm chỉ là lên đến 100, 200 layer.</p>
 <h2 id="hàm-phần-dư-và-skip-connection">Hàm phần dư và skip connection</h2>
-<p>Nhắc lại về cái mong muốn ở trên, rằng mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc, ta có thể nghĩ ngay đến một phương pháp cực kì đơn giản: các layer phía sau sẽ là <strong>identity mapping</strong>, tức là input và output của nó sẽ giống nhau. Với cách làm này thì hiển nhiên là ta đạt được mong muốn rồi, vì độ hiệu quả của mô hình mới và mô hình gốc rõ ràng sẽ y hệt nhau.</p>
+<h3 id="ý-tưởng-về-hàm-phần-dư">Ý tưởng về hàm phần dư</h3>
+<p>Nhắc lại về cái mong muốn ở phần trước, rằng mô hình mới phải có độ hiệu quả ít nhất là ngang mô hình gốc, ta có thể nghĩ ngay đến một phương pháp cực kì đơn giản: các layer phía sau sẽ là <strong>identity mapping</strong>, tức là input và output của nó sẽ giống nhau. Với cách làm này thì hiển nhiên là ta đạt được mong muốn rồi, vì độ hiệu quả của mô hình mới và mô hình gốc rõ ràng sẽ y hệt nhau.</p>
 <ul>
 <li>Tuy nhiên, nếu chỉ dừng lại ở đó thôi thì thêm layer vào làm gì :v Ta muốn đạt được kết quả tốt hơn!</li>
 </ul>
 <p>Các tác giả của paper ResNet giới thiệu một phương pháp gọi là <strong>deep residual learning</strong> (học phần dư).</p>
 <ul>
-<li>Giả sử ta có một block <strong>B</strong> các layer, input của nó là $x$. Với một mô hình thông thường, ta sẽ “học” một hàm số đầu ra mong muốn là $f(x)$. Lúc này, ban đầu thì ta hoàn toàn chưa có một thông tin gì về $f(x)$ cả, việc “học” sẽ xuất phát từ một đại lượng ngẫu nhiên.</li>
-<li>Đối với phương pháp deep residual learning, output của block <strong>B</strong> sẽ có dạng $h(x) = x + f(x)$, và ta sẽ đi học $f(x)$. Lúc này, $f(x)$ được gọi là <strong>residual function</strong> (hàm phần dư)</li>
-<li>Ta có các nhận xét sau:
+<li>
+<p>Giả sử ta có một block $B$ các layer, input của nó là $\bold{x}$. Với một mô hình thông thường, ta sẽ “học” một hàm số đầu ra mong muốn là $f(\bold{x})$. Lúc này, ban đầu thì ta hoàn toàn chưa có một thông tin gì về $f(\bold{x})$ cả, việc “học” sẽ xuất phát từ một đại lượng ngẫu nhiên.</p>
+</li>
+<li>
+<p>Đối với phương pháp deep residual learning, output của block $B$ sẽ có dạng</p>
+<p>$$h(\bold{x}) = \bold{x} + f(\bold{x})$$</p>
+<p>và ta sẽ đi học $f(\bold{x})$. Lúc này, $f(\bold{x})$ được gọi là <strong>residual function</strong> (hàm phần dư)</p>
+</li>
+<li>
+<p>Ta có các nhận xét sau:</p>
 <ul>
-<li>Trong deep residual learning, ta đã có sự “gợi ý” cho hàm mong muốn thông qua giá trị input $x$<strong>.</strong> Đối với thông thường thì không có sự gợi ý nào được đưa ra cả.</li>
-<li>Việc học $f(x)$ như là một hàm phần dư là <strong>dễ hơn</strong> so với việc học hàm mong muốn. Nếu identity mapping là kết quả tối ưu thì ta có luôn $f(x)=0$</li>
+<li>Trong deep residual learning, ta đã có sự “gợi ý” cho hàm mong muốn thông qua giá trị input $\bold{x}$<strong>.</strong> Đối với thông thường thì không có sự gợi ý nào được đưa ra cả.</li>
+<li>Việc học $f(\bold{x})$ như là một hàm phần dư là <strong>dễ hơn</strong> so với việc học hàm mong muốn. Nếu identity mapping là kết quả tối ưu thì ta có luôn $f(\bold{x})=0$</li>
 <li>Về mặt bản chất, với phương pháp deep residual learning, ta đã tác động vào lớp hàm chứa hàm mong muốn, sao cho lớp mới là lớn hơn (bao gồm) lớp cũ.</li>
 </ul>
 </li>
@@ -367,17 +394,18 @@ Nguồn: <a href="https://d2l.aivivn.com/_images/functionclasses.svg">Dive into 
 <p>Để minh họa cho yếu tố &ldquo;giúp việc học trở nên dễ hơn&rdquo;, ta có ví dụ như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 300px;" src='./images/learn_easier.png'>
-<p align="center" style="margin: 0; color: #888;">Số điểm cực tiểu địa phương sẽ ít hơn hẳn, đồ thị cũng sẽ "trơn" hơn khi có sử dụng skip connection <br>
+<p align="center" style="margin: 0; color: #888;">Đồ thị của loss function cũng "trơn" hơn rất nhiều khi có sử dụng skip connection, từ đó ta sẽ dễ huấn luyện mô hình hơn <br>
 Nguồn: <a href="https://www.jeremyjordan.me/content/images/2018/02/Screen-Shot-2018-02-26-at-10.50.53-PM.png">Jeremy Jordan</a>
 </p>
 </div>
-<p>Như vậy, điểm nhấn của ResNet là ta đi học các hàm phần dư, thông qua việc “gợi ý” cho hàm số mong muốn một giá trị bằng với giá trị input. Trong cài đặt, thao tác này được thực hiện thông qua một kết nối gọi là <strong>skip connection</strong>. Ta sẽ cộng input $x$ vào output của block thông thường.</p>
+<h3 id="skip-connection">Skip connection</h3>
+<p>Như vậy, điểm nhấn của ResNet là ta đi học các hàm phần dư, thông qua việc “gợi ý” cho hàm số mong muốn một giá trị bằng với chính giá trị input ban đầu. Trong cài đặt, thao tác này được thực hiện thông qua một kết nối gọi là <strong>skip connection</strong>. Ta sẽ cộng input $\bold{x}$ vào output của block thông thường.</p>
 <ul>
 <li>Đối với việc cộng như vậy thì thực chất là ta đang đi <strong>cộng hai ma trận</strong>. Khi đó, một vấn đề có thể nảy sinh là về <strong>shape</strong> của chúng, mà thường là số channel. Nếu số channel không khớp thì ta cần phải tiến hành “điều chỉnh”.
 <ul>
 <li>Vì các block được sử dụng thường gồm các conv layer với stride và padding phù hợp để giữ nguyên width và height nên ta sẽ chỉ xét đến số channel.</li>
-<li>Nếu số channel của $x$ và output ban đầu là như nhau thì ta gọi skip connection này là <strong>identity skip connection</strong></li>
-<li>Ngược lại, ta sẽ dùng conv layer $1 \times 1$ để điều chỉnh số channel của $x$. Lúc này, skip connection được gọi là <strong>projection skip connection.</strong></li>
+<li>Nếu số channel của $\bold{x}$ và output ban đầu là như nhau thì ta gọi skip connection này là <strong>identity skip connection</strong>.</li>
+<li>Ngược lại, ta sẽ dùng conv layer $1 \times 1$ để điều chỉnh số channel của $\bold{x}$. Lúc này, skip connection được gọi là <strong>projection skip connection.</strong></li>
 </ul>
 </li>
 </ul>
@@ -388,11 +416,30 @@ Sử dụng skip connection (identity) <br>
 Nguồn: <a href="https://d2l.aivivn.com/_images/residual-block.svg">Dive into DL</a>
 </p>
 </div>
-<p>Ngoài ra, ta còn có một điểm mạnh quan trọng của skip connection là nó giúp cho <strong>gradient được lan truyền tốt hơn</strong> trong quá trình backpropagation, từ đó góp phần làm giảm hiện tượng <strong>vanishing gradient</strong></p>
+<p>Ngoài ra, ta còn có một điểm mạnh quan trọng của skip connection là nó giúp cho <strong>gradient được lan truyền tốt hơn</strong> trong quá trình backpropagation, từ đó góp phần làm giảm hiện tượng <strong>vanishing gradient</strong>.</p>
 <ul>
 <li>Quan sát hình phía trên, ta thấy rằng khi backpropagation thì layer ở ngay trước block nhận được gradient từ <strong>hai layer</strong> phía sau nó (một layer liền trước nó và một layer được kết nối thông qua skip connection).</li>
 </ul>
+<h3 id="vấn-đề-exploding-gradient">Vấn đề exploding gradient</h3>
+<p>Như mình đã đề cập ở đầu bài viết, với các mô hình có độ sâu lớn thì hai vấn đề đối với gradient mà ta thường gặp là vanishing và exploding. Đầu tiên, ta có những cách khởi tạo trọng số để hạn chế các vấn đề này như He Initialization. Ngoài ra, với vanishing thì cũng đã được phần nào hạn chế đi bằng skip connection. Tuy nhiên, nếu dùng He Initialization cùng với skip connection thì skip connection lại có khả năng gây ra exploding gradient 😃</p>
+<p>Lý do của điều này nằm ở thao tác cộng giá trị $\bold{x}$ với giá trị tính được của hàm $f(\bold{x})$. Ta hoàn toàn có thể xem $\bold{x}$ và $f(\bold{x})$ là hai biến ngẫu nhiên độc lập, khi đó</p>
+<p>$$\text{var}(\bold{x} + f(\bold{x})) = \text{var} (\bold{x}) + \text{var} (f(\bold{x}))$$</p>
+<p>Hơn nữa, khi ta dùng ReLU và He Initialization thì $\text{var}(f(\bold{x})) = \text{var}(\bold{x})$. Do đó, có thể nói là ta đã làm cho phương sai của input $\bold{x}$ tăng gấp đôi sau khi đi qua một block có dùng skip connection. Như vậy, khi dần qua nhiều block thì phương sai sẽ cứ tăng lên theo số mũ 2 và có thể dẫn đến hiện tượng exploding gradient.</p>
+<p>Để hạn chế vấn đề exploding như trên, ta có hai cách phổ biến:</p>
+<ol>
+<li>Sau khi tính xong $h(\bold{x}) = \bold{x} + f(\bold{x})$ thì ta sẽ scale $h(\bold{x})$ bằng cách nhân nó với $\dfrac{1}{\sqrt{2}}$.</li>
+<li>Sử dụng Batch Normalization với hai trọng số $(\gamma, \delta) = (1, 0)$ để chuẩn hóa $\bold{x}$ trước khi tính $f(\bold{x})$ (không thay đổi giá trị $\bold{x}$ gốc vì giá trị gốc sẽ được sử dụng cho phép cộng ở sau. Bằng cách này, kết hợp với He Initialization thì $f(\bold{x})$ cũng sẽ có phương sai là 1. Từ đó, phương sai của tổng $h(\bold{x})$ sẽ chỉ tăng <strong>tuyến tính</strong> theo số lượng block được sử dụng.</li>
+</ol>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 150px;" src='./images/exploding.png'>
+<p align="center" style="margin: 0; color: #888;">
+Minh họa hai cách hạn chế exploding trong skip connection<br>
+Nguồn: <a href="https://github.com/udlbook/udlbook">Understanding Deep Learning - Simon J.D. Prince</a>
+</p>
+</div>
+<p>Cách giải quyết số 2 được các tác giả sử dụng trong kiến trúc của ResNet. Đây là lý do ta thấy các layer Batch Normalization được sử dụng trong residual block ở phần tiếp theo.</p>
 <h2 id="residual-block">Residual block</h2>
+<h3 id="các-loại-residual-block">Các loại residual block</h3>
 <p>Residual block (khối phần dư) được tạo ra bằng cách thêm một <strong>skip connection</strong> vào một block thông thường trong các mô hình CNN như VGG block. Ta có hai loại residual block như sau:</p>
 <ul>
 <li><strong>Basic:</strong> Các conv layer trong block này có filter $3 \times 3$. Block dạng này thường được dùng cho các mô hình có độ sâu vừa phải.</li>
@@ -408,7 +455,6 @@ Nguồn: <a href="https://d2l.aivivn.com/_images/residual-block.svg">Dive into D
 Basic Residual Block và Bottleneck Residual Block
 </p>
 </div>
-<p><strong>Lưu ý.</strong> Có một chi tiết này khá quan trọng trong cài đặt là ta sẽ tiến hành cộng ma trận trước rồi mới đưa kết quả qua activation function.</p>
 <p>Ngoài ra, ta còn có 2 loại skip connection là identity và projection. Lúc này, tùy vào số channels của input và output ban đầu có khớp hay không mà block tương ứng sẽ chứa loại skip connection phù hợp.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="height: 350px;" src='./images/identity_projection.png'>
@@ -417,6 +463,9 @@ Basic residual block với identity và projection skip connection <br>
 Nguồn: <a href="https://d2l.aivivn.com/_images/resnet-block.svg">Dive into DL</a>
 </p>
 </div>
+<h3 id="thứ-tự-thực-hiện-các-phép-toán">Thứ tự thực hiện các phép toán</h3>
+<p>Quan sát kỹ hình ảnh mô tả residual block ở phía trên, ta sẽ thấy rằng thao tác cộng input $\bold{x}$ và output của layer Batch Norm thứ hai (chính là $f(\bold{x})$) được thực hiện <strong>trước khi đi qua ReLU</strong>. Vì sao lại như thế?</p>
+<p>Lý do rất đơn giản. Nếu ta đưa $f(\bold{x})$ qua ReLU trước rồi mới cộng vào $\bold{x}$ thì $\bold{x}$ đang được cộng với một lượng không âm. Cứ nhiều lần như thế thì giá trị model tích lũy được sẽ chỉ có tăng dần lên chứ không có giảm 😃 Điều này chắc chắn là không ổn và có thể khiến mô hình không thể học được đặc trưng gì có ích cả.</p>
 <h2 id="kiến-trúc-resnet">Kiến trúc ResNet</h2>
 <p>ResNet được tạo nên bằng cách sử dụng nhiều residual block liên tiếp nhau, tương tự như những gì mà GoogLeNet hay VGG đã thực hiện. Các tác giả của paper ResNet tạo ra nhiều phiên bản ResNet khác nhau với độ sâu tăng dần.</p>
 <ul>
@@ -440,13 +489,15 @@ Các phiên bản ResNet
 </ul>
 <h2 id="cài-đặt">Cài đặt</h2>
 <p>Các bạn có thể tham khảo phần cài đặt ResNet bằng Tensorflow và Pytorch tại repo <a class="link" href="https://github.com/htrvu/cnn_practice"  target="_blank" rel="noopener"
-    >sau</a></p>
+    >sau</a>.</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li>Paper ResNet: <a class="link" href="https://arxiv.org/abs/1512.03385"  target="_blank" rel="noopener"
     >https://arxiv.org/abs/1512.03385</a></li>
 <li><a class="link" href="https://d2l.aivivn.com/chapter_convolutional-modern/resnet_vn.html"  target="_blank" rel="noopener"
     >Dive into DL, ResNet</a></li>
+<li><a class="link" href="https://github.com/udlbook/udlbook"  target="_blank" rel="noopener"
+    >Simon J.D. Prince, Understanding Deep Learning</a></li>
 </ul>
 
 </section>

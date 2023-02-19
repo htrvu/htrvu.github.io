@@ -66,7 +66,7 @@ Kiến trúc Inception-ResNet V1</description>
         <pubDate>Wed, 08 Feb 2023 17:41:09 +0700</pubDate>
         
         <guid>https://htrvu.github.io/post/resnet/</guid>
-        <description>Giới thiệu Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:
+        <description>Khó khăn trong huấn luyện mô hình lớn Ta biết rằng, việc tạo ra các mô hình có độ sâu lớn (nhiều layer) chưa chắc đã mang lại hiệu quả tốt hơn những mô hình “cạn” hơn. Ví dụ, với tập CIFAR10 thì ta có một kết quả thử nghiệm cho thấy rằng mô hình sâu hơn lại có độ hiệu quả kém hơn:
 Đối với việc huấn luyện các mô hình có độ sâu lớn thì ta có thể sẽ bị gặp phải các vấn đề sau:</description>
         </item>
         <item>
