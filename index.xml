@@ -6,7 +6,16 @@
         <description>Recent content on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 15 Feb 2023 21:42:44 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 19 Feb 2023 10:51:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Word Embedding</title>
+        <link>https://htrvu.github.io/post/word-embedding/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/word-embedding/</guid>
+        <description>Trong bài viết về RNN, mình đã đề cập khá kỹ về mô hình này nhưng để ứng dụng được nó vào các bài toán thì ta cần phải làm thêm bước “số hóa” dữ liệu từ văn bản sao cho máy tính có thể hiểu được.
+Nếu máy tính hiểu được càng nhiều về các từ thì nghĩa là cách số hóa càng có hiệu quả. Do đó, ta cần quan tâm đến vấn đề “hiểu”.</description>
+        </item>
+        <item>
         <title>Recurrent Neural Network</title>
         <link>https://htrvu.github.io/post/rnn/</link>
         <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>

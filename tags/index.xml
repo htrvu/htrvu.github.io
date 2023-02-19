@@ -6,7 +6,47 @@
         <description>Recent content in Tags on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 15 Feb 2023 21:42:44 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 19 Feb 2023 10:51:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>cbow</title>
+        <link>https://htrvu.github.io/tags/cbow/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/cbow/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>embedding</title>
+        <link>https://htrvu.github.io/tags/embedding/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/embedding/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>one-hot-encoding</title>
+        <link>https://htrvu.github.io/tags/one-hot-encoding/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/one-hot-encoding/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>skip-gram</title>
+        <link>https://htrvu.github.io/tags/skip-gram/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/skip-gram/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>word2vec</title>
+        <link>https://htrvu.github.io/tags/word2vec/</link>
+        <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/word2vec/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>rnn</title>
         <link>https://htrvu.github.io/tags/rnn/</link>
         <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>

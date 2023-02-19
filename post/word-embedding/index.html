@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu hai phương pháp biểu diễn từ phổ biến là One-hot Encoding và Word Embedding (Skip-gram và CBoW)'>
+<title>Word Embedding</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/word-embedding/'>
+
+<link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Word Embedding'>
+<meta property='og:description' content='Giới thiệu hai phương pháp biểu diễn từ phổ biến là One-hot Encoding và Word Embedding (Skip-gram và CBoW)'>
+<meta property='og:url' content='https://htrvu.github.io/post/word-embedding/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='embedding' /><meta property='article:tag' content='one-hot-encoding' /><meta property='article:tag' content='word2vec' /><meta property='article:tag' content='skip-gram' /><meta property='article:tag' content='cbow' /><meta property='article:published_time' content='2023-02-19T10:51:57&#43;07:00'/><meta property='article:modified_time' content='2023-02-19T10:51:57&#43;07:00'/>
+<meta name="twitter:title" content="Word Embedding">
+<meta name="twitter:description" content="Giới thiệu hai phương pháp biểu diễn từ phổ biến là One-hot Encoding và Word Embedding (Skip-gram và CBoW)">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#one-hot-encoding">One-hot encoding</a>
+      <ol>
+        <li><a href="#ý-tưởng">Ý tưởng</a></li>
+        <li><a href="#hạn-chế-one-hot-encoding">Hạn chế one-hot encoding</a></li>
+      </ol>
+    </li>
+    <li><a href="#word-embedding">Word Embedding</a>
+      <ol>
+        <li><a href="#ý-tưởng-1">Ý tưởng</a></li>
+        <li><a href="#tính-chất-của-word-embedding">Tính chất của Word Embedding</a></li>
+        <li><a href="#sử-dụng-word-embedding-trong-rnn">Sử dụng Word Embedding trong RNN</a></li>
+        <li><a href="#học-word-embedding">Học Word Embedding</a>
+          <ol>
+            <li><a href="#embedding-matrix">Embedding matrix</a></li>
+            <li><a href="#word2vec">Word2vec</a></li>
+            <li><a href="#skip-gram">Skip-gram</a></li>
+            <li><a href="#cbow-continuous-bag-of-words">CBoW (Continuous Bag of Words)</a></li>
+            <li><a href="#trích-xuất-embedding-matrix">Trích xuất embedding matrix</a></li>
+            <li><a href="#nhận-xét">Nhận xét</a></li>
+          </ol>
+        </li>
+        <li><a href="#vấn-đề-thiên-vị-trong-word-embdding">Vấn đề thiên vị trong Word Embdding</a></li>
+      </ol>
+    </li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/nlp/" style="background-color: #2a9d8f; color: #fff;">
+                Natual Language Processing
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/word-embedding/">Word Embedding</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu hai phương pháp biểu diễn từ phổ biến là One-hot Encoding và Word Embedding (Skip-gram và CBoW)
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 19, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    21 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p>Trong bài viết về RNN, mình đã đề cập khá kỹ về mô hình này nhưng để ứng dụng được nó vào các bài toán thì ta cần phải làm thêm bước “số hóa” dữ liệu từ văn bản sao cho máy tính có thể hiểu được.</p>
+<ul>
+<li>Nếu máy tính hiểu được càng nhiều về các từ thì nghĩa là cách số hóa càng có hiệu quả. Do đó, ta cần quan tâm đến vấn đề “hiểu”. Hiểu như thế nào là đủ tốt? 😀</li>
+</ul>
+<p>Đối với NLP, ta có những phương pháp (hay có thể nói là kỹ thuật) biểu diễn từ phổ biến là <strong>one-hot encoding</strong>, <strong>TF-IDF</strong> và <strong>Word Embedding</strong>. Nội dung của bài viết này sẽ tập trung vào one-hot encoding và Word Embedding.</p>
+<h2 id="one-hot-encoding">One-hot encoding</h2>
+<h3 id="ý-tưởng">Ý tưởng</h3>
+<p><strong>Từ điển (vocabulary)</strong> là một thành phần không thể thiếu của mọi hệ thống ngôn ngữ. Những từ ta dùng thường ngày hầu như là sẽ nằm ở một vị trí nào đó trong từ điển (có thể các từ địa phương thì sẽ không có). One-hot encoding là phương pháp biểu diễn từ bằng chính thông tin vị trí này.</p>
+<ul>
+<li>Với những từ không có trong từ điển thì ta thường sử dụng một giá trị vị trí đặc biệt để cho biết từ đó là <strong>unknown</strong>.</li>
+</ul>
+<p>Giả sử tập từ điển của chúng ta có $S$ từ và không có từ trên các văn bản là không có trong từ điển. Khi đó, mỗi từ sẽ được biểu diễn bằng một <strong>vector nhị phân</strong> có $S$ chiều, với duy nhất một phần tử bằng 1 tại chiều ứng với vị trí của từ đó trong từ điển và các phần tử còn lại là 0. Ví dụ:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 230px;" src='./images/one-hot-encoding.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa phương pháp one-hot encoding với kích thước từ điển là 9<br> Nguồn: <a href="https://www.shanelynn.ie/wp-content/uploads/2018/01/one-hot-word-embedding-vectors.png">Shane Lynn</a>
+</p>
+</div>
+<p>Khi kết hợp phương pháp one-hot encoding vào mô hình RNN để giải quyết các bài toán thì ở trong mỗi giai đoạn ta sẽ có:</p>
+<ul>
+<li>Input và label sẽ là các vector nhị phân tương ứng với các từ</li>
+<li>Output là một vector thể hiện một phân bố xác suất, với phần tử thứ $i$ là xác suất mà từ output là từ ở vị trí thứ $i$ trong từ điển (do đó activation function thường dùng ở đây chính là softmax)</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/one-hot-with-rnn.png'>
+<p align="center" style="margin: 0; color: #888;">Ví dụ áp dụng one-hot encoding vào RNN trong bài toán sinh văn bản theo từng kí tự<br> Nguồn: <a href="https://slideplayer.com/slide/13124453">Stanford - Natural Language Processing</a>
+</p>
+</div>
+<p><strong>Vì sao ta lại sử dụng vector nhị phân để biểu diễn các từ mà không dùng luôn giá trị số thực là vị trí của từ trong từ điển?</strong></p>
+<ul>
+<li>Câu hỏi này cũng giống như hỏi rằng trong bài toán image classification thì vì sao ta không cài đặt output là một số thực và sau đó làm tròn để có kết quả mà lại là một vector phân bố xác suất.</li>
+<li>Tất nhiên là nếu làm theo cách đó thì mọi thứ vẫn CÓ THỂ ổn, quá trình huấn luyện cũng có thể được thành công. Tuy nhiên, ta có những điều cần lưu tâm như sau:
+<ul>
+<li>Với output là số thực như vậy thì cost function hầu như chắc chắn là <strong>MSE (Mean Square Error)</strong>. Khi đó, quá trình huấn luyện sẽ rất dễ rơi vào vị trí <strong>tối ưu cục bộ</strong>.</li>
+<li>Nếu mà số từ trong từ điển là rất nhiều thì kết quả của các phép tính trong cách biểu diễn dùng số thực là rất lớn.</li>
+<li>Để ý rằng, trong các biểu diễn one-hot encoding thì khoảng cách giữa một từ với các từ khác nó sẽ bằng hằng số là $\sqrt{2}$. Trong khi đó, với cách biểu diễn dùng duy nhất số thực thì lại không, có những cặp từ rất gần nhau và có những cặp từ cực kì xa nhau, trong khi ta chưa có bất cứ điều gì thể hiện được rằng từ này nên gần với một từ hơn so với từ kia.</li>
+</ul>
+</li>
+</ul>
+<h3 id="hạn-chế-one-hot-encoding">Hạn chế one-hot encoding</h3>
+<p>Trong cách biểu diễn one-hot encoding, ta thấy rằng máy tính đã có thể phân biệt được các từ với nhau, có thể biết được từ được dùng trong câu input là từ gì và có thể cho biết từ mà nó tính ra được ở output là từ gì. Nói chung là máy tính đã hiểu được “mặt trước” của các từ.</p>
+<p>Tuy nhiên, ta vẫn chưa thể biểu diễn được <strong>mối quan hệ giữa các từ với nhau</strong>. Như đã đề cập ở phần trước, khoảng cách giữa hai cặp từ phân biệt bất kỳ đều bằng $\sqrt{2}$, trong khi những từ có nghĩa gần gần nhau như “good” và “nice” thì nên có khoảng cách gần nhau, còn những từ trái nghĩa nhau như “good” và “bad” thì cũng nên cách nhau rất xa. Chính vì yếu tố này mà thường thì việc áp dụng one-hot encoding vào RNN khó có thể mang lại kết quả như mong muốn.</p>
+<p>Bên cạnh đó, cách biểu diễn one-hot encoding thật sự là rất tốn kém về mặt bộ nhớ 😀 Nếu mà kích thước từ điển rất lớn thì cứ mỗi từ như vậy ta lại cần một vector có số chiều khổng lồ để biểu diễn. Một cách khắc phục vấn đề này là sử dụng <strong>ma trận thưa (sparse matrix)</strong>, nhưng mà việc cài đặt thì cũng không phải đơn giản.</p>
+<p>Từ các hạn chế của one-hot encoding, ta có một phương pháp tốt hơn, vừa có thể biểu diễn được mối quan hệ giữa các từ và vừa tiết kiệm được bộ nhớ, đó là <strong>Word Embedding</strong>!</p>
+<h2 id="word-embedding">Word Embedding</h2>
+<h3 id="ý-tưởng-1">Ý tưởng</h3>
+<p>Đầu tiên, <strong>embedding</strong> nói chung là phương pháp đưa một vector có số chiều lớn (thường ở dạng thưa, tức là hầu hết các phần tử đều bằng 0), về một vector có số chiều nhỏ hơn (và không thưa).</p>
+<ul>
+<li>Ta thấy ngay rằng one-hot vector để biểu diễn các từ trong một tập từ điển lớn chính là vector có số chiều lớn và ở dạng thưa 😀</li>
+<li>Embedding có thể được áp dụng ở nhiều mảng khác nhau chứ không phải mỗi xử lý ngôn ngữ, ví dụ như hình ảnh cũng có.</li>
+</ul>
+<p><strong>Word Embedding</strong> là một phương pháp biểu diễn các từ bằng một <strong>vector đặc trưng</strong>. Ví dụ, với các từ {man, woman, king, queen, apple, orange} và tập các đặc trưng {gender, age, food} thì ta có thể biểu diễn mỗi từ bằng một vector 3 chiều như sau:</p>
+<div class="table-wrapper"><table>
+<thead>
+<tr>
+<th></th>
+<th>man</th>
+<th>woman</th>
+<th>king</th>
+<th>queen</th>
+<th>apple</th>
+<th>orange</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gender</td>
+<td>-1</td>
+<td>1</td>
+<td>-0.9</td>
+<td>0.97</td>
+<td>0.0</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>age</td>
+<td>0.3</td>
+<td>0.25</td>
+<td>0.7</td>
+<td>0.69</td>
+<td>0.02</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>food</td>
+<td>0.01</td>
+<td>0.0</td>
+<td>0.005</td>
+<td>0.015</td>
+<td>0.97</td>
+<td>0.96</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>Trong bảng trên, mỗi từ trong từ điển ban đầu đã được ánh xạ thành một vector 3 chiều (còn one-hot vector để biểu diễn chúng thì có 6 chiều). Trong đó, giá trị vector ứng với mỗi từ sẽ chứa những nét <strong>đặc trưng về mặt ngữ nghĩa</strong> của từ đó.</li>
+<li>Kí hiệu $e_{word}$ là embedding vector của từ $word$. Ta có một số nhận xét sau:
+<ul>
+<li>$e_{apple}$ và $e_{orange}$ có giá trị tại đặc trưng food rất cao và hai đặc trưng còn lại thì không.</li>
+<li>$e_{man}$ có đặc trưng gender là -1 còn $e_{woman}$ là 1, hàm ý rằng giới tính “man”  và “woman” là trái ngược nhau.</li>
+<li>$e_{man}$ với $e_{king}$ có giá trị tại đặc trưng gender rất giống nhau, đối với age thì có sự khác biệt, hàm ý rằng “king” thì thường lớn tuổi hơn “man”. Ta có nhân xét tương tự với “woman” và “king”.</li>
+</ul>
+</li>
+<li>Nếu ta tính thử <strong>độ tương đồng (similarity)</strong> giữa các vector (thường là <strong>khoảng cách Cosine</strong> hoặc <strong>khoảng cách Euclid</strong>), thì kết quả sẽ có ý nghĩa như sau:
+<ul>
+<li>Hai vector $e_{man}$ và $e_{king}$ rất gần nhau. Tương tự với $e_{woman}$ và $e_{queen}$, $e_{apple}$ và $e_{orange}$. Điều này thể hiện rằng các từ trong mỗi cặp có quan hệ gần gũi với nhau về ngữ nghĩa.</li>
+<li>Hai vector $e_{man}$ và $e_{woman}$ có hướng gần như là ngược nhau, thể hiện rằng hai từ này có quan hệ trái ngược nhau.</li>
+</ul>
+</li>
+</ul>
+<p>Thông thường, người ta thường sử dụng phương pháp <strong>t-SNE</strong> để giảm chiều các embedding vector xuống 2 chiều và trực quan hóa chúng để có góc nhìn rõ hơn về Word Embedding. Ví dụ như hình bên dưới, với các từ có nghĩa tương tự nhau thì ta sẽ thấy chúng có xu hướng cùng thuộc về một cụm:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 500px;" src='./images/word-embedding-visualization.png'>
+<p align="center" style="margin: 0; color: #888;">Sử dụng t-SNE để trực quan hóa các embedding vector<br>Nguồn: <a href="https://neptune.ai/blog/word-embeddings-guide](https://neptune.ai/blog/word-embeddings-guide">Neptune AI</a>
+</p>
+</div>
+<p>Đối với trực quan hóa trong không gian 3 chiều thì các bạn có thể truy cập vào trang <a class="link" href="https://projector.tensorflow.org/"  target="_blank" rel="noopener"
+    >này</a> của Tensorflow. Trong trang web đó, nếu tìm kiếm từ “soccer” thì ta sẽ thấy các vector được highlight lên là vector ứng với các từ có nghĩa rất tương tự, và hầu hết là liên quan đến thể thao.</p>
+<p style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 480px;" src='./images/tf-embedding-ex.png'>
+</p>
+<p>Như vậy, phương pháp Word Embedding đã có thể khắc phục được hạn chế của one-hot encoding trong việc thể hiện <strong>mối quan hệ giữa các từ</strong>.</p>
+<h3 id="tính-chất-của-word-embedding">Tính chất của Word Embedding</h3>
+<p>Trong khả năng biểu diễn các từ bằng vector đặc trưng và thể hiện được mối quan hệ giữa từ đó với những từ khác, ta có một tính chất thú vị liên quan đến <strong>Analogy Reasoning (suy diễn tương tự)</strong>.</p>
+<ul>
+<li>Ví dụ: Cho trước 3 từ “man”, “woman” và “king”. Trong đó, “man” đã có một quan hệ nhất định với “woman”. Ta cần tìm một từ sao cho quan hệ giữa “king” với từ này cũng tương tự như quan hệ giữa “man” và “woman”.</li>
+</ul>
+<p>Nếu một hệ thống Word Embedding <strong>đủ tốt</strong> thì ta sẽ có tính chất rằng những cặp từ $(w_{i1}, w_{i2})$ mà có quan hệ giữa hai từ trong một cặp là rất tương tự nhau thì các vector $x_i = e_{w_{i1}} - e_{w_{i2}}$ sẽ có hướng cũng rất tương tự. Ví dụ:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/analogy-reasoning.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa Analogy Reasoning<br>Nguồn: <a href="https://polakowo.io/datadocs/assets/1*jpnKO5X0Ii8PVdQYFO2z1Q.png">Polakowo</a>
+</p>
+</div>
+<p>Dựa vào tính chất này, ta có thể giải quyết câu hỏi đặt ra ở phía trên rằng từ cần tìm sẽ là “queen”. Để kiểm chứng, hãy xét lại bảng ở phần <strong>2.1</strong>, ta có:</p>
+<ul>
+<li>$e_{man} -e_{woman} = \begin{bmatrix}-2 &amp; 0.05 &amp; 0.01\end{bmatrix}^\top$</li>
+<li>$e_{king} - e_{queen} =  \begin{bmatrix}-1.87 &amp; 0.01 &amp; -0.01 \end{bmatrix}^\top$</li>
+</ul>
+<p>Để biểu diễn bài toán analogy reasoning như ví dụ bên trên một cách hình thức hơn, ta có thể phát biểu như sau:</p>
+<ul>
+<li>
+<p>Tìm từ $w$ sao cho</p>
+<p>$$w = \argmax_w \left (  \text{sim} ( e_w, e_{man} - e_{woman} + e_{king} )\right )$$</p>
+</li>
+</ul>
+<p>và kết quả là $w = queen$.</p>
+<h3 id="sử-dụng-word-embedding-trong-rnn">Sử dụng Word Embedding trong RNN</h3>
+<p>Trong phương pháp one-hot encoding, ta sử dụng các one-hot vector ở input và output của RNN. Đối với word-embedding thì ta sẽ thay đổi một chút ở input, còn output thì vẫn dùng one-hot encoding để biết được mô hình dự đoán từ nào. 😜</p>
+<p><strong>Tại sao lại như thế?</strong></p>
+<ul>
+<li>Đối với input, đưa vào RNN embedding vector thì chắc chắn mô hình có thể học tốt hơn so với one-hot vector rồi.</li>
+<li>Trong output, ta thấy rằng việc mô hình tính ra một vector dạng phân bố xác suất và sau đó xác định từ tương ứng bằng cách softmax thì sẽ dễ hơn nhiều so với việc output ra một embedding vector rồi từ vector này đi tìm từ gốc. Thật ra thì mình chưa thấy ai thực hiện tìm từ dựa vào embedding vector cả. 😀</li>
+</ul>
+<p>Như vậy, để sử dụng Word Embedding trong RNN thì ta sẽ dùng embedding vector của các từ để làm input cho RNN.</p>
+<ul>
+<li>Ví dụ: mượn tạm ảnh của các pháp sư Trung Hoa z =))
+word-embedding-with-rnn.png</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/word-embedding-with-rnn.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa sử dụng Word Embedding trong RNN<br>Nguồn: <a href="https://d1dwq032kyr03c.cloudfront.net/upload/images/20210920/20140426lkFvCOLUFZ.png">Pháp sư nào đó</a>
+</p>
+</div>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>Khi sử dụng Word Embedding trong RNN thì thường ta sẽ dùng theo hướng <strong>transfer learning</strong> hoặc <strong>fine-tuning</strong>. Điều này có nghĩa là các embedding vector của mỗi từ có thể đã được cung cấp sẵn, ta chỉ việc đem vào dùng trong mô hình là đủ và nếu cần thiết thì cũng sẽ tiếp tục huấn luyện trên nền tảng đã có.</li>
+</ul>
+<h3 id="học-word-embedding">Học Word Embedding</h3>
+<h4 id="embedding-matrix">Embedding matrix</h4>
+<p>Ở các phần trên thì ta chỉ mới nêu sơ lược về phương pháp Word Embedding chứ chưa đề cập đến việc làm thế nào để xây dựng được các vector biểu diễn từ như vậy. Đầu tiên, thứ chúng ta cần xây dựng trong Word Embedding được gọi là <strong>embedding matrix</strong> (kí hiệu là $E$), với số dòng là số đặc trưng được dùng để mô tả cho mỗi từ và số cột bằng với số từ trong từ điển.</p>
+<ul>
+<li>
+<p>Để minh họa, ta sẽ dùng lại ví dụ ở phần <strong>2.1.</strong> embedding matrix $E$ sẽ là</p>
+<p>$$
+E = \begin{bmatrix}-1 &amp; 1 &amp; -0.9  &amp; 0.97  &amp; 0.0  &amp; 0.01 \\ 0.3  &amp; 0.25  &amp; 0.7 &amp; 0.69 &amp; 0.02 &amp; 0.0 \\ 0.01 &amp; 0.0 &amp; 0.005 &amp; 0.015 &amp; 0.97 &amp; 0.96\end{bmatrix}
+$$</p>
+</li>
+<li>
+<p>Với từ $man$, one-hot vector của từ này là</p>
+<p>$$o_{man} = \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\end{bmatrix}^\top$$</p>
+</li>
+<li>
+<p>Embedding vector của $man$ sẽ được tính bằng công thức</p>
+<p>$$e_{man} = E \cdot o_{man} = \begin{bmatrix} -1 &amp; 0.3 &amp; 0.01 \end{bmatrix}^\top$$</p>
+</li>
+</ul>
+<p>Để xây dựng các embedding matrix, ta có hai hướng phổ biến như sau:</p>
+<ol>
+<li><strong>Word2vec:</strong> Huấn luyện một mô hình MLP. embedding matrix sẽ là một ma trận trọng số trong mô hình MLP sau khi đã huấn luyện xong.</li>
+<li><strong>GloVe</strong> (Global Vector for word representations): Mạnh hơn Word2vec, có sử dụng thêm những kỹ thuật liên quan đến xác suất thống kê.</li>
+</ol>
+<p>Trong bài viết này, mình sẽ tập trung vào word2vec.</p>
+<h4 id="word2vec">Word2vec</h4>
+<p>Word2vec là một mô hình rất đơn giản và nổi tiếng trong việc tạo embedding matrix. Ý tưởng của word2vec xuất phát từ hai nhận xét sau:</p>
+<ul>
+<li>Hai từ thường xuất hiện trong các ngữ cảnh tương tự nhau thì có thể có quan hệ gần gũi nhau về mặt ngữ nghĩa.</li>
+<li>Khi cho biết trước các từ xung quanh từ bị thiếu trong câu, ta có thể dự đoán ra được từ đó. Ví dụ, với câu “Husky là một … chó rất ngáo” thì từ trong dấu ba chấm có khả năng cao là “loài”. Đây là ví dụ với câu ngắn, còn nếu câu dài thì đôi khi ta chỉ cần xét tầm 10 từ xung quanh từ cần dự đoán là đã đủ để đoán ra được.</li>
+</ul>
+<p>Đầu tiên, ta đề cập đến khái niệm <strong>từ mục tiêu (target word)</strong> và <strong>từ ngữ cảnh (context word).</strong> Có thể nói từ mục tiêu là từ ta đang xem xét và từ ngữ cảnh là các từ xuất hiện xung quanh từ mục tiêu ở trong các đoạn văn bản của kho dữ liệu, với phạm vi là cách từ mục tiêu không quá $\dfrac{C}{2}$ từ. Vùng phạm vi này còn lại là <strong>cửa sổ trượt (sliding window)</strong>.</p>
+<ul>
+<li>Với câu ví dụ ở trên thì, từ “loài” là target word. Nếu xét cửa sổ trượt có kích thước $C = 4$ thì các context word sẽ bao gồm “là”, “một”, “chó”, “rất”.</li>
+<li>Để có cái nhìn rõ hơn về các khái niệm này, ta xét ví dụ bên dưới với kích thước sliding window là 4.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 380px;" src='./images/context-target-word.png'>
+<p align="center" style="margin: 0; color: #888;">Từ màu xanh là target word, các từ trong ô màu trắng là context word<br>Nguồn: <a href="https://machinelearningcoban.com/tabml_book/_images/word2vec_training_data.png">Machine Learning cho dữ liệu dạng bảng</a>
+</p>
+</div>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>Từ phương pháp word2vec, ta sẽ có <strong>hai embedding vector cho mỗi từ</strong>, ứng với hai trường hợp là từ đó đóng vai trò target word và context word. Lý do là ví trong mỗi tình huống thì ngữ nghĩa của nó có thể sẽ khác nhau.</li>
+</ul>
+<p>Trong word2vec, ta sẽ đi xây dựng một mô hình <strong>MLP (Multi-layer Perceptron</strong>, hay nói cách khác là Neural Network) chỉ gồm <strong>1 hidden layer</strong>, với mục đích có thể là:</p>
+<ol>
+<li>Dựa vào target word để dự đoán context word</li>
+<li>Dựa vào các context word để dự đoán target word</li>
+</ol>
+<p>Tùy vào mục đích mà ta sẽ có một kiến trúc MLP khác nhau. Với mục đích (1) thì ta có S<strong>kip-gram</strong>, mục đích (2) là <strong>CBoW (Continuous Bag of Word)</strong></p>
+<p>Quay lại với hai nhận xét đã mở ra ý tưởng cho word2vec thì nhận xét thứ nhất được thể hiện rõ hơn ở trong Skip-gram và nhận xét thứ hai thì ở trong CBoW 😀 Để có cái nhìn tổng quan về sự khác biệt giữa Skip-gram và CBoW, ta có hình ảnh so sánh như bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/skip-gram-vs-cbow.png'>
+<p align="center" style="margin: 0; color: #888;">Sự khác biệt giữa CBoW và skip-gram trong một câu với target word là W(t), context word là W(t-2), W(t-1), W(t+1), W(t+2)<br>Nguồn: <a href="https://i.stack.imgur.com/ShJJX.png">https://i.stack.imgur.com/ShJJX.png</a>
+</p>
+</div>
+<h4 id="skip-gram">Skip-gram</h4>
+<p><strong>Skip-gram</strong> là cách xây dựng mô hình MLP theo hướng dự đoán context word dựa vào target word. Về mặt toán học thì ta sẽ đi tìm xác suất xảy ra các context word khi biết trước target word.</p>
+<ul>
+<li>
+<p>Ví dụ, kho dữ liệu ta có hai câu là {“em ấy học toán tốt”, “em ấy học toán giỏi”}. Với từ mục tiêu “học” và kích thước sliding window là $C=4$, ta sẽ tìm xác suất</p>
+<p>$$ P_0 = P(\text{&ldquo;em&rdquo;}, \text{&ldquo;ấy&rdquo;}, \text{&ldquo;toán&rdquo;}, \text{&ldquo;tốt&rdquo;}, \text{&ldquo;giỏi&rdquo;} | \text{&ldquo;học&rdquo;}) $$</p>
+<p>Giả sử các từ trên là độc lập với nhau, khi đó</p>
+<p>$$ P_0 = P(\text{&ldquo;em&rdquo;} | \text{&ldquo;học&rdquo;}) \cdot P(\text{&ldquo;ấy&rdquo;} | \text{&ldquo;học&rdquo;}) \cdot P(\text{&ldquo;toán&rdquo;} | \text{&ldquo;học&rdquo;}) \cdot P(\text{&ldquo;tốt&rdquo;} | \text{&ldquo;học&rdquo;}) \cdot P(\text{&ldquo;giỏi&rdquo;} | \text{&ldquo;học&rdquo;}) $$</p>
+</li>
+<li>
+<p>Tập từ điển sẽ có 6 từ nên input của mô hình MLP sẽ là vector 6 chiều. Ta sử dụng hidden layer với 300 neuron. Xét hai cặp (context, target) lần lượt là (học, tốt) và (học, giỏi). Khi đó, mô hình skip-gram sẽ có dạng như hình bên dưới, với $\bold{U}$ và $\bold{V}$ lần lượt là ma trận trọng số giữa layer input-hidden và hidden-output.</p>
+</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/skip-gram.png'>
+<p align="center" style="margin: 0; color: #888;">Tham khảo: <a href="https://www.youtube.com/watch?v=akRbuXokLSo">ProtonX - Word2vec</a>
+</p>
+</div>
+<ul>
+<li>Ta thấy rằng, hai từ “tốt” và “giỏi” cùng xuất hiện trong một ngữ cảnh, do đó chúng nên có quan hệ nào đó về mặt ngữ nghĩa 😀</li>
+</ul>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>Shape của $\bold{U}$ có thể là (embedding_dim x vocab_size), tức là $(300 \times 6)$, hoặc là (vocab_size x embedding_dim), tức là $(6 \times 300)$. Với bài viết này thì mình sử dụng (embedding_dim x vocab_size). Tương tự như với $\bold{V}$.</li>
+</ul>
+<p>Khi lần đầu tìm hiểu về Skip-gram, mình có một thắc mắc mà mình nghĩ là cũng rất nhiều người có cùng thắc mắc như thế 😜 Trong hình trên, ta thấy rằng mô hình cùng nhận vào một input là one-hot vector của từ học, sử dụng cùng hai ma trận trọng số $\bold{U}$ và $\bold{V}$, vì sao label lại có những giá trị khác nhau?</p>
+<ul>
+<li>Thực chất, trong quá trình huấn luyện skip-gram, ta sẽ sử dụng optimizer <strong>SGD (stochastic gradient descent)</strong>, tại mỗi thời điểm thì ta sẽ <strong>chọn ngẫu nhiên</strong> một cặp (target, context) rồi tiến hành cập nhật các ma trận trọng số một chút dựa theo cặp được chọn. Trong đó, phép chọn này <strong>không nên tuân theo phân phối đều</strong> mà nên có heuristic một chút, ví dụ như cặp nào xuất hiện càng nhiều thì có xác suất được chọn càng cao. Do đó, cặp (target, context) nào xuất hiện càng nhiều thì mô hình càng “học” được nhiều thứ về nó.</li>
+<li>Kết quả là sau quá trình huấn luyện, từ dự đoán của một context word sẽ là một phân bố xác suất “đủ gần” với tất cả các target word của nó trong kho dữ liệu.</li>
+</ul>
+<p>Ngoài ra, trong quá trình huấn luyện skip-gram thì chúng ta thường sử dụng loss function là <strong>cross-entropy</strong> (có dùng đến $\text{softmax}$ activation function).</p>
+<h4 id="cbow-continuous-bag-of-words">CBoW (Continuous Bag of Words)</h4>
+<p>Có thể nói <strong>CBoW</strong> là một phiên bản ngược lại của Skip-gram. Trong CBoW, ta sẽ sử dụng các context word để dự đoán target word. Về mặt toán học thì ta sẽ đi tìm xác suất xảy ra target word khi biết trước các context word.</p>
+<ul>
+<li>Với cùng ví dụ như phần về Skip-gram, ta sẽ tìm xác suất</li>
+</ul>
+<p>$$P_0 = P(\text{&ldquo;học&rdquo;} | \text{&ldquo;em&rdquo;}, \text{&ldquo;ấy&rdquo;}, \text{&ldquo;toán&rdquo;}, \text{&ldquo;tốt&rdquo;}, \text{&ldquo;giỏi&rdquo;})$$</p>
+<ul>
+<li>Lúc này, ta thường tính một “từ trung bình” của các context word (embedding vector trung bình), sau đó thay vào biểu thức trên</li>
+</ul>
+<p>$$P_0 = P(\text{&ldquo;học&rdquo;} | \overline{word})$$</p>
+<ul>
+<li>Để dễ mình họa, ta xét hai context words “em”, “toán” của target word “học”. Khi đó, mô hình CBoW sẽ có dạng như hình bên dưới, với $\bold{V}$ và $\bold{U}$ là ma trận trọng số giữa layer input-hidden và hidden-output. Lưu ý rằng, sau khi tính ra output tại hidden layer của các context word thì ta sẽ thực hiện thao tác <strong>tính trung bình</strong> để có một vector trung bình, sau đó mới tính ra predicted word.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/cbow.png'>
+<p align="center" style="margin: 0; color: #888;">Tham khảo: <a href="https://www.youtube.com/watch?v=akRbuXokLSo">ProtonX - Word2vec</a>
+</p>
+</div>
+<p>Trong huấn luyện mô hình, ta cũng loss function là <strong>cross-entropy</strong> và optimizer <strong>SGD</strong> giống như Skip-gram. Trong đó, ở mỗi bước của SGD thì thứ ta chọn ngẫu nhiên là một câu ngắn trong kho dữ liệu.</p>
+<h4 id="trích-xuất-embedding-matrix">Trích xuất embedding matrix</h4>
+<p>Sau khi huấn luyện xong các mô hình như Skip-gram và CBoW thì ta thu được các ma trận trọng số $\bold{U}$ và $\bold{V}$. Nếu các bạn để ý thì trong mỗi mô hình, thứ tự mình sử dụng kí hiệu $\bold{U}$ và $\bold{V}$ là khác nhau.</p>
+<ul>
+<li>Trong Skip-gram, $\bold{U}$ là ma trận trọng số nối giữa input-hidden, liên quan đến target word và $\bold{V}$ thì nối giữa hidden-output và nó liên quan đến context word.</li>
+<li>Cũng vì sự “liên quan” giữa ma trận trọng số là các từ, trong CBoW thì $\bold{V}$ được đưa lên thành ma trận trọng số giữa input-hidden, tương tự cho $\bold{U}$.</li>
+</ul>
+<p>Ta biết rằng ma trận trọng số nối giữa layer input-hidden có nhiệm vụ chính là “học” các đặc trưng của từ input, còn ma trận trọng số nối giữa hidden-output thì có nhiệm vụ chính là dự đoán từ. Như vậy, rõ ràng là ta nên dùng ma trận trọng số đầu tiên để làm embedding matrix. Tuy nhiên, có sự khác biệt nào giữa các ma trận thu được từ Skip-gram và CBoW?</p>
+<ul>
+<li>Đối với Skip-gram, $\bold{U}$ liên quan trực tiếp đến target word. Khi đó, embedding vector của mỗi từ tính được dựa vào $\bold{U}$ sẽ mang nhiều thông tin về mặt <strong>ngữ nghĩa</strong> hơn.</li>
+<li>Ngược lại, trong CBoW, $\bold{V}$ liên quan trực tiếp đến các context word nên embedding vector của mỗi từ tính được sẽ nghiêng về phía <strong>ngữ pháp</strong>.</li>
+</ul>
+<p>Ví dụ,  với từ “cat”, ta tính embedding vector của nó theo cả hai ma trận $\bold{U}$ trong Skip-gram và $\bold{V}$ trong CBoW. Tiếp đến thì ta sẽ tìm từ tương đồng với “cat” nhất . Khi đó, sử dụng $\bold{U}$ thì kết quả có thể là “dog”, còn dùng $\bold{V}$ thì rất có thể sẽ là “cats” 😀.</p>
+<h4 id="nhận-xét">Nhận xét</h4>
+<p>Hai hướng tiếp cận Skip-gram và CBoW đều có những điểm mạnh và yếu của riêng nó (ví dụ như về mặt ngữ nghĩa và ngữ pháp) nhưng nhìn chung thì chúng đều cho ta những embedding vector đủ tốt để sử dụng trong các bài toán khác.</p>
+<p>Tuy nhiên, ta có một điểm yếu khá quan trọng trong việc huấn luyện Skip-gram và CBoW. Về hàm loss function thì mình đã đề cập là chúng đều sử dụng cross-entropy và cần đến $\text{softmax}$ activation function. Trong trường hợp từ điển có rất nhiều từ thì thao tác tính $\text{softmax}$ này sẽ rất rất lâu 😀</p>
+<p>LĐể khắc phục, ta có một số cách như là sử dụng <strong>Hierarchy Softmax</strong> hoặc là <strong>Negative Sampling</strong>. Trong bài viết này thì mình sẽ không đề cập đến chúng 😜</p>
+<h3 id="vấn-đề-thiên-vị-trong-word-embdding">Vấn đề thiên vị trong Word Embdding</h3>
+<p>Nghe rất là ảo, nhưng mà nó có tồn tại 😅 Điều này xảy ra phần lớn là do kho dữ liệu văn bản mà chúng ta sử dụng để xây dựng embedding matrix.</p>
+<p>Để lấy ví dụ, mình sẽ xét trường hợp liên quan đến <strong>giới tính</strong>. Cùng quay lại bài toán Analogy Reasoning trong phần <strong>2.2</strong>:</p>
+<ul>
+<li>Với 3 từ “man”, “woman” và “king” thì ta có thể tìm được từ “queen” sao cho quan hệ giữa “king” và “queen” sẽ tương tự với “man&quot; và “woman”.</li>
+<li>Bây giờ giả sử ta có “man”, “doctor”, “woman” và cần tìm từ X sao cho quan hệ giữa X và “woman” tương tự như “man&quot; và “doctor”. Nếu kho dữ liệu liên quan phần lớn đến việc người đàn ông là trụ cột trong gia đình (xã hội thời xa xưa) thì kết quả X rất có thể là “babysitter” (người trông trẻ). Như vậy, đã có vấn đề thiên vị (biasing) nam giới.</li>
+</ul>
+<p>Để hạn chế vấn đề này, ta có một số phương pháp như <strong>Hard Debiasing</strong>, <strong>Soft Debiasing</strong>. Mình sẽ không đề cập đến những phương pháp này ở đây, các bạn có thể tự tìm đọc nhé 😀 Nó phần lớn là liên quan đến các phép biến đổi toán học.</p>
+<p>Dưới đây là minh họa cho vấn đề thiên vị mà mình đã lấy ví dụ ở trên để cho các bạn dễ hình dung:</p>
+<ul>
+<li>Đầu tiên, hướng thay đổi giới tính là từ trái qua phải. Vì vấn đề thiên vị đang xảy ra liên quan đến giới tính nên ta gọi đây là <strong>bias direction</strong>.</li>
+<li>Trước khi điều chỉnh, ta thấy embedding vector của doctor nghiêng về phía bên nam giới hơn, tương tự như babysitter.</li>
+<li>Sau khi hạn chế vấn đề thiên vị điều chỉnh, các embedding vector của doctor và baby sitter nên nghiêng về phía “công bằng” hơn đối với hai giới tính, tức là hướng <strong>trực giao</strong> với bias direction.</li>
+</ul>
+<div>
+<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px"  src='./images/biasing.png'>
+<p align="center" style="margin: 0; color: #888;">Trước khi điều chỉnh (embedding vector gốc)</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="height: 300px" src='./images/debiasing.png'>
+<p align="center" style="margin: 0; color: #888;">Sau khi thực hiện debiasing</p>
+</div>
+</div>
+<p align="center">Nguồn: <a href='https://vagdevik.wordpress.com/2018/07/08/debiasing-word-embeddings/'>Vagdevik</a></p>
+</div>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://machinelearningcoban.com/tabml_book/ch_embedding/word2vec.html"  target="_blank" rel="noopener"
+    >Vũ Hữu Tiệp, Machine Learning cho dữ liệu dạng bảng - Word2vec</a></li>
+<li><a class="link" href="https://kavita-ganesan.com/comparison-between-cbow-skipgram-subword/"  target="_blank" rel="noopener"
+    >Kavita Gane, Word2Vec: A Comparison Between CBOW, SkipGram &amp; SkipGramSI</a></li>
+<li><a class="link" href="https://d2l.ai/chapter_natural-language-processing-pretraining/word2vec.html"  target="_blank" rel="noopener"
+    >Dive into Deep Learning, Word2vec</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/embedding/">embedding</a>
+        
+            <a href="/tags/one-hot-encoding/">one-hot-encoding</a>
+        
+            <a href="/tags/word2vec/">word2vec</a>
+        
+            <a href="/tags/skip-gram/">skip-gram</a>
+        
+            <a href="/tags/cbow/">cbow</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/rnn/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Recurrent Neural Network</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/densenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">DenseNet (2018)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
