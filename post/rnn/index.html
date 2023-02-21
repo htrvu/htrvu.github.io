@@ -470,6 +470,9 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 <p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://d2l.ai/_images/rnn.svg">Dive into DL</a>
 </p>
 </div>
+<ul>
+<li>Thông thường, ta gọi phần xử lý tính toán từ $\bold{X}_t$, $\bold{H}_{t-1}$ ra $\bold{H}_t$ và $\bold{O}_t$ ở các thời điểm (ô vuông được vẽ ở hình trên) là <strong>recurrent node</strong>.</li>
+</ul>
 <h3 id="sự-chia-sẻ-trọng-số-giữa-các-thời-điểm">Sự chia sẻ trọng số giữa các thời điểm</h3>
 <p>Qua mô tả về cách hoạt động của RNN ở phần trước, ta thấy rằng nếu ở mỗi thời điểm mà ta cần dùng một bộ trọng số khác nhau thì lượng tham số của mô hình RNN sẽ lớn không kém gì MLP ở phần <strong>3.1</strong> 😀</p>
 <p>Trong RNN, giữa các thời điểm sẽ có sự <strong>chia sẻ trọng số</strong>, tức là mọi thời điểm đều dùng cùng một bộ trọng số $(\bold{W}_{xh}, \bold{W}_{hh}, \bold{W}_{ho})$ để tính toán $\bold{O}_t$ và $\bold{H}_t$. Lợi ích của việc chia sẻ trọng số bao gồm:</p>
