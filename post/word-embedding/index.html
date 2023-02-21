@@ -235,7 +235,7 @@
     <li><a href="#one-hot-encoding">One-hot Encoding</a>
       <ol>
         <li><a href="#ý-tưởng">Ý tưởng</a></li>
-        <li><a href="#hạn-chế-one-hot-encoding">Hạn chế one-hot encoding</a></li>
+        <li><a href="#hạn-chế-one-hot-encoding">Hạn chế One-hot Encoding</a></li>
       </ol>
     </li>
     <li><a href="#word-embedding">Word Embedding</a>
@@ -357,17 +357,17 @@
 <p>Giả sử tập từ điển của chúng ta có $S$ từ và không có từ trên các văn bản là không có trong từ điển. Khi đó, mỗi từ sẽ được biểu diễn bằng một <strong>vector nhị phân</strong> có $S$ chiều, với duy nhất một phần tử bằng 1 tại chiều ứng với vị trí của từ đó trong từ điển và các phần tử còn lại là 0. Ví dụ:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 230px;" src='./images/one-hot-encoding.png'>
-<p align="center" style="margin: 0; color: #888;">Minh họa phương pháp one-hot encoding với kích thước từ điển là 9<br> Nguồn: <a href="https://www.shanelynn.ie/wp-content/uploads/2018/01/one-hot-word-embedding-vectors.png">Shane Lynn</a>
+<p align="center" style="margin: 0; color: #888;">Minh họa phương pháp One-hot Encoding với kích thước từ điển là 9<br> Nguồn: <a href="https://www.shanelynn.ie/wp-content/uploads/2018/01/one-hot-word-embedding-vectors.png">Shane Lynn</a>
 </p>
 </div>
-<p>Khi kết hợp phương pháp one-hot encoding vào mô hình RNN để giải quyết các bài toán thì ở trong mỗi giai đoạn ta sẽ có:</p>
+<p>Khi kết hợp phương pháp One-hot Encoding vào mô hình RNN để giải quyết các bài toán thì ở trong mỗi giai đoạn ta sẽ có:</p>
 <ul>
 <li>Input và label sẽ là các vector nhị phân tương ứng với các từ</li>
 <li>Output là một vector thể hiện một phân bố xác suất, với phần tử thứ $i$ là xác suất mà từ output là từ ở vị trí thứ $i$ trong từ điển (do đó activation function thường dùng ở đây chính là softmax)</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 400px;" src='./images/one-hot-with-rnn.png'>
-<p align="center" style="margin: 0; color: #888;">Ví dụ áp dụng one-hot encoding vào RNN trong bài toán sinh văn bản theo từng kí tự<br> Nguồn: <a href="https://slideplayer.com/slide/13124453">Stanford - Natural Language Processing</a>
+<p align="center" style="margin: 0; color: #888;">Ví dụ áp dụng One-hot Encoding vào RNN trong bài toán sinh văn bản theo từng kí tự<br> Nguồn: <a href="https://slideplayer.com/slide/13124453">Stanford - Natural Language Processing</a>
 </p>
 </div>
 <p><strong>Vì sao ta lại sử dụng vector nhị phân để biểu diễn các từ mà không dùng luôn giá trị số thực là vị trí của từ trong từ điển?</strong></p>
@@ -377,15 +377,15 @@
 <ul>
 <li>Với output là số thực như vậy thì cost function hầu như chắc chắn là <strong>MSE (Mean Square Error)</strong>. Khi đó, quá trình huấn luyện sẽ rất dễ rơi vào vị trí <strong>tối ưu cục bộ</strong>.</li>
 <li>Nếu mà số từ trong từ điển là rất nhiều thì kết quả của các phép tính trong cách biểu diễn dùng số thực là rất lớn.</li>
-<li>Để ý rằng, trong các biểu diễn one-hot encoding thì khoảng cách giữa một từ với các từ khác nó sẽ bằng hằng số là $\sqrt{2}$. Trong khi đó, với cách biểu diễn dùng duy nhất số thực thì lại không, có những cặp từ rất gần nhau và có những cặp từ cực kì xa nhau, trong khi ta chưa có bất cứ điều gì thể hiện được rằng từ này nên gần với một từ hơn so với từ kia.</li>
+<li>Để ý rằng, trong các biểu diễn One-hot Encoding thì khoảng cách giữa một từ với các từ khác nó sẽ bằng hằng số là $\sqrt{2}$. Trong khi đó, với cách biểu diễn dùng duy nhất số thực thì lại không, có những cặp từ rất gần nhau và có những cặp từ cực kì xa nhau, trong khi ta chưa có bất cứ điều gì thể hiện được rằng từ này nên gần với một từ hơn so với từ kia.</li>
 </ul>
 </li>
 </ul>
-<h3 id="hạn-chế-one-hot-encoding">Hạn chế one-hot encoding</h3>
-<p>Trong cách biểu diễn one-hot encoding, ta thấy rằng máy tính đã có thể phân biệt được các từ với nhau, có thể biết được từ được dùng trong câu input là từ gì và có thể cho biết từ mà nó tính ra được ở output là từ gì. Nói chung là máy tính đã hiểu được “mặt trước” của các từ.</p>
-<p>Tuy nhiên, ta vẫn chưa thể biểu diễn được <strong>mối quan hệ giữa các từ với nhau</strong>. Như đã đề cập ở phần trước, khoảng cách giữa hai cặp từ phân biệt bất kỳ đều bằng $\sqrt{2}$, trong khi những từ có nghĩa gần gần nhau như “good” và “nice” thì nên có khoảng cách gần nhau, còn những từ trái nghĩa nhau như “good” và “bad” thì cũng nên cách nhau rất xa. Chính vì yếu tố này mà thường thì việc áp dụng one-hot encoding vào RNN khó có thể mang lại kết quả như mong muốn.</p>
-<p>Bên cạnh đó, cách biểu diễn one-hot encoding thật sự là rất tốn kém về mặt bộ nhớ 😀 Nếu mà kích thước từ điển rất lớn thì cứ mỗi từ như vậy ta lại cần một vector có số chiều khổng lồ để biểu diễn. Một cách khắc phục vấn đề này là sử dụng <strong>ma trận thưa (sparse matrix)</strong>, nhưng mà việc cài đặt thì cũng không phải đơn giản.</p>
-<p>Từ các hạn chế của one-hot encoding, ta có một phương pháp tốt hơn, vừa có thể biểu diễn được mối quan hệ giữa các từ và vừa tiết kiệm được bộ nhớ, đó là <strong>Word Embedding</strong>!</p>
+<h3 id="hạn-chế-one-hot-encoding">Hạn chế One-hot Encoding</h3>
+<p>Trong cách biểu diễn One-hot Encoding, ta thấy rằng máy tính đã có thể phân biệt được các từ với nhau, có thể biết được từ được dùng trong câu input là từ gì và có thể cho biết từ mà nó tính ra được ở output là từ gì. Nói chung là máy tính đã hiểu được “mặt trước” của các từ.</p>
+<p>Tuy nhiên, ta vẫn chưa thể biểu diễn được <strong>mối quan hệ giữa các từ với nhau</strong>. Như đã đề cập ở phần trước, khoảng cách giữa hai cặp từ phân biệt bất kỳ đều bằng $\sqrt{2}$, trong khi những từ có nghĩa gần gần nhau như “good” và “nice” thì nên có khoảng cách gần nhau, còn những từ trái nghĩa nhau như “good” và “bad” thì cũng nên cách nhau rất xa. Chính vì yếu tố này mà thường thì việc áp dụng One-hot Encoding vào RNN khó có thể mang lại kết quả như mong muốn.</p>
+<p>Bên cạnh đó, cách biểu diễn One-hot Encoding thật sự là rất tốn kém về mặt bộ nhớ 😀 Nếu mà kích thước từ điển rất lớn thì cứ mỗi từ như vậy ta lại cần một vector có số chiều khổng lồ để biểu diễn. Một cách khắc phục vấn đề này là sử dụng <strong>ma trận thưa (sparse matrix)</strong>, nhưng mà việc cài đặt thì cũng không phải đơn giản.</p>
+<p>Từ các hạn chế của One-hot Encoding, ta có một phương pháp tốt hơn, vừa có thể biểu diễn được mối quan hệ giữa các từ và vừa tiết kiệm được bộ nhớ, đó là <strong>Word Embedding</strong>!</p>
 <h2 id="word-embedding">Word Embedding</h2>
 <h3 id="ý-tưởng-1">Ý tưởng</h3>
 <p>Đầu tiên, <strong>embedding</strong> nói chung là phương pháp đưa một vector có số chiều lớn (thường ở dạng thưa, tức là hầu hết các phần tử đều bằng 0), về một vector có số chiều nhỏ hơn (và không thưa).</p>
@@ -463,7 +463,7 @@
 <p style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 480px;" src='./images/tf-embedding-ex.png'>
 </p>
-<p>Như vậy, phương pháp Word Embedding đã có thể khắc phục được hạn chế của one-hot encoding trong việc thể hiện <strong>mối quan hệ giữa các từ</strong>.</p>
+<p>Như vậy, phương pháp Word Embedding đã có thể khắc phục được hạn chế của One-hot Encoding trong việc thể hiện <strong>mối quan hệ giữa các từ</strong>.</p>
 <h3 id="tính-chất-của-word-embedding">Tính chất của Word Embedding</h3>
 <p>Trong khả năng biểu diễn các từ bằng vector đặc trưng và thể hiện được mối quan hệ giữa từ đó với những từ khác, ta có một tính chất thú vị liên quan đến <strong>Analogy Reasoning (suy diễn tương tự)</strong>.</p>
 <ul>
@@ -489,7 +489,7 @@
 </ul>
 <p>và kết quả là $w = queen$.</p>
 <h3 id="sử-dụng-word-embedding-trong-rnn">Sử dụng Word Embedding trong RNN</h3>
-<p>Trong phương pháp one-hot encoding, ta sử dụng các one-hot vector ở input và output của RNN. Đối với word-embedding thì ta sẽ thay đổi một chút ở input, còn output thì vẫn dùng one-hot encoding để biết được mô hình dự đoán từ nào. 😜</p>
+<p>Trong phương pháp One-hot Encoding, ta sử dụng các one-hot vector ở input và output của RNN. Đối với word-embedding thì ta sẽ thay đổi một chút ở input, còn output thì vẫn dùng One-hot Encoding để biết được mô hình dự đoán từ nào. 😜</p>
 <p><strong>Tại sao lại như thế?</strong></p>
 <ul>
 <li>Đối với input, đưa vào RNN embedding vector thì chắc chắn mô hình có thể học tốt hơn so với one-hot vector rồi.</li>
