@@ -592,8 +592,8 @@ $$</p>
 <li><strong>Vanishing:</strong> Trong quá trình tính $\left ( \bold{W}_{hh}^\top \right ) ^ {T-i}$ có nhiều giá trị nhỏ hơn 1 được nhân với nhau.</li>
 <li><strong>Exploding:</strong> Ngược lại (lớn hơn 1).</li>
 </ul>
-<p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ.</p>
-<p>Đối với hiện tượng vanishing trong RNN, ta có thể diễn đạt nó một cách văn vở hơn là mô hình đã bị “quên” những thông tin tích lũy từ phía trước.</p>
+<p>Ta có một giải pháp để hạn chế hiện tượng này là <strong>Truncated BPTT</strong>, tức là ta chỉ lan truyền gradients đến một trạng thái cách trạng thái hiện tại một khoảng nào đó thôi chứ không lan truyền toàn bộ. Một phương pháp cũng khá phổ biến trong việc hạn chế exploding gradient là <strong>gradient clipping</strong> cũng co thể được áp dụng.</p>
+<p>Đối với hiện tượng vanishing gradient, ta có thể diễn đạt nó một cách văn vở hơn là mô hình đã bị “quên” những thông tin tích lũy từ phía trước.</p>
 <ul>
 <li>
 <p>Ví dụ, ta có hai câu sau:</p>
