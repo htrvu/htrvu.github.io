@@ -510,6 +510,22 @@ $$\begin{equation*}
 <p>, với $\bold{X} \in \mathbb{R}^{n \times d}$ và $\bold{H}  \in \mathbb{R}^{n \times h}$ là các ma trận ứng với toàn bộ giá trị input và hidden state (trong RNN thì $\bold{X}_t$ và $\bold{H}_t$ là các vector).</p>
 </li>
 </ul>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>
+<p>Trong quá trình feed-forward ở trên, mình đã sử dụng 3 ma trận trọng số là $\bold{W}_{xh}$, $\bold{W}_{hh}$ và $\bold{W}_{ho}$ để giúp quá trình back-propagation ở phần tiếp theo dễ diễn đạt hơn. Thông thường, ta có thể mô tả ngắn gọn quá trình này như sau:</p>
+<p>$$\begin{equation*}
+\bold{H}_t = \phi_h (\bold{W}_{h} \left [\bold{H}_{t-1}, \bold{X}_t \right ])
+\end{equation*}$$
+$$\begin{equation*}
+\bold{O}_t = \phi_o (\bold{W}_{o} \bold{H}_t)
+\end{equation*}$$</p>
+<p>, với $\bold{W}_{h} [\bold{H}_{t-1}, \bold{X}_t] = \begin{bmatrix}\bold{W}_{hh} &amp; \bold{W}_{xh}\end{bmatrix} \cdot \begin{bmatrix} \bold{H}_{t-1} \\ \bold{X}_{t} \end{bmatrix} = \bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1}$. Vậy là ta chỉ dùng hai &ldquo;ma trận&rdquo; trọng số $\bold{W}_h$ và $\bold{W}_o$.</p>
+</li>
+<li>
+<p>Trong các bài viết sau, mình sẽ dùng cách viết gọn này của quá trình feed-forward.</p>
+</li>
+</ul>
 <h3 id="back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</h3>
 <p>Khi mà feed-forward trong RNN diễn ra khác với MLP thì tất nhiên là back-propagation cũng khác 😀 Thuật toán back-propagation trong sequence model được gọi là <strong>Back-propagation Through Time</strong> (BPTT).</p>
 <p>Đầu tiên, ta sẽ đề cập đến <strong>cost function</strong>. Giả sử output của RNN tại thời điểm $t$ là $\bold{O}_t$ và label là $\bold{Y}_t$. Kí hiệu $l(\bold{O}_t, \bold{Y}_t)$ là loss tại thời điểm $t$. Khi đó cost function của ta là</p>
@@ -588,7 +604,7 @@ $$</p>
 <p>Thông thường, động từ to-be ở trước “very cute” sẽ phụ thuộc vào danh từ ở đầu câu (”cat” hay “cats”). Tuy nhiên, nếu RNN bị vanishing gradient thì nó sẽ không thể nhớ được trước đó là một con mèo hay nhiều con mèo để mà chọn động từ to-be cho đúng. 😀</p>
 </li>
 </ul>
-<p>Yếu tố này đã mở ra một hướng phát triển cho RNN là ta sẽ cố gắng tính toán thêm những phép toán khác để duy trì được các thông tin từ trước, từ phía xa mà RNN hiện tại không thể ghi nhớ được. Từ đó, ta có sự ra đời của <strong>Gated Recurrent Unit (GRU)</strong> và <strong>Long Short-Term Memory (LSTM)</strong>.</p>
+<p>Yếu tố này đã mở ra một hướng phát triển cho RNN là ta sẽ cố gắng tính toán thêm những phép toán khác để duy trì được các thông tin từ trước, từ phía xa mà RNN hiện tại không thể ghi nhớ được. Từ đó, ta có sự ra đời của <strong>Long Short-Term Memory (LSTM)</strong> và <strong>Gated Recurrent Unit (GRU)</strong>.</p>
 <h3 id="quá-trình-huấn-luyện-và-sử-dụng-mô-hình-rnn-trong-thực-tế">Quá trình huấn luyện và sử dụng mô hình RNN trong thực tế</h3>
 <p>Đối với các mô hình ML hay CNN thông thường, những thao tác diễn ra trong bước huấn luyện (training) và sử dụng trong thực tế (testing) là rất giống nhau: Từ một intput cho ra một output và chỉ như vậy là xong (ta tạm bỏ qua back-propagation).</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
