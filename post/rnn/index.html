@@ -731,6 +731,10 @@ Nguồn: <a href="https://d2l.ai/_images/birnn.svg">Dive into DL</a>
 </ul>
 <p>$$\bold{O}_t = \phi_o \left ( \bold{W}_{ho} \left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ] \right )$$</p>
 <p>, trong đó $\left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ]$ nghĩa là nối hai hidden state với nhau (concatenate).</p>
+<p><strong>Nhận xét</strong>.</p>
+<ul>
+<li>Qua quá trình feed-forward của BiRNN, ta thấy rằng mô hình phải thực hiện tính toán hidden state tại toàn bộ các thời điểm rồi mới bắt đầu đưa ra output của mỗi thời điểm. Do đó, đôi khi BiRNN sẽ không thực sự phù hợp cho các bài toán <strong>real-time</strong> như speech recognition.</li>
+</ul>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li><a class="link" href="https://arxiv.org/abs/1912.05911"  target="_blank" rel="noopener"
