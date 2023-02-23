@@ -2,16 +2,16 @@
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu về sequence data, sequence models và mô hình RNN'>
-<title>Recurrent Neural Network</title>
+<title>Recurrent Neural Network (RNN)</title>
 
 <link rel='canonical' href='https://htrvu.github.io/post/rnn/'>
 
-<link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Recurrent Neural Network'>
+<link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Recurrent Neural Network (RNN)'>
 <meta property='og:description' content='Giới thiệu về sequence data, sequence models và mô hình RNN'>
 <meta property='og:url' content='https://htrvu.github.io/post/rnn/'>
 <meta property='og:site_name' content='Hoang Trong Vu'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='rnn' /><meta property='article:tag' content='sequence-data' /><meta property='article:tag' content='sequence-models' /><meta property='article:published_time' content='2023-02-15T21:42:44&#43;07:00'/><meta property='article:modified_time' content='2023-02-15T21:42:44&#43;07:00'/>
-<meta name="twitter:title" content="Recurrent Neural Network">
+<meta name="twitter:title" content="Recurrent Neural Network (RNN)">
 <meta name="twitter:description" content="Giới thiệu về sequence data, sequence models và mô hình RNN">
     <link rel="shortcut icon" href="/neural.png" />
 
@@ -251,6 +251,12 @@
       </ol>
     </li>
     <li><a href="#các-dạng-mô-hình-rnn">Các dạng mô hình RNN</a></li>
+    <li><a href="#các-biến-thể-của-rnn">Các biến thể của RNN</a>
+      <ol>
+        <li><a href="#deep-rnn">Deep RNN</a></li>
+        <li><a href="#bi-directional-rnn-birnn">Bi-directional RNN (BiRNN)</a></li>
+      </ol>
+    </li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
 </nav>
@@ -283,7 +289,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/rnn/">Recurrent Neural Network</a>
+            <a href="/post/rnn/">Recurrent Neural Network (RNN)</a>
         </h2>
     
         
@@ -324,7 +330,7 @@
 
 
                 <time class="article-time--reading">
-                    16 minute read
+                    20 minute read
                 </time>
             </div>
         
@@ -355,7 +361,7 @@ Nguồn: <a href="https://datasciencedojo.com/wp-content/uploads/MicrosoftTeams-
 <p>Nền móng của NLP bắt nguồn từ những mô hình toán học và xác suất, đặc biệt là <strong>mô hình Markov</strong>. Khi Deep Learning bắt đầu phát triển mạnh mẽ, ta đã có thêm những mô hình khác với độ hiệu quả rất tuyệt vời như <strong>Recurrent Neural Network</strong>, <strong>Sequence to Sequence</strong>, <strong>Attention Mechanism</strong> và <strong>Transformer</strong>. Trong đó, Recurrent Neural Network, hay là RNN, là sự khởi đầu thú vị của Deep Learning trong NLP. Mô hình RNN cũng là sẽ chủ đề của bài viết này.</p>
 <h2 id="sequence-data-sequence-models">Sequence data, sequence models</h2>
 <h3 id="sequence-data">Sequence data</h3>
-<p>Ta có thể hiểu <strong>sequence data</strong> (dữ liệu dạng chuỗi) là dạng dữ liệu mà các giá trị trong đó được sắp xếp theo một trình tự không gian/thời gian nào đó và chúng có những mối liên hệ với nhau. Ví dụ:</p>
+<p>Ta có thể hiểu <strong>sequence data</strong> (dữ liệu dạng chuỗi) là dạng dữ liệu mà các giá trị trong đó được sắp xếp theo một trình tự không gian/thời gian nào đó và chúng có những mối liên hệ với nhau. Ta khó có thể chỉ dựa vào một giá trị cụ thể để biết được dữ liệu có ý nghĩa là gì mà phải sử dụng quan hệ giữa các giá trị với nhau. Ví dụ:</p>
 <ul>
 <li><strong>Văn bản:</strong> Đây là dạng sequence data rất phổ biến. Các từ trong câu tất nhiên là được sắp xếp theo một trình tự nhất định để tạo ra được một câu có nghĩa</li>
 <li><strong>Âm thanh:</strong> Một đoạn ghi âm giọng nói, một bản nhạc</li>
@@ -422,7 +428,7 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 <p>Để cho dễ diễn đạt, ta xét một bài toán trong NLP với input là một câu có độ dài $T_x$, từ ứng với vị trí thứ $i$ được biểu diễn bằng vector $x^{&lt; i &gt;}$ có $D$ chiều, output là một câu có độ dài $T_y$ và những từ tương ứng được biểu diễn là $y^{&lt; i &gt;}$ (tương tự như $x^{&lt; i &gt;}$).</p>
 <ul>
 <li>Thông thường thì ta sẽ giả sử luôn $T_x = T_y$ để bài toán đơn giản hơn một chút. Để thực hiện được thì chỉ đơn giản là padding/truncate để chúng bằng nhau thôi 😜</li>
-<li>Nếu bạn đang thắc mắc là có bài toán nào dạng như này thì hãy nghĩ đến Machine Translation.</li>
+<li>Nếu bạn đang thắc mắc là có bài toán nào dạng như này thì hãy nghĩ đến <strong>Name Entity Recognition</strong> (phân loại các thành phần trong câu thành các nhóm như tên người, địa điểm, thời gian, số lượng,&hellip;)</li>
 </ul>
 <h3 id="hạn-chế-của-mô-hình-multi-layers-percentron">Hạn chế của mô hình Multi-layers Percentron</h3>
 <p>Một cách tự nhiên, ta hoàn toàn có thể xây dựng một mô hình <strong>MLP</strong> (Multi-layers Perceptron) với input layer có $T_x \times D$ neurons, output layer cũng có $T_y \times D$ neurons và ở giữa là các hidden layer.</p>
@@ -444,12 +450,16 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 </li>
 </ul>
 <h3 id="ý-tưởng-của-rnn">Ý tưởng của RNN</h3>
-<p>Vì sequence data có một đặc điểm là <strong>thứ tự của các giá trị trong input</strong> là rất quan trọng nên ta thường thiên về hướng <strong>lần lượt xử lý trên từng vị trí một</strong>. Đồng thời, khi đi đến các vị trí sau thì ta cũng nên có những <strong>thông tin đã trích xuất được từ các vị trí trước</strong>. Ý tưởng của RNN chính là như vậy.</p>
+<p>Vì sequence data có một đặc điểm là <strong>thứ tự của các giá trị trong input</strong> là rất quan trọng nên ta thường thiên về hướng <strong>lần lượt xử lý trên từng vị trí một</strong>. Đồng thời, khi đi đến các vị trí sau thì ta cũng nên có <strong>thông tin đã trích xuất được từ các vị trí trước</strong>. Ý tưởng của RNN chính là như vậy.</p>
 <p>Sơ lược về cách hoạt động của RNN được mô tả như sau:</p>
 <ul>
 <li>Với điều kiện giả sử $T_x=T_y$, ta sẽ thực hiện tính toán $T_x$ lần, tại thời điểm (hay là vị trí) thứ $i$ thì từ $x^{&lt; i &gt;}$ (input) ta tính ra $y^{&lt; i &gt;}$ (output).</li>
-<li>Hơn nữa, để thực hiện thao tác <strong>lưu giữ các thông tin cho đến thời điểm hiện tại</strong> và đưa nó qua các thời điểm sau, ta cũng cần tính thêm một giá trị là  $h^{&lt; i &gt;}$ (giả sử luôn $h^{&lt;0&gt;} = 0$). Lúc này, ta gọi $h^{&lt; i &gt;}$ là <strong>trạng thái ẩn</strong> (hidden state)</li>
-<li>Như vậy, tại mỗi thời điểm thì ta cần tính ra $h^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$, dựa vào 2 input là $x^{&lt; i &gt;}$ và thông tin từ những thời điểm trước được tổng hợp tại $h^{&lt;i - 1&gt;}$.</li>
+<li>Hơn nữa, để thực hiện thao tác <strong>lưu giữ các thông tin cho đến thời điểm hiện tại</strong> và đưa nó qua các thời điểm sau, ta cũng cần tính thêm một giá trị là  $h^{&lt; i &gt;}$ (giả sử luôn $h^{&lt;0&gt;} = 0$). Lúc này, ta gọi $h^{&lt; i &gt;}$ là <strong>trạng thái ẩn</strong> (hidden state).
+<ul>
+<li>Với vai trò của hidden state $h^{&lt; i &gt;}$ thì ta thấy rằng output $y^{&lt; i &gt;}$ chắc chắn là nên được tính dựa trên $h^{&lt; i &gt;}$. 😃</li>
+</ul>
+</li>
+<li>Như vậy, tại mỗi thời điểm,ta cần tính ra $h^{&lt; i &gt;}$ và $y^{&lt; i &gt;}$, dựa vào 2 input là $x^{&lt; i &gt;}$ và thông tin từ những thời điểm trước được tổng hợp tại $h^{&lt;i - 1&gt;}$.</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 200px;" src='./images/rnn-1.png'>
@@ -470,6 +480,7 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 <p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://d2l.ai/_images/rnn.svg">Dive into DL</a>
 </p>
 </div>
+<p><strong>Lưu ý.</strong></p>
 <ul>
 <li>Thông thường, ta gọi phần xử lý tính toán từ $\bold{X}_t$, $\bold{H}_{t-1}$ ra $\bold{H}_t$ và $\bold{O}_t$ ở các thời điểm (ô vuông được vẽ ở hình trên) là <strong>recurrent node</strong>.</li>
 </ul>
@@ -642,8 +653,84 @@ Nguồn: <a href="https://static.javatpoint.com/tutorial/tensorflow/images/tenso
 <li><strong>One-to-one:</strong> Cái này thì rất thường thấy, ví dụ như Image Classification.</li>
 <li><strong>One-to-many:</strong> Có thể lấy ví dụ như bài toán sinh ra văn bản hoặc âm nhạc. Ta cung cấp input là một từ bất kì và mô hình sẽ tạo ra từ kế tiếp, ta lại đem từ này vào làm input để có từ tiếp theo.</li>
 <li><strong>Many-to-one:</strong> Các bài toán như Sentiment Analysis, Mail fitlering,… Trong dạng mô hình này, chỉ có thời điểm cuối cùng là có tính ra output, các thời điểm trước thì chỉ có tính hidden state.</li>
-<li><strong>Many-to-many:</strong> Chủ yếu là bài toán Machine Translation.</li>
+<li><strong>Many-to-many:</strong> Trong hình trên, ta thấy rằng có hai loại &ldquo;many-to-many&rdquo;:
+<ul>
+<li>Đầu tiên là hình thứ 4, khi mà từ thời điểm cuối cùng của input thì ta bắt đầu sinh ra các từ của output, theo nguyên tắc giống như one-to-many. Đây thực ra là dạng của mô hình đầu tiên đạt được độ chính xác khá ấn tượng trong bài toán Machine Translation, mô hình này có tên là Sequence to Sequence (seq2seq).</li>
+<li>Tiếp theo là hình thứ 5, với kiến trúc giống như mô hình RNN mà mình đã lấy ví dụ ở các phần trên. Bài toán điển hình cho dạng này là Name Entity Recognition.</li>
 </ul>
+</li>
+</ul>
+<h2 id="các-biến-thể-của-rnn">Các biến thể của RNN</h2>
+<h3 id="deep-rnn">Deep RNN</h3>
+<p>Tất nhiên, Deep Learning mà 😜 Trong các mô hình RNN mà mình trình bày ở trên thì chúng đều có một điểm chung là kiến trúc rất đơn giản. Ta chỉ có duy nhất một <strong>recurrent node</strong> và node này cứ nhận vào input, tính ra hidden state và output. Nếu chúng ta dùng nhiều node thì sao?
+Kết quả sẽ có dạng như hình bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/deep-rnn.svg'>
+<p align="center" style="margin: 0; color: #888;">Minh họa mô hình Deep RNN<br>
+Nguồn: <a href="https://d2l.ai/_images/deep-rnn.svg">Dive into DL</a>
+</p>
+</div>
+<p>Như vậy, input của recurrent node thứ $l$ là hidden state của recurrent node thứ $l - 1$.</p>
+<p>Ta kí hiệu:</p>
+<ul>
+<li>$L$ là số recurrent node của mô hình</li>
+<li>Tại recurrent node thứ $l$ thì
+<ul>
+<li>$\bold{H}_t^{(l)} \in \mathbb{R}^{h}$ là hidden state tại thời điểm $t$ (quy ước $\bold{H}_t^{(0)} = \bold{X}_t$)</li>
+<li>Các ma trận trọng số  lần lượt là $(\bold{W}_{xh}^{(l)}, \bold{W}_{hh}^{(l)})$ (với $l &lt; L$).</li>
+<li>Activation function dùng để tính hidden state là $\phi_l$.</li>
+</ul>
+</li>
+<li>$\bold{O}_t \in \mathbb{R}^{o}$ là output tại thời điểm $t$ của mô hình.</li>
+<li>Tại recurrent node thứ $L$, ma trận trọng số để tính ra output là $\bold{W}_{ho}$ và activation function là $\phi_o$.</li>
+</ul>
+<p>Khi đó, quá trình feed-forward trong Deep RNN được mô tả như sau: Tại thời điểm $t$ thì</p>
+<ul>
+<li>Qua từng recurrent node thứ $l = 1, 2, &hellip;, L$, ta có</li>
+</ul>
+<p>$$\bold{H}_t^{(l)} = \phi_l(\bold{W}_{xh}^{(l)} \bold{H}_t^{(l-1)}  + \bold{W}_{hh}^{(l)}\bold{H}_{t-1}^{(l)})$$</p>
+<ul>
+<li>Output tại thời điểm $t$ là</li>
+</ul>
+<p>$$\bold{O}_t = \phi_o (\bold{W}_{ho} \bold{H}_t^{(L)})$$</p>
+<h3 id="bi-directional-rnn-birnn">Bi-directional RNN (BiRNN)</h3>
+<p>Ý tưởng của Bi-directional RNN (BiRNN) rất là tự nhiên và giống với cách con người đọc hiểu ngôn ngữ. Đầu tiên, ta xét bài toán Name Entity Recognition với câu sau:</p>
+<ol>
+<li>Can you see that? <strong>Teddy</strong> bears are on sales.</li>
+<li>He said that <strong>Teddy</strong> Rooosevelt was a great president.</li>
+</ol>
+<p>Ở câu (2) thì ta có thể gán cho <strong>Teddy</strong> thuộc lớp Name, và nó đúng là tên của một người thật. Tuy nhiên, trong câu (1) mà gán như thế là sai. Để gán đúng với câu (1) thì ta cần biết được từ phía sau đó nữa (và ta phải gán nguyên cụm <strong>Teddy bears</strong>). Như vậy, RNN truyền thống sẽ thất bại trong ví dụ (1), vì khi xét tới <em>Teddy</em>* thì ta chưa có bất kì thông tin gì về các từ phía sau nó.</p>
+<ul>
+<li>Theo cách con người đọc hiểu ngôn ngữ, ở câu (1) thì ta cũng cần phải đọc thêm từ &ldquo;bears&rdquo; ở phía sau để biết được từ &ldquo;Teddy&rdquo; ở trước mang ý nghĩa gì.</li>
+</ul>
+<p>Như vậy, trong BiRNN, các trạng thái ẩn sẽ được truyền theo cả hai chiều (xuôi và ngược). Kiến trúc của nó sẽ có dạng như hình bên dưới (để cho đơn giản thì ta chỉ xét với một recurrent node 😜).</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/bi-rnn.svg'>
+<p align="center" style="margin: 0; color: #888;">Minh họa mô hình BiRNN<br>
+Nguồn: <a href="https://d2l.ai/_images/birnn.svg">Dive into DL</a>
+</p>
+</div>
+<p>Ta kí hiệu:</p>
+<ul>
+<li>Trong mỗi hướng truyền xuôi và ngược thì:
+<ul>
+<li>Hướng truyền xuôi: Hidden state là $\overrightarrow{\mathbf{H}}_t$ và hai ma trận trọng số  là $(\bold{W}_{xh}^{(f)}, \bold{W}_{hh}^{(f)})$.</li>
+<li>Hướng truyền ngược: Hidden state là $\overleftarrow{\mathbf{H}}_t$ và hai ma trận trọng số là $(\bold{W}_{xh}^{(b)}, \bold{W}_{hh}^{(b)})$.</li>
+</ul>
+</li>
+<li>Ma trận trọng số để tính ra output là $\bold{W}_{ho}$.</li>
+</ul>
+<p>Quá trình feed-forward của BiRNN sẽ diễn ra như sau:</p>
+<ul>
+<li>Lần lượt theo các hướng truyền xuôi, ta tính được hidden state theo các công thức</li>
+</ul>
+<p>$$\overrightarrow{\bold{H}}_t = \phi_h(\bold{W}_{xh}^{(f)}\bold{X}_t  + \bold{W}_{hh}^{(f)}\overrightarrow{\bold{H}}_{t-1})$$</p>
+<p>$$\overleftarrow{\bold{H}}_t = \phi_h(\bold{W}_{xh}^{(b)}\bold{X}_t + \bold{W}_{hh}^{(b)}\overleftarrow{\bold{H}}_{t+1})$$</p>
+<ul>
+<li>Sau khi đã tính xong hidden state tại toàn bộ các thời điểm, ta tính output:</li>
+</ul>
+<p>$$\bold{O}_t = \phi_o \left ( \bold{W}_{ho} \left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ] \right )$$</p>
+<p>, trong đó $\left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ]$ nghĩa là nối hai hidden state với nhau (concatenate).</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li><a class="link" href="https://arxiv.org/abs/1912.05911"  target="_blank" rel="noopener"
