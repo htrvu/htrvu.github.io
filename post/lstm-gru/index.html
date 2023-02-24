@@ -354,8 +354,8 @@
 <h3 id="ý-tưởng">Ý tưởng</h3>
 <p>Trước tiên, ta nhắc lại quá trình feed-forward của RNN truyền thống một chút. Tại thời điểm $t$, từ input $\bold{X}_t$ và hidden state $\bold{H}_{t-1}$ thì ta có</p>
 <p>$$
-\bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1}) \
-\bold{Y}_t = \phi_y (\bold{W}_{hy} \bold{H}_t)
+\bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1})$$
+$$\bold{Y}_t = \phi_y (\bold{W}_{hy} \bold{H}_t)
 $$</p>
 <p>Hidden state $\bold{H}_t$ chính là thành phần “nhớ” các short-term dependency trong RNN. Hơn nữa, cũng vì lý do ta tính $\bold{H}_t$ dựa vào $\bold{H}_{t-1}$ theo công thức như trên nên RNN mới gặp vấn đê vanishing gradient descent.</p>
 <p>Ý tưởng của <strong>Long Short-Term Memory (LSTM)</strong> xuất phát từ việc xây dựng thêm một thành phần tại mỗi thời điểm để ghi nhớ long-term dependency, nó được gọi là <strong>internal state</strong>. Đối với short-term thì ta vẫn sẽ ghi nhớ chúng bằng hidden state như trong RNN truyền thống.</p>
@@ -417,9 +417,9 @@ $$</p>
 </div>
 <p>Ta sẽ có khá nhiều phép tính, trước hết là tính các “cổng” $\bold{F}_t$, $\bold{I}_t$, $\bold{O}_t$  dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$:</p>
 <p>$$
-\mathbf{I}_t = \sigma( \mathbf{W}_{xi}\mathbf{X}_t + \mathbf{W}_{hi}\mathbf{H}_{t-1} )\
-\mathbf{F}_t = \sigma( \mathbf{W}_{xf} \mathbf{X}_t +  \mathbf{W}_{hf} \mathbf{H}_{t-1})\
-\mathbf{O}_t = \sigma( \mathbf{W}_{xo}\mathbf{X}_t +  \mathbf{W}_{ho} \mathbf{H}_{t-1})
+\mathbf{I}_t = \sigma( \mathbf{W}_{xi}\mathbf{X}_t + \mathbf{W}_{hi}\mathbf{H}_{t-1} )$$
+$$\mathbf{F}_t = \sigma( \mathbf{W}_{xf} \mathbf{X}_t +  \mathbf{W}_{hf} \mathbf{H}_{t-1})$$
+$$\mathbf{O}_t = \sigma( \mathbf{W}_{xo}\mathbf{X}_t +  \mathbf{W}_{ho} \mathbf{H}_{t-1})
 $$</p>
 <p>Bên cạnh đó, ta tính $\tilde{\bold{C}}_t$ bằng công thức</p>
 <p>$$
@@ -427,8 +427,8 @@ $$</p>
 $$</p>
 <p>Từ đó, internal state $\bold{C}_t$  và hidden state $\bold{H}_t$ sẽ được tính như sau:</p>
 <p>$$
-\mathbf{C}_t = \mathbf{F}_t \odot \mathbf{C}_{t-1} + \mathbf{I}_t \odot \tilde{\mathbf{C}}_t\
-\mathbf{H}_t = \mathbf{O}_t \odot \tanh(\mathbf{C}_t).
+\mathbf{C}_t = \mathbf{F}_t \odot \mathbf{C}_{t-1} + \mathbf{I}_t \odot \tilde{\mathbf{C}}_t$$
+$$\mathbf{H}_t = \mathbf{O}_t \odot \tanh(\mathbf{C}_t)
 $$</p>
 <p>Nếu ở thời điểm này cần tính ra output $\bold{Y}_t$ thì sẽ tính theo $\bold{C}_t$ cùng với ma trận trọng số $\bold{W}_{cy}$.</p>
 <h2 id="gated-recurrent-units">Gated Recurrent Units</h2>
@@ -458,8 +458,8 @@ $$</p>
 </div>
 <p>Trước hết, ta tính các “cổng” $\bold{R}_t$, $\bold{Z}_t$ dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$:</p>
 <p>$$
-\mathbf{R}_t = \sigma( \mathbf{W}_{xr} \mathbf{X}_t + \mathbf{H}_{t-1} \mathbf{W}_{hr})\
-\mathbf{Z}_t = \sigma(\mathbf{W}_{xz} \mathbf{X}_t  + \mathbf{H}_{t-1} \mathbf{W}_{hz} )
+\mathbf{R}_t = \sigma( \mathbf{W}_{xr} \mathbf{X}_t + \mathbf{H}_{t-1} \mathbf{W}_{hr})$$
+$$\mathbf{Z}_t = \sigma(\mathbf{W}_{xz} \mathbf{X}_t  + \mathbf{H}_{t-1} \mathbf{W}_{hz} )
 $$</p>
 <p>Từ $\bold{R}_t$, ta tính được $\tilde{\bold{H}}_t$ như sau:</p>
 <p>$$
