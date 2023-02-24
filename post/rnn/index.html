@@ -251,12 +251,6 @@
       </ol>
     </li>
     <li><a href="#các-dạng-mô-hình-rnn">Các dạng mô hình RNN</a></li>
-    <li><a href="#các-biến-thể-của-rnn">Các biến thể của RNN</a>
-      <ol>
-        <li><a href="#deep-rnn">Deep RNN</a></li>
-        <li><a href="#bi-directional-rnn-birnn">Bi-directional RNN (BiRNN)</a></li>
-      </ol>
-    </li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
   </ol>
 </nav>
@@ -330,7 +324,7 @@
 
 
                 <time class="article-time--reading">
-                    20 minute read
+                    17 minute read
                 </time>
             </div>
         
@@ -345,7 +339,7 @@
     <section class="article-content">
     
     
-    <p>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài vì mình đã trình bày kỹ quá trình <strong>back-propagation</strong>. Mong các bạn đọc hết nhé! 😀</p>
+    <p>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (NLP - Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài một chút, mong các bạn đọc hết nhé! 😀</p>
 <h2 id="sơ-lược-về-natural-language-processing">Sơ lược về Natural Language Processing</h2>
 <p>Bên cạnh <strong>Computer Vision</strong> (CV - Thị giác máy tính) thì <strong>Natural Language Processing</strong> (NLP - Xử lý ngôn ngữ tự nhiên) cũng là một mảng rất quan trọng và được nghiên cứu rộng rãi trong Deep Learning. Các sản phẩm nổi tiếng trên thế giới liên quan đến chữ viết, giọng nói, âm thanh như Google Dịch, Google Assistant, Siri, Alexa, ChatGPT… đều là các thành quả của việc áp dụng NLP vào thực tế.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -480,10 +474,7 @@ Nguồn: <a href="https://www.coursera.org/learn/nlp-sequence-models?specializat
 <p align="center" style="margin: 0; color: #888;"> Nguồn: <a href="https://d2l.ai/_images/rnn.svg">Dive into DL</a>
 </p>
 </div>
-<p><strong>Lưu ý.</strong></p>
-<ul>
-<li>Thông thường, ta gọi phần xử lý tính toán từ $\bold{X}_t$, $\bold{H}_{t-1}$ ra $\bold{H}_t$ và $\bold{O}_t$ ở các thời điểm (ô vuông được vẽ ở hình trên) là <strong>recurrent node</strong>.</li>
-</ul>
+<p>Thông thường, ta gọi phần xử lý tính toán từ $\bold{X}_t$, $\bold{H}_{t-1}$ ra $\bold{H}_t$ và $\bold{O}_t$ ở các thời điểm (ô vuông được vẽ ở hình trên) là <strong>recurrent cell</strong>.</p>
 <h3 id="sự-chia-sẻ-trọng-số-giữa-các-thời-điểm">Sự chia sẻ trọng số giữa các thời điểm</h3>
 <p>Qua mô tả về cách hoạt động của RNN ở phần trước, ta thấy rằng nếu ở mỗi thời điểm mà ta cần dùng một bộ trọng số khác nhau thì lượng tham số của mô hình RNN sẽ lớn không kém gì MLP ở phần <strong>3.1</strong> 😀</p>
 <p>Trong RNN, giữa các thời điểm sẽ có sự <strong>chia sẻ trọng số</strong>, tức là mọi thời điểm đều dùng cùng một bộ trọng số $(\bold{W}_{xh}, \bold{W}_{hh}, \bold{W}_{ho})$ để tính toán $\bold{O}_t$ và $\bold{H}_t$. Lợi ích của việc chia sẻ trọng số bao gồm:</p>
@@ -524,24 +515,8 @@ $$\begin{equation*}
 <p>, với $\bold{X} \in \mathbb{R}^{n \times d}$ và $\bold{H}  \in \mathbb{R}^{n \times h}$ là các ma trận ứng với toàn bộ giá trị input và hidden state (trong RNN thì $\bold{X}_t$ và $\bold{H}_t$ là các vector).</p>
 </li>
 </ul>
-<p><strong>Lưu ý.</strong></p>
-<ul>
-<li>
-<p>Trong quá trình feed-forward ở trên, mình đã sử dụng 3 ma trận trọng số là $\bold{W}_{xh}$, $\bold{W}_{hh}$ và $\bold{W}_{ho}$ để giúp quá trình back-propagation ở phần tiếp theo dễ diễn đạt hơn. Thông thường, ta có thể mô tả ngắn gọn quá trình này như sau:</p>
-<p>$$\begin{equation*}
-\bold{H}_t = \phi_h (\bold{W}_{h} \left [\bold{H}_{t-1}, \bold{X}_t \right ])
-\end{equation*}$$
-$$\begin{equation*}
-\bold{O}_t = \phi_o (\bold{W}_{o} \bold{H}_t)
-\end{equation*}$$</p>
-<p>, với $\bold{W}_{h} [\bold{H}_{t-1}, \bold{X}_t] = \begin{bmatrix}\bold{W}_{hh} &amp; \bold{W}_{xh}\end{bmatrix} \cdot \begin{bmatrix} \bold{H}_{t-1} \\ \bold{X}_{t} \end{bmatrix} = \bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1}$. Vậy là ta chỉ dùng hai &ldquo;ma trận&rdquo; trọng số $\bold{W}_h$ và $\bold{W}_o$.</p>
-</li>
-<li>
-<p>Trong các bài viết sau, mình sẽ dùng cách viết gọn này của quá trình feed-forward.</p>
-</li>
-</ul>
 <h3 id="back-propagation-through-time-bptt">Back-propagation Through Time (BPTT)</h3>
-<p>Khi mà feed-forward trong RNN diễn ra khác với MLP thì tất nhiên là back-propagation cũng khác 😀 Thuật toán back-propagation trong sequence model được gọi là <strong>Back-propagation Through Time</strong> (BPTT).</p>
+<p>Khi mà feed-forward trong RNN diễn ra khác với MLP thì tất nhiên là back-propagation cũng khác 😀 Thuật toán back-propagation trong sequence model được gọi là <strong>Back-propagation Through Time (BPTT)</strong>.</p>
 <p>Đầu tiên, ta sẽ đề cập đến <strong>cost function</strong>. Giả sử output của RNN tại thời điểm $t$ là $\bold{O}_t$ và label là $\bold{Y}_t$. Kí hiệu $l(\bold{O}_t, \bold{Y}_t)$ là loss tại thời điểm $t$. Khi đó cost function của ta là</p>
 <p>$$\begin{equation}
 L= \sum_{i=1}^{T} l(\bold{O}_t, \bold{Y}_t)
@@ -660,81 +635,6 @@ Nguồn: <a href="https://static.javatpoint.com/tutorial/tensorflow/images/tenso
 </ul>
 </li>
 </ul>
-<h2 id="các-biến-thể-của-rnn">Các biến thể của RNN</h2>
-<h3 id="deep-rnn">Deep RNN</h3>
-<p>Tất nhiên, Deep Learning mà 😜 Trong các mô hình RNN mà mình trình bày ở trên thì chúng đều có một điểm chung là kiến trúc rất đơn giản. Ta chỉ có duy nhất một <strong>recurrent node</strong> và node này cứ nhận vào input, tính ra hidden state và output. Nếu chúng ta dùng nhiều node thì sao?
-Kết quả sẽ có dạng như hình bên dưới.</p>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="max-height: 350px;" src='./images/deep-rnn.svg'>
-<p align="center" style="margin: 0; color: #888;">Minh họa mô hình Deep RNN<br>
-Nguồn: <a href="https://d2l.ai/_images/deep-rnn.svg">Dive into DL</a>
-</p>
-</div>
-<p>Như vậy, input của recurrent node thứ $l$ là hidden state của recurrent node thứ $l - 1$.</p>
-<p>Ta kí hiệu:</p>
-<ul>
-<li>$L$ là số recurrent node của mô hình</li>
-<li>Tại recurrent node thứ $l$ thì
-<ul>
-<li>$\bold{H}_t^{(l)} \in \mathbb{R}^{h}$ là hidden state tại thời điểm $t$ (quy ước $\bold{H}_t^{(0)} = \bold{X}_t$)</li>
-<li>Các ma trận trọng số  lần lượt là $(\bold{W}_{xh}^{(l)}, \bold{W}_{hh}^{(l)})$ (với $l &lt; L$).</li>
-<li>Activation function dùng để tính hidden state là $\phi_l$.</li>
-</ul>
-</li>
-<li>$\bold{O}_t \in \mathbb{R}^{o}$ là output tại thời điểm $t$ của mô hình.</li>
-<li>Tại recurrent node thứ $L$, ma trận trọng số để tính ra output là $\bold{W}_{ho}$ và activation function là $\phi_o$.</li>
-</ul>
-<p>Khi đó, quá trình feed-forward trong Deep RNN được mô tả như sau: Tại thời điểm $t$ thì</p>
-<ul>
-<li>Qua từng recurrent node thứ $l = 1, 2, &hellip;, L$, ta có</li>
-</ul>
-<p>$$\bold{H}_t^{(l)} = \phi_l(\bold{W}_{xh}^{(l)} \bold{H}_t^{(l-1)}  + \bold{W}_{hh}^{(l)}\bold{H}_{t-1}^{(l)})$$</p>
-<ul>
-<li>Output tại thời điểm $t$ là</li>
-</ul>
-<p>$$\bold{O}_t = \phi_o (\bold{W}_{ho} \bold{H}_t^{(L)})$$</p>
-<h3 id="bi-directional-rnn-birnn">Bi-directional RNN (BiRNN)</h3>
-<p>Ý tưởng của Bi-directional RNN (BiRNN) rất là tự nhiên và giống với cách con người đọc hiểu ngôn ngữ. Đầu tiên, ta xét bài toán Name Entity Recognition với câu sau:</p>
-<ol>
-<li>Can you see that? <strong>Teddy</strong> bears are on sales.</li>
-<li>He said that <strong>Teddy</strong> Rooosevelt was a great president.</li>
-</ol>
-<p>Ở câu (2) thì ta có thể gán cho <strong>Teddy</strong> thuộc lớp Name, và nó đúng là tên của một người thật. Tuy nhiên, trong câu (1) mà gán như thế là sai. Để gán đúng với câu (1) thì ta cần biết được từ phía sau đó nữa (và ta phải gán nguyên cụm <strong>Teddy bears</strong>). Như vậy, RNN truyền thống sẽ thất bại trong ví dụ (1), vì khi xét tới <em>Teddy</em>* thì ta chưa có bất kì thông tin gì về các từ phía sau nó.</p>
-<ul>
-<li>Theo cách con người đọc hiểu ngôn ngữ, ở câu (1) thì ta cũng cần phải đọc thêm từ &ldquo;bears&rdquo; ở phía sau để biết được từ &ldquo;Teddy&rdquo; ở trước mang ý nghĩa gì.</li>
-</ul>
-<p>Như vậy, trong BiRNN, các trạng thái ẩn sẽ được truyền theo cả hai chiều (xuôi và ngược). Kiến trúc của nó sẽ có dạng như hình bên dưới (để cho đơn giản thì ta chỉ xét với một recurrent node 😜).</p>
-<div style="display: flex; flex-direction: column; align-items: center;">
-<img style="max-height: 350px;" src='./images/bi-rnn.svg'>
-<p align="center" style="margin: 0; color: #888;">Minh họa mô hình BiRNN<br>
-Nguồn: <a href="https://d2l.ai/_images/birnn.svg">Dive into DL</a>
-</p>
-</div>
-<p>Ta kí hiệu:</p>
-<ul>
-<li>Trong mỗi hướng truyền xuôi và ngược thì:
-<ul>
-<li>Hướng truyền xuôi: Hidden state là $\overrightarrow{\mathbf{H}}_t$ và hai ma trận trọng số  là $(\bold{W}_{xh}^{(f)}, \bold{W}_{hh}^{(f)})$.</li>
-<li>Hướng truyền ngược: Hidden state là $\overleftarrow{\mathbf{H}}_t$ và hai ma trận trọng số là $(\bold{W}_{xh}^{(b)}, \bold{W}_{hh}^{(b)})$.</li>
-</ul>
-</li>
-<li>Ma trận trọng số để tính ra output là $\bold{W}_{ho}$.</li>
-</ul>
-<p>Quá trình feed-forward của BiRNN sẽ diễn ra như sau:</p>
-<ul>
-<li>Lần lượt theo các hướng truyền xuôi, ta tính được hidden state theo các công thức</li>
-</ul>
-<p>$$\overrightarrow{\bold{H}}_t = \phi_h(\bold{W}_{xh}^{(f)}\bold{X}_t  + \bold{W}_{hh}^{(f)}\overrightarrow{\bold{H}}_{t-1})$$</p>
-<p>$$\overleftarrow{\bold{H}}_t = \phi_h(\bold{W}_{xh}^{(b)}\bold{X}_t + \bold{W}_{hh}^{(b)}\overleftarrow{\bold{H}}_{t+1})$$</p>
-<ul>
-<li>Sau khi đã tính xong hidden state tại toàn bộ các thời điểm, ta tính output:</li>
-</ul>
-<p>$$\bold{O}_t = \phi_o \left ( \bold{W}_{ho} \left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ] \right )$$</p>
-<p>, trong đó $\left [ \overrightarrow{\bold{H}}_t , \overleftarrow{\bold{H}}_t \right ]$ nghĩa là nối hai hidden state với nhau (concatenate).</p>
-<p><strong>Nhận xét</strong>.</p>
-<ul>
-<li>Qua quá trình feed-forward của BiRNN, ta thấy rằng mô hình phải thực hiện tính toán hidden state tại toàn bộ các thời điểm rồi mới bắt đầu đưa ra output của mỗi thời điểm. Do đó, đôi khi BiRNN sẽ không thực sự phù hợp cho các bài toán <strong>real-time</strong> như speech recognition.</li>
-</ul>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
 <li><a class="link" href="https://arxiv.org/abs/1912.05911"  target="_blank" rel="noopener"
@@ -801,6 +701,32 @@ Nguồn: <a href="https://d2l.ai/_images/birnn.svg">Dive into DL</a>
             
                 
 <article class="">
+    <a href="/post/deep-rnn_birnn/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Deep RNN và Bidirectional RNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/lstm-gru/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
     <a href="/post/word-embedding/">
         
         
@@ -833,32 +759,6 @@ Nguồn: <a href="https://d2l.ai/_images/birnn.svg">Dive into DL</a>
 
         <div class="article-details">
             <h2 class="article-title">MobileNet V2 (2019)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/post/densenet/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">DenseNet (2018)</h2>
-        </div>
-    </a>
-</article>
-
-            
-                
-<article class="">
-    <a href="/post/cam/">
-        
-        
-
-        <div class="article-details">
-            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
         </div>
     </a>
 </article>

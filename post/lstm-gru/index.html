@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu về LSTM và GRU, các giải pháp hạn chế vấn đề vanishing gradient trong RNN truyền thống'>
+<title>Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/lstm-gru/'>
+
+<link rel="stylesheet" href="/scss/style.min.38e85664c6a3693af4a810d65ba9912a0751a4ee2f42b2ed7f83f842913e35c8.css"><meta property='og:title' content='Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)'>
+<meta property='og:description' content='Giới thiệu về LSTM và GRU, các giải pháp hạn chế vấn đề vanishing gradient trong RNN truyền thống'>
+<meta property='og:url' content='https://htrvu.github.io/post/lstm-gru/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='rnn' /><meta property='article:tag' content='lstm' /><meta property='article:tag' content='gru' /><meta property='article:published_time' content='2023-02-24T00:51:43&#43;07:00'/><meta property='article:modified_time' content='2023-02-24T00:51:43&#43;07:00'/>
+<meta name="twitter:title" content="Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)">
+<meta name="twitter:description" content="Giới thiệu về LSTM và GRU, các giải pháp hạn chế vấn đề vanishing gradient trong RNN truyền thống">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#vanishing-gradient-và-long-term-short-term-dependency">Vanishing gradient và long-term, short-term dependency</a></li>
+    <li><a href="#long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</a>
+      <ol>
+        <li><a href="#ý-tưởng">Ý tưởng</a></li>
+        <li><a href="#forget-gate-input-gate-output-gate-và-candidate-internal-state">Forget gate, input gate, output gate và candidate internal state</a></li>
+        <li><a href="#23-quá-trình-feed-forward">2.3. Quá trình feed-forward</a></li>
+      </ol>
+    </li>
+    <li><a href="#gated-recurrent-units">Gated Recurrent Units</a>
+      <ol>
+        <li><a href="#ý-tưởng-1">Ý tưởng</a></li>
+        <li><a href="#reset-gate-update-gate-và-candidate-hidden-state">Reset gate, update gate và candidate hidden state</a></li>
+        <li><a href="#quá-trình-feed-forward">Quá trình feed-forward</a></li>
+      </ol>
+    </li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/nlp/" style="background-color: #2a9d8f; color: #fff;">
+                Natual Language Processing
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/lstm-gru/">Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu về LSTM và GRU, các giải pháp hạn chế vấn đề vanishing gradient trong RNN truyền thống
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 24, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    9 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="vanishing-gradient-và-long-term-short-term-dependency">Vanishing gradient và long-term, short-term dependency</h2>
+<p>Trong bài viết về mô hình <a class="link" href="https://htrvu.github.io/post/rnn/" >RNN truyền thống</a>, mình đã có đề cập đến vấn đề vanishing gradient của nó dựa vào công thức của quá trình BPPT (Back-propagation Through Time). Hệ quả của vấn đề này là RNN gặp khó khăn trong việc ghi nhớ thông tin trong những câu có nhiều từ.</p>
+<p>Để minh họa rõ hơn về hệ quả của vanishing gradient, ta xét ví dụ với mô hình RNN dùng để sinh ra văn bản. Giả sử đoạn văn bản đang được sinh ra như sau:</p>
+<ul>
+<li>Trưa hôm nay, trời đã mưa rất to và tôi thì lại để quên áo mưa ở nhà. Vì sao quên thì là do sáng nay ngủ dậy muộn nên tôi chỉ tập trung nhanh chóng vệ sinh cá nhân, soạn sách vở rồi ăn sáng để đến lớp thôi. …(vài câu gì đó nữa)…. Kết quả là lúc về đến nhà, cả người tôi đã bị _</li>
+</ul>
+<p>Từ tiếp theo được sinh ra ở vị trí của kí tự _ lúc này nên là “ướt”, nhưng những thông tin liên quan đến vấn đề bị ướt này thì lại cách vị trí hiên tại rất xa, ở tận phía đầu của đoạn văn bản (trời mưa, quên áo mưa). Khi đó, RNN sẽ khó mà nhớ được những chi tiết này, dẫn đến từ sinh ra sẽ không phù hợp.</p>
+<p>Ta có thể gọi sự phụ thuộc giữa từ “ướt” nên được sinh ra và các chi tiết ở đầu đoạn văn là <strong>long-term dependency</strong>. Mô hình cần phải nhớ được những chi tiết đó thì ở sau nó mới có thể sinh ra được từ hợp lý. Như vậy, vì gặp vấn đề vanishing gradient mà mô hình RNN truyền thống gặp khó khăn trong việc ghi nhớ các long-term dependency. Đây là một điểm yếu rõ rệt nhất của RNN.</p>
+<p>Ngược với long-term thì ta có <strong>short-term dependency</strong>. Sự phụ thuộc này chỉ những mối tương quan giữa những từ ở gần nhau trong đoạn văn bản. Với RNN truyền thống thì nó hoàn toàn có thể nhớ được các sự phụ thuộc này.</p>
+<p><strong>Long Short-Term Memory (LSTM, 1997)</strong> và <strong>Gated Recurrent Unit (GRU, 2014)</strong> là các cải tiến của mô hình RNN truyền thống, nhằm tập trung khắc phục điểm yếu của nó trong vấn đề ghi nhớ các long-term dependency.</p>
+<p><strong>Lưu ý.</strong></p>
+<ul>
+<li>Trước khi đi đến các phần sau, ta quy ước rằng output của các cell (LSTM cell, GRU cell) tại thời điểm $t$ sẽ được ký hiệu là $\bold{Y}_t$ (tránh nhầm với $\bold{O}_t$ trong RNN truyền thống). Nói chung là thay O thành Y 😜</li>
+<li>Trong bài viết này, mình cũng sẽ bỏ qua các giá trị bias, tương tự như trong bài viết về RNN.</li>
+</ul>
+<h2 id="long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</h2>
+<h3 id="ý-tưởng">Ý tưởng</h3>
+<p>Trước tiên, ta nhắc lại quá trình feed-forward của RNN truyền thống một chút. Tại thời điểm $t$, từ input $\bold{X}_t$ và hidden state $\bold{H}_{t-1}$ thì ta có</p>
+<p>$$
+\bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1}) \
+\bold{Y}_t = \phi_y (\bold{W}_{hy} \bold{H}_t)
+$$</p>
+<p>Hidden state $\bold{H}_t$ chính là thành phần “nhớ” các short-term dependency trong RNN. Hơn nữa, cũng vì lý do ta tính $\bold{H}_t$ dựa vào $\bold{H}_{t-1}$ theo công thức như trên nên RNN mới gặp vấn đê vanishing gradient descent.</p>
+<p>Ý tưởng của <strong>Long Short-Term Memory (LSTM)</strong> xuất phát từ việc xây dựng thêm một thành phần tại mỗi thời điểm để ghi nhớ long-term dependency, nó được gọi là <strong>internal state</strong>. Đối với short-term thì ta vẫn sẽ ghi nhớ chúng bằng hidden state như trong RNN truyền thống.</p>
+<p>Kí hiệu internal state tại thời điểm $t$ là $\bold{C}_t$. Ta có các thao tác liên quan đến $\bold{C}_t$ như sau:</p>
+<ul>
+<li>
+<p>Cập nhật internal state <strong>$\bold{C}_t$:</strong></p>
+<ul>
+<li>
+<p><strong>Loại bỏ</strong> một số <strong>thông tin không cần thiết</strong> trong long-term dependency nhớ được từ $t-1$ thời điểm trước (hay là quên bớt thông tin trong $\bold{C}_{t-1}$)</p>
+</li>
+<li>
+<p><strong>Thêm vào</strong> các <strong>thông tin cần thiết</strong> từ các input của thời điểm hiện tại vào internal state (hay là cập nhật thêm thông tin). Ta thường kí hiệu lượng thông tin này là $\tilde{\bold{C}}_t$.</p>
+<ul>
+<li>Input của thời điểm hiện tại bao gồm $\bold{H}_{t-1}$ (short-term dependency) và $\bold{X}_t$</li>
+<li>$\tilde{\bold{C}}_t$ còn được gọi là <strong>candiate internal state</strong>.</li>
+</ul>
+</li>
+<li>
+<p>Trong đó, ta có hai giá trị điều chỉnh tỉ lệ <strong>loại bỏ</strong> và <strong>thêm vào</strong> tại thời điểm $t$, nó sẽ kiểu nh</p>
+<p>$$
+\bold{C}_t = \alpha_t \bold{C}_{t-1} + \beta_t \tilde{\bold{C}}_t
+$$</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Từ internal state $\bold{C}_t$, ta <strong>chắt lọc</strong> các thông tin có vai trò như là những short-term dependency mà mô hình nên nhớ ở thời điểm hiện tại, tức là tính ra $\bold{H}_t$, và truyền $\bold{H}_t$ qua thời điểm kế tiếp</p>
+</li>
+<li>
+<p>Ngoài ra, nếu cần tính ra output $\bold{Y}_t$ thì ta cũng sẽ dựa vào $\bold{C}_t$.</p>
+</li>
+</ul>
+<p><strong>Nhận xét.</strong></p>
+<ul>
+<li>Trong LSTM, short-term dependency và long-term dependency được tách ra và nó sử dụng hai cổng để ghi nhớ.</li>
+<li>Từ công thức tính $\bold{C}_t$ ở trên, nếu $\alpha_t = 0$ thì có nghĩa là ta sẽ quên hết các thông tin phía trước luôn, chỉ tập trung hiên tại thôi, còn $\beta_t = 0$ thì xem như ta không quan tâm hiện tại, chỉ dùng đúng những gì đã biết trong quá khứ. Thật ra $\alpha_t$ và $\beta_t$ là các ma trận và phép nhân được thực hiện là element-wise.</li>
+<li>Nhờ tính internal state $\bold{C}_t$ theo ý tưởng của LSTM, ta đã có thể hạn chế vấn đề vanishing gradient (hạn chế thôi, vẫn có thể gặp phải nhưng hiếm hơn 😀)</li>
+</ul>
+<h3 id="forget-gate-input-gate-output-gate-và-candidate-internal-state">Forget gate, input gate, output gate và candidate internal state</h3>
+<p>Trong các thao tác liên quan đến $\bold{C}_t$ ở trên, quan trọng nhất là các chi tiết về <strong>loại bỏ</strong>, <strong>thêm vào</strong> và <strong>chắt lọc</strong>. Chúng sẽ lần lượt ứng với ba “cổng” là <strong>forget gate $\bold{F}_t$</strong>, <strong>input gate $\bold{I}_t$</strong> và <strong>output gate</strong> $\bold{O}_t$trong LSTM cell.</p>
+<ul>
+<li>Lưu ý rằng các giá trị này là <strong>tỉ lệ</strong>, liên quan đến thao tác <strong>loại bỏ, thêm vào</strong> và <strong>chắt lọc</strong> các thông tin truyền từ bên ngoài vào nên ta sẽ dùng activation function $\sigma$ (sigmoid)</li>
+</ul>
+<p>Ngoài ra, để thực hiện thao tác tính toán thông tin <strong>thêm vào</strong> internal state là $\tilde{\bold{C}}_t$, dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$. Ta sẽ biểu diễn nó bằng <strong>input node</strong>. Activation function được dùng để tính giá tị này là $\tanh$.</p>
+<p>Khi đó, những thành phần này được biểu diễn trong LSTM cell như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/lstm-1.png'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa các thành phần trong LSTM cell<br>Nguồn: <a href='https://d2l.ai/_images/lstm-0.svg'>Dive into DL</a>
+</p>
+</div>
+<p>Như vậy thì ta đã có kha khá ký hiệu được sử dụng để biểu diễn cho các giá trị. Điều này cũng có nghĩa là sẽ có rất nhiều ma trận trọng số 😀 Cụ thể hơn, với mỗi thành phần $\bold{F}_t$, $\bold{I}_t$, $\bold{O}_t$ và $\tilde{\bold{C}}_t$ thì ta sẽ có hai ma trận trọng số, ví dụ như $\bold{W}_{xf}, \bold{W}_{hf}$ đối với thành phần $\bold{F}_t$.</p>
+<h3 id="23-quá-trình-feed-forward">2.3. Quá trình feed-forward</h3>
+<p>Tổng quan quá trình feed-forward trong LSTM cell được thể hiện trong hình ảnh bên dưới</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/lstm-2.png'>
+<p align="center" style="margin: 0; color: #888;">Quá trình feed-forward trong LSTM cell<br>Nguồn: <a href='https://d2l.ai/_images/lstm-3.svg'>Dive into DL</a>
+</p>
+</div>
+<p>Ta sẽ có khá nhiều phép tính, trước hết là tính các “cổng” $\bold{F}_t$, $\bold{I}_t$, $\bold{O}_t$  dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$:</p>
+<p>$$
+\mathbf{I}_t = \sigma( \mathbf{W}_{xi}\mathbf{X}_t + \mathbf{W}_{hi}\mathbf{H}_{t-1} )\
+\mathbf{F}_t = \sigma( \mathbf{W}_{xf} \mathbf{X}_t +  \mathbf{W}_{hf} \mathbf{H}_{t-1})\
+\mathbf{O}_t = \sigma( \mathbf{W}_{xo}\mathbf{X}_t +  \mathbf{W}_{ho} \mathbf{H}_{t-1})
+$$</p>
+<p>Bên cạnh đó, ta tính $\tilde{\bold{C}}_t$ bằng công thức</p>
+<p>$$
+\tilde{\mathbf{C}}_t = \text{tanh}(\mathbf{W}_{xc} \mathbf{X}_t  +  \mathbf{W}_{hc} \mathbf{H}_{t-1})
+$$</p>
+<p>Từ đó, internal state $\bold{C}_t$  và hidden state $\bold{H}_t$ sẽ được tính như sau:</p>
+<p>$$
+\mathbf{C}_t = \mathbf{F}_t \odot \mathbf{C}_{t-1} + \mathbf{I}_t \odot \tilde{\mathbf{C}}_t\
+\mathbf{H}_t = \mathbf{O}_t \odot \tanh(\mathbf{C}_t).
+$$</p>
+<p>Nếu ở thời điểm này cần tính ra output $\bold{Y}_t$ thì sẽ tính theo $\bold{C}_t$ cùng với ma trận trọng số $\bold{W}_{cy}$.</p>
+<h2 id="gated-recurrent-units">Gated Recurrent Units</h2>
+<h3 id="ý-tưởng-1">Ý tưởng</h3>
+<p><strong>Gated Recurrent Units</strong> (GRU - 2014) là có thể nói là một phiên bản tối ưu hơn của LSTM về mặt độ phức tạp, trong khi về hiệu năng thì có thể nói là hai mô hình này ngang ngửa nhau. Do đó, ta thường thấy GRU được sử dụng nhiều hơn.</p>
+<p>Ý tưởng mấu chốt của GRU là chỉ sử dụng hidden state $\bold{H}_t$ để vừa nhớ cả short-term và long-term dependency. Trong khi đó, ở LSTM thì ta có sự phân tách giữa hai thông tin này.</p>
+<p>Bên cạnh đó, nhìn vào công thức tính internal state $\bold{C}_t$ dựa vào hai gia trị tỉ lệ $\bold{F}_t$ và $\bold{I}_t$ trong LSTM cell, ta có thể có “cảm giác” là thông thường thì tổng của chúng hay bằng 1, nên là thôi bỏ một cái đi 😀 GRU làm theo đúng như thế.</p>
+<p>Ngoài ra, trong LSTM có candidate internal state $\tilde{\bold{C}}_t$  dùng để tính ra các <strong>thông tin cần thiết</strong> từ các input $\bold{X}_t$ và $\bold{H}_{t-1}$. Với GRU thì ta cũng có thành phần tương tự là candidate hidden state $\tilde{\bold{H}}_t$ với cùng mục đích như thế.</p>
+<h3 id="reset-gate-update-gate-và-candidate-hidden-state">Reset gate, update gate và candidate hidden state</h3>
+<p>Thay vì sử dụng ba “cổng” như LSTM thì GRU sẽ dùng hai là <strong>reset gate</strong> $\bold{R}_t$ và <strong>update gate $\bold{Z}_t$.</strong>  Một thành phần nữa cũng rất quan trọng trong GRU là candidate hidden state $\tilde{\bold{H}}_t$. Trong đó:</p>
+<ul>
+<li>$\bold{R}_t$ sẽ đóng vai trò <strong>loại bỏ</strong> một số thông tin không cần thiết về các <strong>short-term dependency</strong> trong hidden state của thời điểm trước là $\bold{H}_{t-1}$. Ta sẽ dùng nó để tính $\tilde{\bold{H}}_t$. Do đó, candidate hidden state $\tilde{\bold{H}}_t$ sẽ chứa các thông tin có ích về short-term dependency.</li>
+<li>$\bold{Z}_t$ sẽ thay thế cho cả $\bold{F}_t$ và $\bold{I}_t$ trong việc điều chỉnh tỉ lệ <strong>loại bỏ</strong> thông tin không cần thiết về long-term dependency trong $\bold{H}_{t-1}$ và <strong>thêm vào</strong> các thông tin cần thiết về short-term dependency (chính là $\tilde{\bold{H}}_t$).</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/gru-1.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa các thành phần trong GRU cell<br>Nguồn: <a href='https://d2l.ai/_images/gru-2.svg'>Dive into DL</a>
+</p>
+</div>
+<p>Ta thấy rằng, số ma trận trọng số cần sử dụng trong GRU cell sẽ ít hơn LSTM cell hai ma trận. Cụ thể hơn thì với mỗi thành phần $\bold{R}_t$, $\bold{Z}_t$ và $\tilde{\bold{H}}_t$ thì ta đều cần hai ma trận trọng số.</p>
+<h3 id="quá-trình-feed-forward">Quá trình feed-forward</h3>
+<p>Tổng quan quá trình feed-forward trong GRU cell được thể hiện trong hình ảnh bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/gru-2.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa các thành phần trong GRU cell<br>Nguồn: <a href='https://d2l.ai/_images/gru-3.svg'>Dive into DL</a>
+</p>
+</div>
+<p>Trước hết, ta tính các “cổng” $\bold{R}_t$, $\bold{Z}_t$ dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$:</p>
+<p>$$
+\mathbf{R}_t = \sigma( \mathbf{W}_{xr} \mathbf{X}_t + \mathbf{H}_{t-1} \mathbf{W}_{hr})\
+\mathbf{Z}_t = \sigma(\mathbf{W}_{xz} \mathbf{X}_t  + \mathbf{H}_{t-1} \mathbf{W}_{hz} )
+$$</p>
+<p>Từ $\bold{R}_t$, ta tính được $\tilde{\bold{H}}_t$ như sau:</p>
+<p>$$
+\tilde{\mathbf{H}}_t = \tanh( \mathbf{W}_{xh} \mathbf{X}_t + \mathbf{W}_{hh}\left(\mathbf{R}_t \odot \mathbf{H}_{t-1}\right) )
+$$</p>
+<p>Sử dụng $\bold{Z}_t$ và $\tilde{\bold{H}}_t$, hidden state tại thời điểm $t$ được xác định bằng</p>
+<p>$$
+\bold{H}_t = \bold{Z}_t \odot \bold{H}_{t-1} + (1 - \bold{Z}_t) \odot \tilde{\bold{H}}_t
+$$</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://d2l.ai/chapter_recurrent-modern/lstm.html#gated-hidden-state"  target="_blank" rel="noopener"
+    >Dive into DL, Long Short-Term Memory</a></li>
+<li><a class="link" href="https://d2l.ai/chapter_recurrent-modern/gru.html"  target="_blank" rel="noopener"
+    >Dive into DL, Gated Recurrent Units</a></li>
+<li><a class="link" href="https://towardsdatascience.com/lstm-networks-a-detailed-explanation-8fae6aefc7f9"  target="_blank" rel="noopener"
+    >Rian Dolphin, LSTM Networks | A Detailed Explanation</a></li>
+<li><a class="link" href="https://www.coursera.org/learn/nlp-sequence-models?specialization=deep-learning"  target="_blank" rel="noopener"
+    >DeepLearning.AI, Deep Learning Specialization, 5. Sequence Models</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/rnn/">rnn</a>
+        
+            <a href="/tags/lstm/">lstm</a>
+        
+            <a href="/tags/gru/">gru</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/deep-rnn_birnn/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Deep RNN và Bidirectional RNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/rnn/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Recurrent Neural Network (RNN)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/word-embedding/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Word Embedding</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

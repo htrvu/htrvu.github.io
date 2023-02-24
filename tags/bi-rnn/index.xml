@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>bi-rnn on Hoang Trong Vu</title>
+        <link>https://htrvu.github.io/tags/bi-rnn/</link>
+        <description>Recent content in bi-rnn on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Fri, 24 Feb 2023 13:48:53 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/bi-rnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Deep RNN và Bidirectional RNN</title>
+        <link>https://htrvu.github.io/post/deep-rnn_birnn/</link>
+        <pubDate>Fri, 24 Feb 2023 13:48:53 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/deep-rnn_birnn/</guid>
+        <description>Giới thiệu Qua các bài viết về RNN truyền thống, LSTM và GRU thì mình đều trình bày về các mô hình với duy nhất một cell trong kiến trúc (recurrent cell, LSTM cell hoặc là GRU cell). Ngoài ra, ta thấy các hidden state cũng được truyền theo một hướng cố định là từ trái sang phải (thời điểm $t$ đến thời điểm $t + 1$). Nếu bỏ qua chi tiết về các &amp;ldquo;thời điểm&amp;rdquo; thì nhìn chúng sẽ không khác gì một mô hình MLP cơ bản trong Machine Learning.</description>
+        </item>
+        
+    </channel>
+</rss>

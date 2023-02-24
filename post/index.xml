@@ -6,7 +6,24 @@
         <description>Recent content in Posts on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 19 Feb 2023 10:51:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 24 Feb 2023 13:48:53 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Deep RNN và Bidirectional RNN</title>
+        <link>https://htrvu.github.io/post/deep-rnn_birnn/</link>
+        <pubDate>Fri, 24 Feb 2023 13:48:53 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/deep-rnn_birnn/</guid>
+        <description>Giới thiệu Qua các bài viết về RNN truyền thống, LSTM và GRU thì mình đều trình bày về các mô hình với duy nhất một cell trong kiến trúc (recurrent cell, LSTM cell hoặc là GRU cell). Ngoài ra, ta thấy các hidden state cũng được truyền theo một hướng cố định là từ trái sang phải (thời điểm $t$ đến thời điểm $t + 1$). Nếu bỏ qua chi tiết về các &amp;ldquo;thời điểm&amp;rdquo; thì nhìn chúng sẽ không khác gì một mô hình MLP cơ bản trong Machine Learning.</description>
+        </item>
+        <item>
+        <title>Long Short-Term Memory (LSTM) và Gated Recurrent Unit (GRU)</title>
+        <link>https://htrvu.github.io/post/lstm-gru/</link>
+        <pubDate>Fri, 24 Feb 2023 00:51:43 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/lstm-gru/</guid>
+        <description>Vanishing gradient và long-term, short-term dependency Trong bài viết về mô hình RNN truyền thống, mình đã có đề cập đến vấn đề vanishing gradient của nó dựa vào công thức của quá trình BPPT (Back-propagation Through Time). Hệ quả của vấn đề này là RNN gặp khó khăn trong việc ghi nhớ thông tin trong những câu có nhiều từ.
+Để minh họa rõ hơn về hệ quả của vanishing gradient, ta xét ví dụ với mô hình RNN dùng để sinh ra văn bản.</description>
+        </item>
+        <item>
         <title>Word Embedding</title>
         <link>https://htrvu.github.io/post/word-embedding/</link>
         <pubDate>Sun, 19 Feb 2023 10:51:57 +0700</pubDate>
@@ -21,7 +38,7 @@ Nếu máy tính hiểu được càng nhiều về các từ thì nghĩa là c�
         <pubDate>Wed, 15 Feb 2023 21:42:44 +0700</pubDate>
         
         <guid>https://htrvu.github.io/post/rnn/</guid>
-        <description>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài vì mình đã trình bày kỹ quá trình back-propagation. Mong các bạn đọc hết nhé! 😀
+        <description>Đây là bài viết đầu tiên của mình trong lĩnh vực Natural Language Processing (NLP - Xử lý ngôn ngữ tự nhiên). Nó sẽ khá dài một chút, mong các bạn đọc hết nhé! 😀
 Sơ lược về Natural Language Processing Bên cạnh Computer Vision (CV - Thị giác máy tính) thì Natural Language Processing (NLP - Xử lý ngôn ngữ tự nhiên) cũng là một mảng rất quan trọng và được nghiên cứu rộng rãi trong Deep Learning.</description>
         </item>
         <item>

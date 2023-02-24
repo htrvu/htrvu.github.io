@@ -3,33 +3,54 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://htrvu.github.io/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/bi-rnn/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/cbow/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/dl/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/deep-rnn_birnn/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/deep-rnn/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/gru/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/lstm/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/nlp/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/rnn/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/</loc>
+    <lastmod>2023-02-24T13:48:53+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/lstm-gru/</loc>
+    <lastmod>2023-02-24T00:51:43+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/cbow/</loc>
     <lastmod>2023-02-19T10:51:57+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/embedding/</loc>
     <lastmod>2023-02-19T10:51:57+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/categories/nlp/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/one-hot-encoding/</loc>
     <lastmod>2023-02-19T10:51:57+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/post/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/skip-gram/</loc>
-    <lastmod>2023-02-19T10:51:57+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/</loc>
     <lastmod>2023-02-19T10:51:57+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/post/word-embedding/</loc>
@@ -39,9 +60,6 @@
     <lastmod>2023-02-19T10:51:57+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/post/rnn/</loc>
-    <lastmod>2023-02-15T21:42:44+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/rnn/</loc>
     <lastmod>2023-02-15T21:42:44+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/sequence-data/</loc>
