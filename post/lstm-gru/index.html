@@ -235,16 +235,16 @@
     <li><a href="#vanishing-gradient-và-long-term-short-term-dependency">Vanishing gradient và long-term, short-term dependency</a></li>
     <li><a href="#long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</a>
       <ol>
-        <li><a href="#ý-tưởng">Ý tưởng</a></li>
+        <li><a href="#ý-tưởng-về-internal-state">Ý tưởng về internal state</a></li>
         <li><a href="#forget-gate-input-gate-output-gate-và-candidate-internal-state">Forget gate, input gate, output gate và candidate internal state</a></li>
-        <li><a href="#23-quá-trình-feed-forward">2.3. Quá trình feed-forward</a></li>
+        <li><a href="#quá-trình-feed-forward">Quá trình feed-forward</a></li>
       </ol>
     </li>
     <li><a href="#gated-recurrent-units">Gated Recurrent Units</a>
       <ol>
-        <li><a href="#ý-tưởng-1">Ý tưởng</a></li>
+        <li><a href="#ý-tưởng-đơn-giản-hóa-lstm">Ý tưởng đơn giản hóa LSTM</a></li>
         <li><a href="#reset-gate-update-gate-và-candidate-hidden-state">Reset gate, update gate và candidate hidden state</a></li>
-        <li><a href="#quá-trình-feed-forward">Quá trình feed-forward</a></li>
+        <li><a href="#quá-trình-feed-forward-1">Quá trình feed-forward</a></li>
       </ol>
     </li>
     <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
@@ -341,7 +341,7 @@
 <ul>
 <li>Trưa hôm nay, trời đã <strong>mưa</strong> rất to và tôi thì lại <strong>để quên áo mưa</strong> ở nhà. Vì sao quên thì là do sáng nay ngủ dậy muộn nên tôi chỉ tập trung nhanh chóng vệ sinh cá nhân, soạn sách vở rồi ăn sáng để đến lớp thôi. …(vài câu gì đó nữa)…. Kết quả là lúc về đến nhà, cả người tôi đã bị _</li>
 </ul>
-<p>Từ tiếp theo được sinh ra ở vị trí của kí tự _ lúc này nên là “ướt”, nhưng những thông tin liên quan đến vấn đề bị ướt này thì lại cách vị trí hiên tại rất xa, ở tận phía đầu của đoạn văn bản (trời mưa, quên áo mưa). Khi đó, RNN sẽ khó mà nhớ được những chi tiết này, dẫn đến từ sinh ra sẽ không phù hợp.</p>
+<p>Từ tiếp theo được sinh ra ở vị trí của kí tự _ lúc này nên là “ướt”, nhưng những thông tin liên quan đến vấn đề bị ướt này thì lại cách vị trí hiện tại rất xa, ở tận phía đầu của đoạn văn bản (trời mưa, quên áo mưa). Khi đó, RNN sẽ khó mà nhớ được những chi tiết này, dẫn đến từ sinh ra sẽ không phù hợp.</p>
 <p>Ta có thể gọi sự phụ thuộc giữa từ “ướt” nên được sinh ra và các chi tiết ở đầu đoạn văn là <strong>long-term dependency</strong>. Mô hình cần phải nhớ được những chi tiết đó thì ở sau nó mới có thể sinh ra được từ hợp lý. Như vậy, vì gặp vấn đề vanishing gradient mà mô hình RNN truyền thống gặp khó khăn trong việc ghi nhớ các long-term dependency. Đây là một điểm yếu rõ rệt nhất của RNN.</p>
 <p>Ngược với long-term thì ta có <strong>short-term dependency</strong>. Sự phụ thuộc này chỉ những mối tương quan giữa những từ ở gần nhau trong đoạn văn bản. Với RNN truyền thống thì nó hoàn toàn có thể nhớ được các sự phụ thuộc này.</p>
 <p><strong>Long Short-Term Memory (LSTM, 1997)</strong> và <strong>Gated Recurrent Unit (GRU, 2014)</strong> là các cải tiến của mô hình RNN truyền thống, nhằm tập trung khắc phục điểm yếu của nó trong vấn đề ghi nhớ các long-term dependency.</p>
@@ -351,13 +351,13 @@
 <li>Trong bài viết này, mình cũng sẽ bỏ qua các giá trị bias, tương tự như trong bài viết về RNN.</li>
 </ul>
 <h2 id="long-short-term-memory-lstm">Long Short-Term Memory (LSTM)</h2>
-<h3 id="ý-tưởng">Ý tưởng</h3>
+<h3 id="ý-tưởng-về-internal-state">Ý tưởng về internal state</h3>
 <p>Trước tiên, ta nhắc lại quá trình feed-forward của RNN truyền thống một chút. Tại thời điểm $t$, từ input $\bold{X}_t$ và hidden state $\bold{H}_{t-1}$ thì ta có</p>
 <p>$$
 \bold{H}_t = \phi_h (\bold{W}_{xh} \bold{X}_t + \bold{W}_{hh} \bold{H}_{t-1})$$
 $$\bold{Y}_t = \phi_y (\bold{W}_{hy} \bold{H}_t)
 $$</p>
-<p>Hidden state $\bold{H}_t$ chính là thành phần “nhớ” các short-term dependency trong RNN. Hơn nữa, cũng vì lý do ta tính $\bold{H}_t$ dựa vào $\bold{H}_{t-1}$ theo công thức như trên nên RNN mới gặp vấn đê vanishing gradient descent.</p>
+<p>Hidden state $\bold{H}_t$ chính là thành phần “nhớ” các short-term dependency trong RNN. Hơn nữa, cũng vì lý do ta tính $\bold{H}_t$ dựa vào $\bold{H}_{t-1}$ theo công thức như trên nên RNN mới gặp vấn đề vanishing gradient descent.</p>
 <p>Ý tưởng của <strong>Long Short-Term Memory (LSTM)</strong> xuất phát từ việc xây dựng thêm một thành phần tại mỗi thời điểm để ghi nhớ long-term dependency, nó được gọi là <strong>internal state</strong>. Đối với short-term thì ta vẫn sẽ ghi nhớ chúng bằng hidden state như trong RNN truyền thống.</p>
 <p>Kí hiệu internal state tại thời điểm $t$ là $\bold{C}_t$. Ta có các thao tác liên quan đến $\bold{C}_t$ như sau:</p>
 <ul>
@@ -375,7 +375,7 @@ $$</p>
 </ul>
 </li>
 <li>
-<p>Trong đó, ta có hai giá trị điều chỉnh tỉ lệ <strong>loại bỏ</strong> và <strong>thêm vào</strong> tại thời điểm $t$, nó sẽ kiểu nh</p>
+<p>Trong đó, ta có hai giá trị điều chỉnh tỉ lệ <strong>loại bỏ</strong> và <strong>thêm vào</strong> tại thời điểm $t$, nó sẽ kiểu như</p>
 <p>$$
 \bold{C}_t = \alpha_t \bold{C}_{t-1} + \beta_t \tilde{\bold{C}}_t
 $$</p>
@@ -383,16 +383,17 @@ $$</p>
 </ul>
 </li>
 <li>
-<p>Từ internal state $\bold{C}_t$, ta <strong>chắt lọc</strong> các thông tin có vai trò như là những short-term dependency mà mô hình nên nhớ ở thời điểm hiện tại, tức là tính ra $\bold{H}_t$, và truyền $\bold{H}_t$ qua thời điểm kế tiếp</p>
+<p>Từ internal state $\bold{C}_t$, ta <strong>chắt lọc</strong> các thông tin có vai trò như là những short-term dependency mà mô hình nên nhớ ở thời điểm hiện tại, tức là tính ra $\bold{H}_t$.</p>
 </li>
 <li>
 <p>Ngoài ra, nếu cần tính ra output $\bold{Y}_t$ thì ta cũng sẽ dựa vào $\bold{C}_t$.</p>
 </li>
 </ul>
+<p>Như vậy, input của LSTM cell tại thời điểm $t$ sẽ có tổng cộng <strong>3 phần</strong> là $\bold{X}_t$, $\bold{H}_{t-1}$, $\bold{C}_{t-1}$ và output sẽ bao gồm $\bold{H}_t$, $\bold{C}_t$ (có thể có thêm $\bold{Y}_t$).</p>
 <p><strong>Nhận xét.</strong></p>
 <ul>
 <li>Trong LSTM, short-term dependency và long-term dependency được tách ra và nó sử dụng hai cổng để ghi nhớ.</li>
-<li>Từ công thức tính $\bold{C}_t$ ở trên, nếu $\alpha_t = 0$ thì có nghĩa là ta sẽ quên hết các thông tin phía trước luôn, chỉ tập trung hiên tại thôi, còn $\beta_t = 0$ thì xem như ta không quan tâm hiện tại, chỉ dùng đúng những gì đã biết trong quá khứ. Thật ra $\alpha_t$ và $\beta_t$ là các ma trận và phép nhân được thực hiện là element-wise.</li>
+<li>Từ công thức tính $\bold{C}_t$ ở trên, nếu $\alpha_t = 0$ thì có nghĩa là ta sẽ quên hết các thông tin phía trước luôn, chỉ tập trung hiện tại thôi, còn $\beta_t = 0$ thì xem như ta không quan tâm hiện tại, chỉ dùng đúng những gì đã biết trong quá khứ. Thật ra $\alpha_t$ và $\beta_t$ là các ma trận và phép nhân được thực hiện là element-wise.</li>
 <li>Nhờ tính internal state $\bold{C}_t$ theo ý tưởng của LSTM, ta đã có thể hạn chế vấn đề vanishing gradient (hạn chế thôi, vẫn có thể gặp phải nhưng hiếm hơn 😀)</li>
 </ul>
 <h3 id="forget-gate-input-gate-output-gate-và-candidate-internal-state">Forget gate, input gate, output gate và candidate internal state</h3>
@@ -403,12 +404,12 @@ $$</p>
 <p>Ngoài ra, để thực hiện thao tác tính toán thông tin <strong>thêm vào</strong> internal state là $\tilde{\bold{C}}_t$, dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$. Ta sẽ biểu diễn nó bằng <strong>input node</strong>. Activation function được dùng để tính giá tị này là $\tanh$.</p>
 <p>Khi đó, những thành phần này được biểu diễn trong LSTM cell như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
-<img style="max-height: 300px;" src='./images/lstm-1.png'>
-<p align="center" style="margin: 0; color: #888;"> Minh họa các thành phần trong LSTM cell<br>Nguồn: <a href='https://d2l.ai/_images/lstm-0.svg'>Dive into DL</a>
+<img style="max-height: 300px;" src='./images/lstm-1.svg'>
+<p align="center" style="margin: 0; color: #888;"> Minh họa các thành phần trong LSTM cell<br>Nguồn: <a href='https://d2l.ai/_images/lstm-1.svg'>Dive into DL</a>
 </p>
 </div>
 <p>Như vậy thì ta đã có kha khá ký hiệu được sử dụng để biểu diễn cho các giá trị. Điều này cũng có nghĩa là sẽ có rất nhiều ma trận trọng số 😀 Cụ thể hơn, với mỗi thành phần $\bold{F}_t$, $\bold{I}_t$, $\bold{O}_t$ và $\tilde{\bold{C}}_t$ thì ta sẽ có hai ma trận trọng số, ví dụ như $\bold{W}_{xf}, \bold{W}_{hf}$ đối với thành phần $\bold{F}_t$.</p>
-<h3 id="23-quá-trình-feed-forward">2.3. Quá trình feed-forward</h3>
+<h3 id="quá-trình-feed-forward">Quá trình feed-forward</h3>
 <p>Tổng quan quá trình feed-forward trong LSTM cell được thể hiện trong hình ảnh bên dưới</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 300px;" src='./images/lstm-2.png'>
@@ -432,7 +433,7 @@ $$\mathbf{H}_t = \mathbf{O}_t \odot \tanh(\mathbf{C}_t)
 $$</p>
 <p>Nếu ở thời điểm này cần tính ra output $\bold{Y}_t$ thì sẽ tính theo $\bold{C}_t$ cùng với ma trận trọng số $\bold{W}_{cy}$.</p>
 <h2 id="gated-recurrent-units">Gated Recurrent Units</h2>
-<h3 id="ý-tưởng-1">Ý tưởng</h3>
+<h3 id="ý-tưởng-đơn-giản-hóa-lstm">Ý tưởng đơn giản hóa LSTM</h3>
 <p><strong>Gated Recurrent Units</strong> (GRU - 2014) là có thể nói là một phiên bản tối ưu hơn của LSTM về mặt độ phức tạp, trong khi về hiệu năng thì có thể nói là hai mô hình này ngang ngửa nhau. Do đó, ta thường thấy GRU được sử dụng nhiều hơn.</p>
 <p>Ý tưởng mấu chốt của GRU là chỉ sử dụng hidden state $\bold{H}_t$ để vừa nhớ cả short-term và long-term dependency. Trong khi đó, ở LSTM thì ta có sự phân tách giữa hai thông tin này.</p>
 <p>Bên cạnh đó, nhìn vào công thức tính internal state $\bold{C}_t$ dựa vào hai gia trị tỉ lệ $\bold{F}_t$ và $\bold{I}_t$ trong LSTM cell, ta có thể có “cảm giác” là thông thường thì tổng của chúng hay bằng 1, nên là thôi bỏ một cái đi 😀 GRU làm theo đúng như thế.</p>
@@ -449,7 +450,7 @@ $$</p>
 </p>
 </div>
 <p>Ta thấy rằng, số ma trận trọng số cần sử dụng trong GRU cell sẽ ít hơn LSTM cell hai ma trận. Cụ thể hơn thì với mỗi thành phần $\bold{R}_t$, $\bold{Z}_t$ và $\tilde{\bold{H}}_t$ thì ta đều cần hai ma trận trọng số.</p>
-<h3 id="quá-trình-feed-forward">Quá trình feed-forward</h3>
+<h3 id="quá-trình-feed-forward-1">Quá trình feed-forward</h3>
 <p>Tổng quan quá trình feed-forward trong GRU cell được thể hiện trong hình ảnh bên dưới.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 300px;" src='./images/gru-2.png'>
