@@ -401,7 +401,7 @@ $$</p>
 <ul>
 <li>Lưu ý rằng các giá trị này là <strong>tỉ lệ</strong>, liên quan đến thao tác <strong>loại bỏ, thêm vào</strong> và <strong>chắt lọc</strong> các thông tin truyền từ bên ngoài vào nên ta sẽ dùng activation function $\sigma$ (sigmoid)</li>
 </ul>
-<p>Ngoài ra, để thực hiện thao tác tính toán thông tin <strong>thêm vào</strong> internal state là $\tilde{\bold{C}}_t$, dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$. Ta sẽ biểu diễn nó bằng <strong>input node</strong>. Activation function được dùng để tính giá tị này là $\tanh$.</p>
+<p>Ngoài ra, thao tác tính toán thông tin candidate internal state $\tilde{\bold{C}}_t$ dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$ sẽ được biểu diễn thông qua thành phần <strong>input node</strong>. Activation function được dùng để tính giá tị này là $\tanh$.</p>
 <p>Khi đó, những thành phần này được biểu diễn trong LSTM cell như sau:</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 300px;" src='./images/lstm-1.svg'>
@@ -436,7 +436,7 @@ $$</p>
 <h3 id="ý-tưởng-đơn-giản-hóa-lstm">Ý tưởng đơn giản hóa LSTM</h3>
 <p><strong>Gated Recurrent Units</strong> (GRU - 2014) là có thể nói là một phiên bản tối ưu hơn của LSTM về mặt độ phức tạp, trong khi về hiệu năng thì có thể nói là hai mô hình này ngang ngửa nhau. Do đó, ta thường thấy GRU được sử dụng nhiều hơn.</p>
 <p>Ý tưởng mấu chốt của GRU là chỉ sử dụng hidden state $\bold{H}_t$ để vừa nhớ cả short-term và long-term dependency. Trong khi đó, ở LSTM thì ta có sự phân tách giữa hai thông tin này.</p>
-<p>Bên cạnh đó, nhìn vào công thức tính internal state $\bold{C}_t$ dựa vào hai gia trị tỉ lệ $\bold{F}_t$ và $\bold{I}_t$ trong LSTM cell, ta có thể có “cảm giác” là thông thường thì tổng của chúng hay bằng 1, nên là thôi bỏ một cái đi 😀 GRU làm theo đúng như thế.</p>
+<p>Bên cạnh đó, nhìn vào công thức tính internal state $\bold{C}_t$ dựa vào hai giá trị tỉ lệ $\bold{F}_t$ và $\bold{I}_t$ trong LSTM cell, ta có thể có “cảm giác” là thông thường thì tổng của chúng hay bằng 1, nên là thôi bỏ một cái đi 😀 GRU làm theo đúng như thế.</p>
 <p>Ngoài ra, trong LSTM có candidate internal state $\tilde{\bold{C}}_t$  dùng để tính ra các <strong>thông tin cần thiết</strong> từ các input $\bold{X}_t$ và $\bold{H}_{t-1}$. Với GRU thì ta cũng có thành phần tương tự là candidate hidden state $\tilde{\bold{H}}_t$ với cùng mục đích như thế.</p>
 <h3 id="reset-gate-update-gate-và-candidate-hidden-state">Reset gate, update gate và candidate hidden state</h3>
 <p>Thay vì sử dụng ba “cổng” như LSTM thì GRU sẽ dùng hai là <strong>reset gate</strong> $\bold{R}_t$ và <strong>update gate $\bold{Z}_t$.</strong>  Một thành phần nữa cũng rất quan trọng trong GRU là candidate hidden state $\tilde{\bold{H}}_t$. Trong đó:</p>
@@ -459,8 +459,8 @@ $$</p>
 </div>
 <p>Trước hết, ta tính các “cổng” $\bold{R}_t$, $\bold{Z}_t$ dựa vào $\bold{X}_t$ và $\bold{H}_{t-1}$:</p>
 <p>$$
-\mathbf{R}_t = \sigma( \mathbf{W}_{xr} \mathbf{X}_t + \mathbf{H}_{t-1} \mathbf{W}_{hr})$$
-$$\mathbf{Z}_t = \sigma(\mathbf{W}_{xz} \mathbf{X}_t  + \mathbf{H}_{t-1} \mathbf{W}_{hz} )
+\mathbf{R}_t = \sigma( \mathbf{W}_{xr} \mathbf{X}_t +  \mathbf{W}_{hr} \mathbf{H}_{t-1})$$
+$$\mathbf{Z}_t = \sigma(\mathbf{W}_{xz} \mathbf{X}_t  + \mathbf{W}_{hz} \mathbf{H}_{t-1} )
 $$</p>
 <p>Từ $\bold{R}_t$, ta tính được $\tilde{\bold{H}}_t$ như sau:</p>
 <p>$$
