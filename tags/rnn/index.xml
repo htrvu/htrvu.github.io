@@ -6,7 +6,16 @@
         <description>Recent content in rnn on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 24 Feb 2023 13:48:53 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/rnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 19 Mar 2023 00:25:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/rnn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Bài toán Machine Translation, mô hình Sequence to Sequence và độ đo BLEU</title>
+        <link>https://htrvu.github.io/post/mt_seq2seq/</link>
+        <pubDate>Sun, 19 Mar 2023 00:25:41 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/mt_seq2seq/</guid>
+        <description>Bài toán Machine Translation Giới thiệu Machine Translation (dịch máy) là bài toán rất phổ biến trong lĩnh vực NLP. Sản phẩm Google Dịch mà chúng ta vẫn dùng hằng ngày chính là một mô hình dịch máy khá tốt và nó được huấn luyện bởi Google 😀
+Thật ra bài toán Machine Translation đã ra đời từ rất lâu. Tất nhiên rồi, vì nó đóng vai trò rất quan trọng trong giao tiếp.</description>
+        </item>
+        <item>
         <title>Deep RNN và Bidirectional RNN</title>
         <link>https://htrvu.github.io/post/deep-rnn_birnn/</link>
         <pubDate>Fri, 24 Feb 2023 13:48:53 +0700</pubDate>
