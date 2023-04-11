@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Trình bày nền tảng toán và quá trình training, sampling của các mô hình diffusion models'>
+<title>Lý thuyết về diffusion models</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/diffusion-models/'>
+
+<link rel="stylesheet" href="/scss/style.min.5eda91a11f055cbfcec5ec0fd36a1f7cba21a6a47d4778547d7d8f3099d2ebe2.css"><meta property='og:title' content='Lý thuyết về diffusion models'>
+<meta property='og:description' content='Trình bày nền tảng toán và quá trình training, sampling của các mô hình diffusion models'>
+<meta property='og:url' content='https://htrvu.github.io/post/diffusion-models/'>
+<meta property='og:site_name' content='Hoang Trong Vu'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='diffusion' /><meta property='article:tag' content='generative' /><meta property='article:tag' content='vae' /><meta property='article:tag' content='unet' /><meta property='article:published_time' content='2023-04-11T22:52:57&#43;07:00'/><meta property='article:modified_time' content='2023-04-11T22:52:57&#43;07:00'/>
+<meta name="twitter:title" content="Lý thuyết về diffusion models">
+<meta name="twitter:description" content="Trình bày nền tảng toán và quá trình training, sampling của các mô hình diffusion models">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Hoang Trong Vu</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu-về-diffusion-models">Giới thiệu về diffusion models</a></li>
+    <li><a href="#forward-diffusion">Forward diffusion</a></li>
+    <li><a href="#reverse-diffusion">Reverse diffusion</a>
+      <ol>
+        <li><a href="#đặt-vấn-đề">Đặt vấn đề</a></li>
+        <li><a href="#xác-định-loss-function">Xác định loss function</a></li>
+        <li><a href="#tham-số-hóa-l_t">Tham số hóa $L_t$</a></li>
+      </ol>
+    </li>
+    <li><a href="#variance-scheduler">Variance scheduler</a></li>
+    <li><a href="#quá-trình-training-và-sampling">Quá trình training và sampling</a></li>
+    <li><a href="#nhận-xét">Nhận xét</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/diffusion-models/">Lý thuyết về diffusion models</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Trình bày nền tảng toán và quá trình training, sampling của các mô hình diffusion models
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Apr 11, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    16 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><strong>Note.</strong> Vì mình cũng đang trong quá trình tìm hiểu về diffusion models nên tạm thời blog sẽ ngừng các bài viết trong chủ đề NLP lại một thời gian để tập trung cho diffusion models nhé 😀</p>
+<h2 id="giới-thiệu-về-diffusion-models">Giới thiệu về diffusion models</h2>
+<p>Trong thời gian gần đây, xu hướng “AI vẽ tranh&quot; đang rất là hot và các mô hình sinh ảnh nổi tiếng đó hầu hết là dựa trên <strong>diffusion models</strong>, đặc biệt là Stable Diffusion.</p>
+<div>
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px"  src='./images/stable_diffusion_ex1.png'>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px" src='./images/stable_diffusion_ex2.png'>
+</div>
+</div>
+<p align="center">Minh họa ảnh sinh bởi Stable Diffusion<br>Nguồn: <a href='https://stablediffusionweb.com/'>Stable Diffusion Online</a>
+</div>
+<p>Bài toán Image Generation, hay Image Synthesis, không phải là bài toán mới mà ta đã có khá nhiều họ mô hình được nghiên cứu và công bố. Cơ bản nhất là Autoencoder, Variational Autoencoder (VAE), Normalizing Flow và nổi tiếng nhất là Generative Adversarial Network. Trong image generation thì ta có một cái gọi là <strong>generative trilemma</strong>. Ý nghĩa của cái này là các mô hình sinh ảnh sẽ chỉ đạt được nhiều nhất là 2 trong 3 tiêu chí sau: Thời gian sinh ảnh nhanh, chất lượng ảnh rõ nét và nội dung ảnh đa dạng.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/trilemma.png'>
+<p align="center" style="margin: 0; color: #888;">The generative trilemma<br>
+Nguồn: <a href='https://www.youtube.com/watch?v=B5gfJF8mOPo'>Tanishq Abraham</a>
+</p>
+</div>
+<p>The generative trilemma</p>
+<ul>
+<li>GAN thì sinh ảnh nhanh và chất lượng ảnh rõ nét nhưng các ảnh nó sinh ra thường trông khá giống nhau, tức là thiếu sự đa dạng</li>
+<li>VAE và Normalizing Flow thì đạt được mặt tốc độ và đa dạng nhưng chất lượng ảnh thì không tốt lắm.</li>
+</ul>
+<p>Với diffusion models, ta thường đạt được tiêu chí chất lượng và sự đa dạng nhưng tốc độ thì lại khá chậm. Do đó, hầu hết các cải tiến trong difusion models là liên quan đến việc tăng tốc quá trình sinh ảnh.</p>
+<p>Ý tưởng chung của diffusion models là ta <strong>từng bước thêm nhiễu</strong> vào ảnh ban đầu để “phá hủy” phân phối của dữ liệu, sau đó <strong>học cách khôi phục lại</strong> cấu trúc của ảnh gốc. Sau đó, để sinh ảnh thì ta xuất phát từ một ảnh nhiễu hoàn toàn và từ từ khử nhiễu để có được ảnh kết quả.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/diffusion_general.png'>
+<p align="center" style="margin: 0; color: #888;">Ý tưởng chung của diffusion models
+</div>
+<p>Mô hình <strong>Diffusion Probability Model</strong> được giới thiệu đầu tiên trong paper năm 2015 là <strong>Deep Unsupervised Learning using Nonequilibrium Thermodynamics</strong>. Phần toán của mô hình này rất là nặng và nó ít được cộng đồng để ý tới khi mà kết quả lúc được công bố thì cũng không có gì nổi bật. Mãi đến năm 2020, <strong>Denoising Diffusion Probability Model (DDPM)</strong> được công bố và có thể nói đây là sự kiện quan trọng khi nhờ paper này mà diffusion models mới trở thành một chủ đề nghiên cứu được nhiều người quan tâm.</p>
+<p>Nói đến các mô hình ảo diệu như Stable Diffusion thì ta còn có nhiều chi tiết khác nữa nhưng nó sẽ không nằm trong phạm vi bài viết này. Mình sẽ tập trung vào phần lý thuyết toán của mô hình để làm nền tảng cho các bài viết sau.</p>
+<h2 id="forward-diffusion">Forward diffusion</h2>
+<p>Giả sử data sample (“ảnh” ban đầu) được lấy mẫu từ phân phối dữ liệu thật sự $\bold{x}_0 \sim q(\bold{x})$. Feed forward là quá trình ta thêm một lượng nhỏ <strong>Gaussian noise</strong> vào data sample $\bold{x}_0$ thông qua $T$ bước, từ đó có các noisy samples $\bold{x}_1, \bold{x}_2,&hellip;, \bold{x}_T$. Phân bố của data sample $\bold{x}_t$ chỉ phụ thuộc vào $\bold{x}_{t-1}$ như sau:</p>
+<p>$$
+\begin{equation}
+q(\bold{x}_t | \bold{x}_{t-1}) = \mathcal{N}\left(\bold{x}_{t-1}; \sqrt{1-\beta_t} \bold{x}_{t-1}, \beta_t \bold{I} \right)
+\end{equation}
+$$</p>
+<p>Công thức $(1)$ có nghĩa là “ảnh” tại bước thứ $t$ được sample từ một <strong>conditional Gaussian distribution</strong> với mean $\mu_t = \sqrt{1 - \beta_t} \bold{x}_{t-1}$ và variance $\sigma^2 = \beta_t$. Với giả thiết sự phụ thuộc, ta cũng có thể xem đây là một xích Markov.</p>
+<ul>
+<li><strong>Lưu ý.</strong> $q$ là <strong>probability density fuction</strong> (hàm mật độ xác suất) của phân phối chuẩn.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 150px;" src='./images/forward.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa quá trình forward<br>
+Nguồn: <a href='https://medium.com/@steinsfu/diffusion-model-clearly-explained-cd331bd41166'>Steins</a>
+</p>
+</div>
+<p>Bằng <strong>re-parameterization trick</strong>, ta có thể sample $\bold{x}_t$ như sau:</p>
+<p>$$
+\begin{equation}
+\bold{x}_t = \sqrt{1 - \beta_t} \bold{x}_{t-1} + \epsilon_{t-1} \sqrt {\beta_t}
+\end{equation}
+$$</p>
+<p>với $\epsilon_{t-1} \sim \mathcal{N}(\bold{0}, \bold{I})$.</p>
+<p>Các giá trị phương sai $\beta_t$ là <strong>được định nghĩa trước</strong> và nó được gọi là <strong>variance scheduler.</strong> Ta sẽ đề cập kĩ hơn về scheduler ở <strong>phần 4</strong>. Trước hết thì có một số nhận xét như sau:</p>
+<ul>
+<li>$0 &lt; \beta_1 &lt; \beta_2 &lt; &hellip; &lt; \beta_T &lt; 1$</li>
+<li>Có thể hiểu rằng càng đến các bước sau thì ta thêm càng nhiều nhiễu vào data sample (vì variance ngày càng lớn). Khi $t \to \infty$, phân bố của $\bold{x}_T$ sẽ tương đương với <strong>isotropic Gaussian distribution,</strong> tức là $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$.</li>
+</ul>
+<p>Quay trở lại với công thức xác định phân phối của $\bold{x}_t$. Để xác định phân phối của $\bold{x}_T$ thì ta sẽ tính dần từng bước như sau:</p>
+<p>$$
+\begin{equation}
+q(\bold{x}_{1:T} \vert \mathbf{x}_0) = \prod^T_{t=1} q(\bold{x}_t \vert \bold{x}_{t-1})
+\end{equation}
+$$</p>
+<p>Tính như trên thì trông có vẻ là khá lâu!</p>
+<p>Một <strong>tính chất thú vị</strong> của quá trình forward là ta có thể sample được ngay $\bold{x}_t$ với bất kì timestep $t$ nào.  Đặt $\alpha_t = 1 - \beta_t$ và $\bar{\alpha}_t = \prod_{i=1}^t \alpha_i$. Vì $\beta_t$ đều được xác định sẵn nên ta cũng sẽ tính trước được $\bar{\alpha_t}$. Từ công thức $(2)$ ta có</p>
+<p>$$
+\begin{aligned}
+\mathbf{x}_t
+&amp;= \sqrt{\alpha_t}\mathbf{x}_{t-1} + \sqrt{1 - \alpha_t}\boldsymbol{\epsilon}_{t-1} \\
+&amp;= \sqrt{\alpha_t \alpha_{t-1}} \bold{x}_{t-2} + \sqrt{\alpha_t - \alpha_t \alpha_{t-1}} \epsilon_{t-2} + \sqrt{1 - \alpha_t} \epsilon_{t-1}
+\end{aligned}
+$$</p>
+<p>Khi ta gộp hai Gaussion distribution $\mathcal{N}(\bold{0}, \sigma_1^2 \bold{I})$ và $\mathcal{N}(\bold{0}, \sigma_2^2 \bold{I})$ (ý nói đến hai đại lượng chứa $\epsilon_{t-2}$ và $\epsilon_{t-1}$ ở trên) thì phân phối thu được sẽ là $\mathcal{N}(\bold{0}, (\sigma_1^2 + \sigma_2^2) \bold{I})$. Do đó, từ công thức trên ta có thể viết lại thành</p>
+<p>$$
+\mathbf{x}_t
+= \sqrt{\alpha_t \alpha_{t-1}} \bold{x}_{t-2} + \sqrt{1 - \alpha_t \alpha_{t-1}} \bar{\epsilon}_{t-2}
+$$</p>
+<p>Cứ tiếp tục biến đổi thì ta sẽ có</p>
+<p>$$
+\mathbf{x}_t
+= \sqrt{\bar{\alpha_t}} \bold{x}_{0} + \sqrt{1 - \bar{\alpha_t}} \epsilon
+$$</p>
+<p>với $\epsilon \sim \mathcal{N}(\bold{0}, \bold{I})$.</p>
+<p>Tóm lại, trong quá trình forward, ta có thể sample $\bold{x}_t$ dựa vào phân phối sau:</p>
+<p>$$
+q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I})
+$$</p>
+<h2 id="reverse-diffusion">Reverse diffusion</h2>
+<h3 id="đặt-vấn-đề">Đặt vấn đề</h3>
+<p>Quá trình forward diffusion dần dần thêm các Gaussian noise vào sample dựa theo các phân phối $q(\bold{x}_t|\bold{x}_{t-1})$. Nếu ta có thể đi ngược lại, tức là xuất phát từ một sample $\bold{x}_{T} \sim p(\bold{x}_T) = \mathcal{N}(\bold{0}, \bold{I})$ và dần sample $\bold{x}_{t-1}$ theo phân phối $p(\bold{x}_{t-1} | \bold{x}_t)$ nào đó thì khi thực hiện cho đến $\bold{x}_0$, ta đã có thể <strong>denoise</strong> (khử nhiễu) để thu lại được sample <strong>xấp xỉ</strong> sample ban đầu của quá trình forward.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/forward_and_reverse.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa quá trình forward và reverse</p>
+</div>
+<p>Tuy nhiên, việc xác định $p(\bold{x}_{t-1} | \bold{x}_t)$ là rất khó vì nó liên quan đến phân phối của toàn bộ dữ liệu. Do đó, ta sẽ tìm cách <strong>xấp xỉ</strong> phân phối này.</p>
+<ul>
+<li>Kĩ hơn về lý do khó xác định $p(\bold{x}_{t-1} | \bold{x}_t)$: Vì có rất nhiều khả năng có thể xảy ra đối với $\bold{x}_{t-1}$ nên phương sai của phân phối này cũng sẽ rất lớn.</li>
+<li>Giả sử ta cần xác định $p(\bold{x}_{t-1} | \bold{x}_t, \bold{x}_0)$ thì mọi chuyện sẽ dễ dàng hơn. Khi biết trước thêm $\bold{x}_0$ nữa thì ta có thể hình dung được $\bold{x}_{t-1}$ <strong>nên trông như thế nào.</strong> Kĩ thuật này gọi là variance reduction step.</li>
+<li>Một cách trực giác, ta đoán được những gì cần làm khi biết thêm $\bold{x}_0$ là thực hiện <strong>nội suy $\bold{x}_{t-1}$ dựa vào $\bold{x}_0$ và $\bold{x}_{t}$</strong>. Ta sẽ quay lại với nhận xét này sau.</li>
+</ul>
+<p>Để ý rằng với $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$ và $\beta_T$ đủ nhỏ thì $p(\bold{x}_{T-1}|\bold{x}_T)$ cũng là một Gaussian distribution. Một cách đệ quy, ta có thể xem toàn bộ $p(\bold{x}_{t-1} | \bold{x}_t)$ là Gaussian distribution luôn 😀 Để xấp xỉ  $p(\bold{x}_{t-1} | \bold{x}_t)$, ta sẽ sử dụng một <strong>mô hình</strong> $p_{\theta}$ để dự đoán giá trị mean $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$ và variance $\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t)$. Từ đó xấp xỉ được</p>
+<p>$$
+p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
+$$</p>
+<ul>
+<li>Lưu ý rằng các giá trị đầu vào của mô hình bao gồm cả $\bold{x}_t$ và timestep $t$ (cho biết mức độ noise được dùng để tạo ra $\bold{x}_t$ trong quá trình forward).</li>
+<li>Mô hình $p_\theta$ thường là <strong>U-Net</strong>. Tạm thời ta sẽ bỏ qua chi tiết về kiến trúc của mô hình này.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 150px;" src='./images/reverse_unet.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa mô hình U-Net trong quá trình reverse<br>
+Nguồn: <a href='https://medium.com/@steinsfu/diffusion-model-clearly-explained-cd331bd41166'>Steins</a>
+</p>
+</div>
+<ul>
+<li>Trong quá trình forward, ta đã đề cập là các giá trị variance đã được xác định trước dựa vào scheluder nên ở đây thì ta <strong>không cần dự đoán variance</strong>. Khi đó</li>
+</ul>
+<p>$$
+p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \beta_t \bold{I})
+$$</p>
+<p><strong>Giả sử</strong> ta đã học được mô hình $p_{\theta}$ như trên thì từ $\bold{x}_T$ ta có thể xấp xỉ được phân phối của $\bold{x}_0$ như sau:</p>
+<p>$$
+p_\theta (\bold{x}_{0:T}) = p (\bold{x}_T) \prod_{t=1}^T p_\theta (\bold{x}_{t-1} | \bold{x}_t)
+$$</p>
+<p>Vấn đề đặt ra là ta huấn luyện mô hình $p_\theta$ như thế nào. Vậy thì ta cần phải tìm loss function!</p>
+<h3 id="xác-định-loss-function">Xác định loss function</h3>
+<p>Mục tiêu của ta là <strong>minimize the negative log likelihood</strong>  $-\log p_\theta (\bold{x}_0)$. Biến đổi một chút như sau:</p>
+<p>$$
+\begin{aligned}
+-\log p_\theta(\mathbf{x}_0)
+&amp;\leq - \log p_\theta(\mathbf{x}_0) + D_\text{KL}(q(\mathbf{x}_{1:T}\vert\mathbf{x}_0) | \color{red}p_\theta(\mathbf{x}_{1:T}\vert\mathbf{x}_0) \color{default} ) \\
+&amp;= -\log p_\theta(\mathbf{x}_0) + \mathbb{E}_{\mathbf{x}_{1:T}\sim q(\mathbf{x}_{1:T} \vert \mathbf{x}_0)} \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{\color{red}p_\theta(\mathbf{x}_{0:T}) / p_\theta(\mathbf{x}_0)} \Big] \\
+&amp;= -\log p_\theta(\mathbf{x}_0) + \mathbb{E}_q \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} + \log p_\theta(\mathbf{x}_0) \Big] \\
+&amp;= \mathbb{E}_q \Big[ \log \frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big]
+\end{aligned}
+$$</p>
+<p>Đặt $L_{VLB} = \mathbb{E}_q \Big[ \log \frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big]$ (variational lower bound). Nhận xét rằng nếu minimize được $L_{VLB}$ thì giá trị của negative log likelihood cũng sẽ nhỏ 😀 Do đó, hàm mục tiêu của ta sẽ là $L_{VLB}$.</p>
+<p>Tiếp tục biến đổi $L_{VLB}$, ta có</p>
+<p>$$
+\begin{aligned}
+L_\text{VLB}
+&amp;= \mathbb{E}_{q(\mathbf{x}_{0:T})} \Big[ \log\frac{\color{red}q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{\color{blue}p_\theta(\mathbf{x}_{0:T})} \Big] \\
+&amp;= \mathbb{E}_q \Big[ \log\frac{\color{red}\prod_{t=1}^T q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{\color{blue} p_\theta(\mathbf{x}_T) \prod_{t=1}^T p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t) } \Big] \\
+&amp;= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=1}^T \log \frac{q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} \Big] \\
+&amp;= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{\color{green}q(\mathbf{x}_t\vert\mathbf{x}_{t-1})}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \log\frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big] \\
+&amp;= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \Big( \frac{\color{green}q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)}\cdot \frac{\color{green}q(\mathbf{x}_t \vert \mathbf{x}_0)}{\color{green}q(\mathbf{x}_{t-1}\vert\mathbf{x}_0)} \Big) + \log \frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big]
+\end{aligned}
+$$</p>
+<ul>
+<li>
+<p>Trong dòng biến đổi ở trên, áp dụng công thức Bayes thì ta có</p>
+<p>$$
+q(\bold{x}_t | \bold{x}_{t-1}) = \frac{q(\bold{x}_{t-1} | \bold{x}_t) \cdot q(\bold{x}_t)}{q(\bold{x}_{t-1})}
+$$</p>
+<p>Ta có nhận xét ảo ma rằng nếu ta cho thêm một điều kiện là $\bold{x}_0$ thì các giá trị trên sẽ <strong>dễ tính hơn rất nhiều</strong> (có thể tận dụng quá trình forward). Vậy thì “assume” luôn là</p>
+<p>$$
+q(\bold{x}_t | \bold{x}_{t-1}) = \frac{q(\bold{x}_{t-1} | \bold{x}_t, \bold{x}_0) \cdot q(\bold{x}_t | \bold{x}_0)}{q(\bold{x}_{t-1} | \bold{x}_0)}
+$$</p>
+</li>
+</ul>
+<p>OK, tiếp tục biến đổi $L_{VLB}$:</p>
+<p>$$
+\begin{aligned}
+L_\text{VLB}
+&amp;= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \color{red}\sum_{t=2}^T \log \frac{q(\mathbf{x}_t \vert \mathbf{x}_0)}{q(\mathbf{x}_{t-1} \vert \mathbf{x}_0)} \color{default} + \log\frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big] \\
+&amp;= \mathbb{E}_q \Big[ -\log p_\theta(\mathbf{x}_T) + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \color{red}\log\frac{q(\mathbf{x}_T \vert \mathbf{x}_0)}{q(\mathbf{x}_1 \vert \mathbf{x}_0)} \color{default} + \log \frac{q(\mathbf{x}_1 \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \Big]\\
+&amp;= \mathbb{E}_q \Big[ \color{green}-\log p_\theta(\mathbf{x}_T) \color{default} + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} + \log\frac{\color{green}q(\mathbf{x}_T \vert \mathbf{x}_0)}{\color{blue}p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)} \\
+&amp;= \mathbb{E}_q \Big[ \color{green}\log\frac{q(\mathbf{x}_T \vert \mathbf{x}_0)}{p_\theta(\mathbf{x}_T)} \color{default} + \sum_{t=2}^T \log \frac{q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)}{p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)} - \color{blue}\log p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)\color{default} \Big]
+\end{aligned}
+$$</p>
+<p>Và bước cuối cùng:</p>
+<p>$$
+\begin{aligned}L_{LVB}
+&amp;= \mathbb{E}_q [\color{red}\underbrace{D_\text{KL}(q(\mathbf{x}_T \vert \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_T))}_{L_T} \color{default} + \color{blue}\sum_{t=2}^T \underbrace{D_\text{KL}(q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t))}_{L_{t-1}} \color{green} \underbrace{- \log p_\theta(\mathbf{x}_0 \vert \mathbf{x}_1)}_{L_0} ] \\
+&amp;= L_T + \left (L_1 + L_2 + \cdots + L_{T-1}\right) + L_0
+\end{aligned}
+$$</p>
+<ul>
+<li>Nhìn chung thì đây toàn là loss liên quan đến khoảng cách các phân phối trong từng timestep.</li>
+</ul>
+<p>Vì $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$ nên $L_T$ là một hằng số (khi $T \to \infty$ thì $L_T \to 0$) và ta có thể bỏ qua nó. Ngoài ra, vì giá trị phương sai $\beta_1$ là rất nhỏ và thường thì “ảnh&quot; $\bold{x}_0$ và $\bold{x}_1$ trông sẽ rất giống nhau (vì lượng nhiễu thêm vào là rất ít). Vì lý do này mà các tác giả của DDPM thật sự đã bỏ qua nó trong quá trình huấn luyện.</p>
+<p>Như vậy ta còn lại mỗi $L_t$ với $1 \leq t \leq T - 1$. Đối với cái này thì cần có một số <strong>ma thuật</strong>.</p>
+<h3 id="tham-số-hóa-l_t">Tham số hóa $L_t$</h3>
+<p>Các giá trị $L_t$ với $1 \leq t \leq T - 1$ liên quan đến khoảng cách giữa phân phối được xấp xỉ bởi model $p_\theta$ và một phiên bản “dễ tính hơn” của $p(\bold{x}_{t-1} | \bold{x}_t)$ là $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)$ . Ta sẽ đi tính mean và variance của phân phối này.</p>
+<p>Đầu tiên, áp dụng quy tắc Bayes thì</p>
+<p>$$
+q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)
+= q(\mathbf{x}_t \vert \mathbf{x}_{t-1}, \mathbf{x}_0) \frac{ q(\mathbf{x}_{t-1} \vert \mathbf{x}_0) }{ q(\mathbf{x}_t \vert \mathbf{x}_0)}
+$$</p>
+<p>Cả 3 phân phối trên đều là <strong>Gaussian distribution</strong> trong quá trình forward và ta đã biết được mean, variance của chúng. Nhắc lại một chút: Công thức hàm mật độ xác suất của Gaussian distribution $\cal{N}(\mu,\sigma)$  là</p>
+<p>$$
+f(x) = \frac{1}{\sigma \sqrt{2 \pi}} \exp \left( -\frac{1}{2} \left( \frac{x - \mu}{\sigma} \right)^2\right)
+$$</p>
+<p>Do đó</p>
+<p>$$
+\begin{aligned}
+q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) &amp;\propto \exp \left(-\frac{1}{2} \left(\frac{(\mathbf{x}_t - \sqrt{\alpha_t} \mathbf{x}_{t-1})^2}{\beta_t} + \frac{(\mathbf{x}_{t-1} - \sqrt{\bar{\alpha}_{t-1}} \mathbf{x}_0)^2}{1-\bar{\alpha}_{t-1}} - \frac{(\mathbf{x}_t - \sqrt{\bar{\alpha}_t} \mathbf{x}_0)^2}{1-\bar{\alpha}_t} \right) \right) \\
+&amp;= \exp \left(-\frac{1}{2} \left(\frac{\mathbf{x}_t^2 - 2\sqrt{\alpha_t} \mathbf{x}_t \color{blue}{\mathbf{x}_{t-1}} \color{default}{+ \alpha_t} \color{red}{\mathbf{x}_{t-1}^2} }{\beta_t} + \frac{ \color{red}{\mathbf{x}_{t-1}^2} \color{default}{- 2 \sqrt{\bar{\alpha}_{t-1}} \mathbf{x}_0} \color{blue}{\mathbf{x}_{t-1}} \color{default}{+ \bar{\alpha}_{t-1} \mathbf{x}_0^2}  }{1-\bar{\alpha}_{t-1}} - \frac{(\mathbf{x}_t - \sqrt{\bar{\alpha}_t} \mathbf{x}_0)^2}{1-\bar{\alpha}_t} \right) \right) \\
+&amp;= \exp \left( -\frac{1}{2} \left(  \left( \frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}} \right) \color{red} \bold{x}_{t-1}^2 \color{default} -  \left( \frac{2\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{2 \sqrt{\bar{\alpha}_{t-1}}}{1 - \bar{\alpha}_{t-1}} \bold{x}_0 \right) \color{blue}\bold{x}_{t-1} \color{default} + C(\bold{x}_t, \bold{x}_0)\right)\right)\\
+\end{aligned}
+$$</p>
+<p>với $C(\bold{x}_t, \bold{x}_0)$ là những đại lượng không liên quan đến $\bold{x}_{t-1}$ và có thể được bỏ qua.</p>
+<p>Ta cần biến đổi công thức trên về dạng của một Gaussian distribution. Đặt</p>
+<p>$$
+\tilde{\beta}_t
+= 1/\left(\frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}}\right)
+= 1/\left(\frac{\alpha_t - \bar{\alpha}_t + \beta_t}{\beta_t(1 - \bar{\alpha}_{t-1})}\right)
+= {\frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t}
+$$</p>
+<p>và</p>
+<p>$$
+\begin{aligned}
+\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, \bold{x}_0)
+&amp;= \left(\frac{\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1} }}{1 - \bar{\alpha}_{t-1}} \mathbf{x}_0\right)/\left(\frac{\alpha_t}{\beta_t} + \frac{1}{1 - \bar{\alpha}_{t-1}}\right) \\
+&amp;= \left(\frac{\sqrt{\alpha_t}}{\beta_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1} }}{1 - \bar{\alpha}_{t-1}} \mathbf{x}_0\right) {\frac{1 - \bar{\alpha}_{t-1}}{1 - \bar{\alpha}_t} \cdot \beta_t} \\
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\color{green}\beta_t}{1 - \bar{\alpha}_t} \color{red}\mathbf{x}_0
+\end{aligned}
+$$</p>
+<p>Từ quá trình forward, ta có thể suy ra rằng $\bold{x}_0 = \frac{1}{\sqrt{\bar{\alpha}_t}}(\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon})$  với $\boldsymbol{\epsilon} \sim \cal{N}(\bold{0}, \bold{I})$. Do đó</p>
+<p>$$
+\begin{aligned}
+\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, t)
+&amp;= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \mathbf{x}_t + \frac{\sqrt{\bar{\alpha}_{t-1}}\color{green}(1 - \alpha_t)}{1 - \bar{\alpha}_t} \color{red}\frac{1}{\sqrt{\bar{\alpha}_t}}(\mathbf{x}_t - \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}) \\
+&amp;= \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon} \right)
+\end{aligned}
+$$</p>
+<p>Khi đó ta có</p>
+<p>$$
+q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)
+\propto \exp \left( -\frac{1}{2} \frac{\left( \bold{x}_{t-1} - \tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, t) \right)^2}{\tilde{\beta}_t} \right)
+$$</p>
+<p>, tức là</p>
+<p>$$
+q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)  = \cal{N}(\bold{x}_{t-1};\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, t), \tilde{\beta}_t\bold{I})
+$$</p>
+<p>Mặt khác, trong phần đặt vấn đề của quá trình reverse thì ta cần huấn luyện mô hình $p_\theta$ để dự đoán giá trị mean $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$, sao cho</p>
+<p>$$
+p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \beta_t \bold{I})
+$$</p>
+<p>Điều này nghĩa là thứ ta cần quan tâm về $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$ là dự đoán được $\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, t)$, mà cụ thể hơn là <strong>dự đoán giá trị $\epsilon \sim \cal{N}(\bold{0}, \bold{I})$</strong> (vì toàn bộ những giá trị khác trong $\tilde{\boldsymbol{\mu}}_t (\mathbf{x}_t, t)$ đều đã biết vì chúng là input của quá trình reverse). Từ đó, ta có thể biểu diễn</p>
+<p>$$
+\boldsymbol{\mu}_\theta(\mathbf{x}_t, t) = {\frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \color{red}\boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t) \color{default} \right)}
+$$</p>
+<ul>
+<li>Dự đoán $\epsilon_t$ cũng có nghĩa là đi <strong>dự đoán lượng nhiễu</strong> được thêm vào $\bold{x}_{t-1}$ để tạo ra $\bold{x}_{t}$ trong quá trình forward trước đó.</li>
+</ul>
+<p>Như vậy, thành phần loss $L_{t-1}$ sẽ trở thành</p>
+<p>$$
+\begin{aligned}
+L_{t-1}
+&amp;= D_\text{KL}(q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)) \\
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2 | \beta_t \bold{I} |^2_2} | \color{blue}{\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0)} - \color{green}{\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)} \color{default} |^2 \Big] \\
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2  |\beta_t \bold{I} |^2_2} | \color{blue}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon} \Big)} - \color{green}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) \Big)} \color{default}|^2 \Big] \\
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) | \beta_t \bold{I} |^2_2} |\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)|^2 \Big]
+\end{aligned}
+$$</p>
+<p>Các tác giả của DDPM cho rằng lược bỏ phần trọng số sẽ giúp mô hình học tốt hơn. Khi đó ta có phiên bản đơn giản hơn của $L_{t-1}$ là</p>
+<p>$$
+\begin{aligned}
+L_{t-1}^\text{simple}
+&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)|^2 \Big] \\
+&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t)|^2 \Big]
+\end{aligned}
+$$</p>
+<p>, hay diễn tả dễ hiểu hơn thì đây là <strong>Mean Squared Error</strong> giữa lượng nhiễu dự đoán và lượng nhiễu thật sự.</p>
+<h2 id="variance-scheduler">Variance scheduler</h2>
+<p>Trong các phần trước, ta có đề cập đến việc các giá trị variance $\beta_t$ là cố định và chúng được xác định trước bằng cách sử dụng <strong>variance chueduler.</strong></p>
+<p><strong>Vì sao cần dùng đến scheduler?</strong></p>
+<ul>
+<li>Việc sử dụng schedule làm cho quá trình forward của diffusion model là <strong>cố định</strong> và <strong>có thể xác định trước</strong>. Điều này có thể giúp cho các tính toán của quá trình reverse trở nên gọn nhẹ hơn mà không làm ảnh hưởng gì đến độ hiệu quả của mô hình.</li>
+</ul>
+<p>Có nhiều dạng schedule khác nhau như linear, cosine. Trong paper DDPM 2020 thì các tác giả sử dụng <strong>linear variance scheduler</strong> với $\beta_1 = 10^{-4}$ và $\beta_T = 0.02$.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 450px;" src='./images/scheduler.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa cho linear variance scheduler
+</p>
+</div>
+<p>Trong paper <strong>Improved Denoising Diffusion Probabilistic Models - 2021</strong>, người ta cho rằng sử dụng <strong>cosine variance scheduler</strong> sẽ mang lại kết quả tốt hơn. Vấn đề chủ yếu nằm ở chỗ với linear thì ở những timesteps phía sau thì hầu như ảnh đã trở thành “isotropic Gaussian distribution” (có vẻ ý là linear thì thêm nhiễu hơi bị nhanh). Ở hình bên dưới thì hàng trên là linear, hàng dưới là cosine.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/linear_vs_cosine.png'>
+<p align="center" style="margin: 0; color: #888;">Linear scheduler và Cosine scheduler
+</p>
+</div>
+<h2 id="quá-trình-training-và-sampling">Quá trình training và sampling</h2>
+<p>Dù các nền tảng lý thuyết bên dưới của diffusion model trông rất rối nhưng quá trình training và sampling (inference) thì rất đơn giản.</p>
+<p>Đầu tiên, ta xét quá trình <strong>training</strong>:</p>
+<ul>
+<li>Ta cần train mô hình dự đoán nhiễu trong sample $\bold{x}_t$</li>
+<li>Loss function sẽ là $L_{t-1}^{\text{simple}}$ mà ta đã tìm được ở phần 3.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/train_algo.png'>
+<p align="center" style="margin: 0; color: #888;">Mã giả cho quá trình training
+</p>
+</div>
+<p>Trong quá trình sampling (inference) thì ta sẽ chọn trước số lượng timestep tối đa $T$. Bắt đầu từ  $\bold{x}_T \sim \cal{N}(\bold{0}, \bold{I})$. Từ đó, dần qua các bước reverse thì:</p>
+<ul>
+<li>Dự đoán nhiễu $\epsilon_\theta$ và lấy $\bold{x}_t$ trừ lượng nhiễu này</li>
+<li>Sample $\bold{x}_{t-1}$ với độ lệch chuẩn $\sigma_t$</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/sample_algo.png'>
+<p align="center" style="margin: 0; color: #888;">Mã giả cho quá trình sampling
+</p>
+</div>
+<p><strong>Minh họa trực quan</strong> cho quá trình training và sampling:</p>
+<div>
+<div style="display: flex; justify-content: space-around; align-items: starts;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 500px"  src='./images/train_ex.png'>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 700px" src='./images/sample_ex.png'>
+</div>
+</div>
+<h2 id="nhận-xét">Nhận xét</h2>
+<p>Chỉ với những chi tiết trên thì có thể nói rằng diffusion models chưa thể vượt mặt GAN được về tốc độ sampling cũng như chất lượng ảnh. Ta vẫn còn nhiều cải tiến cho difusion models và những cải tiến này đã cùng nhau đưa diffusion models lên top 1, trong đó nổi bật là sự xuất hiện của Stable Diffusion với những ma thuật như text-to-image, image-to-image và hơn thế nữa!.</p>
+<p>Ta sẽ đề cập đến chúng trong các bài viết sau.</p>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Jascha Sohl-Dickstein et al. “Deep Unsupervised Learning using Nonequilibrium Thermodynamics.” ICML 2015.</li>
+<li>Jonathan Ho et al. “Denoising diffusion probabilistic models.” arxiv Preprint arxiv:2006.11239 (2020).</li>
+<li><a class="link" href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/"  target="_blank" rel="noopener"
+    >Lilian Wenge, What are diffusion models?</a></li>
+<li><a class="link" href="https://theaisummer.com/diffusion-models/"  target="_blank" rel="noopener"
+    >The AI Summer, Diffusion models</a></li>
+<li><a class="link" href="https://huggingface.co/blog/annotated-diffusion"  target="_blank" rel="noopener"
+    >HuggingFace&rsquo;s Blog, Annotated Diffusion</a></li>
+<li><a class="link" href="https://medium.com/@steinsfu/diffusion-model-clearly-explained-cd331bd41166"  target="_blank" rel="noopener"
+    >Steins, Diffusion Model Clearly Explained!</a></li>
+<li><a class="link" href="https://www.youtube.com/watch?v=HoKDTa5jHvg"  target="_blank" rel="noopener"
+    >Outlier, Diffusion Models | Paper Explanation | Math Explained</a></li>
+<li><a class="link" href="https://www.youtube.com/watch?v=B5gfJF8mOPo"  target="_blank" rel="noopener"
+    >Tanishq Abraham, Diffusions Study Group</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/diffusion/">diffusion</a>
+        
+            <a href="/tags/generative/">generative</a>
+        
+            <a href="/tags/vae/">vae</a>
+        
+            <a href="/tags/unet/">unet</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/densenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">DenseNet (2018)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet (2017)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Hoang Trong Vu
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

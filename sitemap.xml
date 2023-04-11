@@ -3,18 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://htrvu.github.io/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/cv/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/dl/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/diffusion/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/generative/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/diffusion-models/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/unet/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/vae/</loc>
+    <lastmod>2023-04-11T22:52:57+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/post/mt_seq2seq/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/bleu/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/categories/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/categories/dl/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/gru/</loc>
@@ -29,16 +53,10 @@
     <loc>https://htrvu.github.io/categories/nlp/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/post/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/rnn/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/seq2seq/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/bi-rnn/</loc>
@@ -84,9 +102,6 @@
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/compound-scaling/</loc>
-    <lastmod>2023-02-15T11:17:46+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/categories/cv/</loc>
     <lastmod>2023-02-15T11:17:46+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/efficientnet/</loc>

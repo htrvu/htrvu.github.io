@@ -6,7 +6,39 @@
         <description>Recent content in Tags on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 19 Mar 2023 00:25:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 11 Apr 2023 22:52:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>diffusion</title>
+        <link>https://htrvu.github.io/tags/diffusion/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/diffusion/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>generative</title>
+        <link>https://htrvu.github.io/tags/generative/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/generative/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>unet</title>
+        <link>https://htrvu.github.io/tags/unet/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/unet/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>vae</title>
+        <link>https://htrvu.github.io/tags/vae/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/vae/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>bleu</title>
         <link>https://htrvu.github.io/tags/bleu/</link>
         <pubDate>Sun, 19 Mar 2023 00:25:41 +0700</pubDate>

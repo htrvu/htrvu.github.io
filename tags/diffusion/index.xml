@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>diffusion on Hoang Trong Vu</title>
+        <link>https://htrvu.github.io/tags/diffusion/</link>
+        <description>Recent content in diffusion on Hoang Trong Vu</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Tue, 11 Apr 2023 22:52:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/diffusion/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Lý thuyết về diffusion models</title>
+        <link>https://htrvu.github.io/post/diffusion-models/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/diffusion-models/</guid>
+        <description>Note. Vì mình cũng đang trong quá trình tìm hiểu về diffusion models nên tạm thời blog sẽ ngừng các bài viết trong chủ đề NLP lại một thời gian để tập trung cho diffusion models nhé 😀
+Giới thiệu về diffusion models Trong thời gian gần đây, xu hướng “AI vẽ tranh&amp;quot; đang rất là hot và các mô hình sinh ảnh nổi tiếng đó hầu hết là dựa trên diffusion models, đặc biệt là Stable Diffusion.</description>
+        </item>
+        
+    </channel>
+</rss>

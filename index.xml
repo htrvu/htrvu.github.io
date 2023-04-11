@@ -6,7 +6,16 @@
         <description>Recent content on Hoang Trong Vu</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 19 Mar 2023 00:25:41 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 11 Apr 2023 22:52:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Lý thuyết về diffusion models</title>
+        <link>https://htrvu.github.io/post/diffusion-models/</link>
+        <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/diffusion-models/</guid>
+        <description>Note. Vì mình cũng đang trong quá trình tìm hiểu về diffusion models nên tạm thời blog sẽ ngừng các bài viết trong chủ đề NLP lại một thời gian để tập trung cho diffusion models nhé 😀
+Giới thiệu về diffusion models Trong thời gian gần đây, xu hướng “AI vẽ tranh&amp;quot; đang rất là hot và các mô hình sinh ảnh nổi tiếng đó hầu hết là dựa trên diffusion models, đặc biệt là Stable Diffusion.</description>
+        </item>
+        <item>
         <title>Bài toán Machine Translation, mô hình Sequence to Sequence và độ đo BLEU</title>
         <link>https://htrvu.github.io/post/mt_seq2seq/</link>
         <pubDate>Sun, 19 Mar 2023 00:25:41 +0700</pubDate>
