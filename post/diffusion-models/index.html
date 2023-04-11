@@ -427,18 +427,18 @@ q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_t; \sqrt{\bar{\alpha
 $$</p>
 <h2 id="reverse-diffusion">Reverse diffusion</h2>
 <h3 id="đặt-vấn-đề">Đặt vấn đề</h3>
-<p>Quá trình forward diffusion dần dần thêm các Gaussian noise vào sample dựa theo các phân phối $q(\bold{x}_t|\bold{x}_{t-1})$. Nếu ta có thể đi ngược lại, tức là xuất phát từ một sample $\bold{x}_{T} \sim p(\bold{x}_T) = \mathcal{N}(\bold{0}, \bold{I})$ và dần sample $\bold{x}_{t-1}$ theo phân phối $p(\bold{x}_{t-1} | \bold{x}_t)$ nào đó thì khi thực hiện cho đến $\bold{x}_0$, ta đã có thể <strong>denoise</strong> (khử nhiễu) để thu lại được sample <strong>xấp xỉ</strong> sample ban đầu của quá trình forward.</p>
+<p>Quá trình forward diffusion dần dần thêm các Gaussian noise vào sample dựa theo các phân phối $q(\bold{x}_t|\bold{x}_{t-1})$. Nếu ta có thể đi ngược lại, tức là xuất phát từ một sample $\bold{x}_{T} \sim q(\bold{x}_T) = \mathcal{N}(\bold{0}, \bold{I})$ và dần sample $\bold{x}_{t-1}$ theo phân phối $q(\bold{x}_{t-1} | \bold{x}_t)$ nào đó thì khi thực hiện cho đến $\bold{x}_0$, ta đã có thể <strong>denoise</strong> (khử nhiễu) để thu lại được sample <strong>xấp xỉ</strong> sample ban đầu của quá trình forward.</p>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 300px;" src='./images/forward_and_reverse.png'>
 <p align="center" style="margin: 0; color: #888;">Minh họa quá trình forward và reverse</p>
 </div>
-<p>Tuy nhiên, việc xác định $p(\bold{x}_{t-1} | \bold{x}_t)$ là rất khó vì nó liên quan đến phân phối của toàn bộ dữ liệu. Do đó, ta sẽ tìm cách <strong>xấp xỉ</strong> phân phối này.</p>
+<p>Tuy nhiên, việc xác định $q(\bold{x}_{t-1} | \bold{x}_t)$ là rất khó vì nó liên quan đến phân phối của toàn bộ dữ liệu. Do đó, ta sẽ tìm cách <strong>xấp xỉ</strong> phân phối này.</p>
 <ul>
-<li>Kĩ hơn về lý do khó xác định $p(\bold{x}_{t-1} | \bold{x}_t)$: Vì có rất nhiều khả năng có thể xảy ra đối với $\bold{x}_{t-1}$ nên phương sai của phân phối này cũng sẽ rất lớn.</li>
-<li>Giả sử ta cần xác định $p(\bold{x}_{t-1} | \bold{x}_t, \bold{x}_0)$ thì mọi chuyện sẽ dễ dàng hơn. Khi biết trước thêm $\bold{x}_0$ nữa thì ta có thể hình dung được $\bold{x}_{t-1}$ <strong>nên trông như thế nào.</strong> Kĩ thuật này gọi là variance reduction step.</li>
+<li>Kĩ hơn về lý do khó xác định $q(\bold{x}_{t-1} | \bold{x}_t)$: Vì có rất nhiều khả năng có thể xảy ra đối với $\bold{x}_{t-1}$ nên phương sai của phân phối này cũng sẽ rất lớn.</li>
+<li>Giả sử ta cần xác định $q(\bold{x}_{t-1} | \bold{x}_t, \bold{x}_0)$ thì mọi chuyện sẽ dễ dàng hơn. Khi biết trước thêm $\bold{x}_0$ nữa thì ta có thể hình dung được $\bold{x}_{t-1}$ <strong>nên trông như thế nào.</strong> Kĩ thuật này gọi là variance reduction step.</li>
 <li>Một cách trực giác, ta đoán được những gì cần làm khi biết thêm $\bold{x}_0$ là thực hiện <strong>nội suy $\bold{x}_{t-1}$ dựa vào $\bold{x}_0$ và $\bold{x}_{t}$</strong>. Ta sẽ quay lại với nhận xét này sau.</li>
 </ul>
-<p>Để ý rằng với $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$ và $\beta_T$ đủ nhỏ thì $p(\bold{x}_{T-1}|\bold{x}_T)$ cũng là một Gaussian distribution. Một cách đệ quy, ta có thể xem toàn bộ $p(\bold{x}_{t-1} | \bold{x}_t)$ là Gaussian distribution luôn 😀 Để xấp xỉ  $p(\bold{x}_{t-1} | \bold{x}_t)$, ta sẽ sử dụng một <strong>mô hình</strong> $p_{\theta}$ để dự đoán giá trị mean $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$ và variance $\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t)$. Từ đó xấp xỉ được</p>
+<p>Để ý rằng với $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$ và $\beta_T$ đủ nhỏ thì $q(\bold{x}_{T-1}|\bold{x}_T)$ cũng là một Gaussian distribution. Một cách đệ quy, ta có thể xem toàn bộ $q(\bold{x}_{t-1} | \bold{x}_t)$ là Gaussian distribution luôn 😀 Để xấp xỉ  $q(\bold{x}_{t-1} | \bold{x}_t)$, ta sẽ sử dụng một <strong>mô hình</strong> $p_{\theta}$ để dự đoán giá trị mean $\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)$ và variance $\boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t)$. Từ đó xấp xỉ được</p>
 <p>$$
 p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \boldsymbol{\mu}_\theta(\mathbf{x}_t, t), \boldsymbol{\Sigma}_\theta(\mathbf{x}_t, t))
 $$</p>
@@ -460,7 +460,7 @@ p_\theta(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \b
 $$</p>
 <p><strong>Giả sử</strong> ta đã học được mô hình $p_{\theta}$ như trên thì từ $\bold{x}_T$ ta có thể xấp xỉ được phân phối của $\bold{x}_0$ như sau:</p>
 <p>$$
-p_\theta (\bold{x}_{0:T}) = p (\bold{x}_T) \prod_{t=1}^T p_\theta (\bold{x}_{t-1} | \bold{x}_t)
+p_\theta (\bold{x}_{0:T}) = q (\bold{x}_T) \prod_{t=1}^T p_\theta (\bold{x}_{t-1} | \bold{x}_t)
 $$</p>
 <p>Vấn đề đặt ra là ta huấn luyện mô hình $p_\theta$ như thế nào. Vậy thì ta cần phải tìm loss function!</p>
 <h3 id="xác-định-loss-function">Xác định loss function</h3>
@@ -468,7 +468,7 @@ $$</p>
 <p>$$
 \begin{aligned}
 -\log p_\theta(\mathbf{x}_0)
-&amp;\leq - \log p_\theta(\mathbf{x}_0) + D_\text{KL}(q(\mathbf{x}_{1:T}\vert\mathbf{x}_0) | \color{red}p_\theta(\mathbf{x}_{1:T}\vert\mathbf{x}_0) \color{default} ) \\
+&amp;\leq - \log p_\theta(\mathbf{x}_0) + D_\text{KL}(q(\mathbf{x}_{1:T}\vert\mathbf{x}_0) \| \color{red}p_\theta(\mathbf{x}_{1:T}\vert\mathbf{x}_0) \color{default} ) \\
 &amp;= -\log p_\theta(\mathbf{x}_0) + \mathbb{E}_{\mathbf{x}_{1:T}\sim q(\mathbf{x}_{1:T} \vert \mathbf{x}_0)} \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{\color{red}p_\theta(\mathbf{x}_{0:T}) / p_\theta(\mathbf{x}_0)} \Big] \\
 &amp;= -\log p_\theta(\mathbf{x}_0) + \mathbb{E}_q \Big[ \log\frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} + \log p_\theta(\mathbf{x}_0) \Big] \\
 &amp;= \mathbb{E}_q \Big[ \log \frac{q(\mathbf{x}_{1:T}\vert\mathbf{x}_0)}{p_\theta(\mathbf{x}_{0:T})} \Big]
@@ -521,7 +521,7 @@ $$</p>
 <p>Vì $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$ nên $L_T$ là một hằng số (khi $T \to \infty$ thì $L_T \to 0$) và ta có thể bỏ qua nó. Ngoài ra, vì giá trị phương sai $\beta_1$ là rất nhỏ và thường thì “ảnh&quot; $\bold{x}_0$ và $\bold{x}_1$ trông sẽ rất giống nhau (vì lượng nhiễu thêm vào là rất ít). Vì lý do này mà các tác giả của DDPM thật sự đã bỏ qua nó trong quá trình huấn luyện.</p>
 <p>Như vậy ta còn lại mỗi $L_t$ với $1 \leq t \leq T - 1$. Đối với cái này thì cần có một số <strong>ma thuật</strong>.</p>
 <h3 id="tham-số-hóa-l_t">Tham số hóa $L_t$</h3>
-<p>Các giá trị $L_t$ với $1 \leq t \leq T - 1$ liên quan đến khoảng cách giữa phân phối được xấp xỉ bởi model $p_\theta$ và một phiên bản “dễ tính hơn” của $p(\bold{x}_{t-1} | \bold{x}_t)$ là $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)$ . Ta sẽ đi tính mean và variance của phân phối này.</p>
+<p>Các giá trị $L_t$ với $1 \leq t \leq T - 1$ liên quan đến khoảng cách giữa phân phối được xấp xỉ bởi model $p_\theta$ và một phiên bản “dễ tính hơn” của $q(\bold{x}_{t-1} | \bold{x}_t)$ là $q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)$ . Ta sẽ đi tính mean và variance của phân phối này.</p>
 <p>Đầu tiên, áp dụng quy tắc Bayes thì</p>
 <p>$$
 q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0)
@@ -589,17 +589,17 @@ $$</p>
 \begin{aligned}
 L_{t-1}
 &amp;= D_\text{KL}(q(\mathbf{x}_{t-1} \vert \mathbf{x}_t, \mathbf{x}_0) \parallel p_\theta(\mathbf{x}_{t-1} \vert\mathbf{x}_t)) \\
-&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2 | \beta_t \bold{I} |^2_2} | \color{blue}{\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0)} - \color{green}{\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)} \color{default} |^2 \Big] \\
-&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2  |\beta_t \bold{I} |^2_2} | \color{blue}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon} \Big)} - \color{green}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) \Big)} \color{default}|^2 \Big] \\
-&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) | \beta_t \bold{I} |^2_2} |\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)|^2 \Big]
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2 \| \beta_t \bold{I} \|^2_2} \| \color{blue}{\tilde{\boldsymbol{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0)} - \color{green}{\boldsymbol{\mu}_\theta(\mathbf{x}_t, t)} \color{default} \|^2 \Big] \\
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{1}{2  \|\beta_t \bold{I} \|^2_2} \| \color{blue}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\epsilon} \Big)} - \color{green}{\frac{1}{\sqrt{\alpha_t}} \Big( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}_t}} \boldsymbol{\boldsymbol{\epsilon}}_\theta(\mathbf{x}_t, t) \Big)} \color{default}\|^2 \Big] \\
+&amp;= \mathbb{E}_{\mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\frac{ (1 - \alpha_t)^2 }{2 \alpha_t (1 - \bar{\alpha}_t) \| \beta_t \bold{I} \|^2_2} \|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\|^2 \Big]
 \end{aligned}
 $$</p>
 <p>Các tác giả của DDPM cho rằng lược bỏ phần trọng số sẽ giúp mô hình học tốt hơn. Khi đó ta có phiên bản đơn giản hơn của $L_{t-1}$ là</p>
 <p>$$
 \begin{aligned}
 L_{t-1}^\text{simple}
-&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)|^2 \Big] \\
-&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t)|^2 \Big]
+&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\mathbf{x}_t, t)\|^2 \Big] \\
+&amp;= \mathbb{E}_{t \sim [1, T], \mathbf{x}_0, \boldsymbol{\epsilon}} \Big[\|\boldsymbol{\epsilon} - \boldsymbol{\epsilon}_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t)\|^2 \Big]
 \end{aligned}
 $$</p>
 <p>, hay diễn tả dễ hiểu hơn thì đây là <strong>Mean Squared Error</strong> giữa lượng nhiễu dự đoán và lượng nhiễu thật sự.</p>
