@@ -353,7 +353,6 @@
 Nguồn: <a href='https://www.youtube.com/watch?v=B5gfJF8mOPo'>Tanishq Abraham</a>
 </p>
 </div>
-<p>The generative trilemma</p>
 <ul>
 <li>GAN thì sinh ảnh nhanh và chất lượng ảnh rõ nét nhưng các ảnh nó sinh ra thường trông khá giống nhau, tức là thiếu sự đa dạng</li>
 <li>VAE và Normalizing Flow thì đạt được mặt tốc độ và đa dạng nhưng chất lượng ảnh thì không tốt lắm.</li>
@@ -636,13 +635,16 @@ $$</p>
 <p>Trong quá trình sampling (inference) thì ta sẽ chọn trước số lượng timestep tối đa $T$. Bắt đầu từ  $\bold{x}_T \sim \cal{N}(\bold{0}, \bold{I})$. Từ đó, dần qua các bước reverse thì:</p>
 <ul>
 <li>Dự đoán nhiễu $\epsilon_\theta$ và lấy $\bold{x}_t$ trừ lượng nhiễu này</li>
-<li>Sample $\bold{x}_{t-1}$ với độ lệch chuẩn $\sigma_t$</li>
+<li>Sample $\bold{x}_{t-1}$ với bằng re-parameterization trick</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 200px;" src='./images/sample_algo.png'>
 <p align="center" style="margin: 0; color: #888;">Mã giả cho quá trình sampling
 </p>
 </div>
+<ul>
+<li><strong>Lưu ý.</strong> Trong mã giả của quá trình sampling, khi sampling $\bold{x}_0$ thì ta không thêm nhiễu. Điều này khớp với chi tiết bỏ qua thành phần loss $L_0$ ở trên :D</li>
+</ul>
 <p><strong>Minh họa trực quan</strong> cho quá trình training và sampling:</p>
 <div>
 <div style="display: flex; justify-content: space-around; align-items: starts;">
