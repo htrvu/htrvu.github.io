@@ -389,7 +389,7 @@ Nguồn: <a href='https://medium.com/@steinsfu/diffusion-model-clearly-explained
 \end{equation}
 $$</p>
 <p>với $\epsilon_{t-1} \sim \mathcal{N}(\bold{0}, \bold{I})$.</p>
-<p>Các giá trị phương sai $\beta_t$ là <strong>được định nghĩa trước</strong> và nó được gọi là <strong>variance scheduler.</strong> Ta sẽ đề cập kĩ hơn về scheduler ở <strong>phần 4</strong>. Trước hết thì có một số nhận xét như sau:</p>
+<p>Các giá trị phương sai $\beta_t$ là <strong>được định nghĩa trước</strong> và nó được gọi là <strong>variance scheduler.</strong> Ta sẽ đề cập kĩ hơn về scheduler ở <a class="link" href="#variance-scheduler" ><strong>phần 4</strong></a>. Trước hết thì có một số nhận xét như sau:</p>
 <ul>
 <li>$0 &lt; \beta_1 &lt; \beta_2 &lt; &hellip; &lt; \beta_T &lt; 1$</li>
 <li>Có thể hiểu rằng càng đến các bước sau thì ta thêm càng nhiều nhiễu vào data sample (vì variance ngày càng lớn). Khi $t \to \infty$, phân bố của $\bold{x}_T$ sẽ tương đương với <strong>isotropic Gaussian distribution,</strong> tức là $\bold{x}_T \sim \mathcal{N}(\bold{0}, \bold{I})$.</li>
@@ -624,8 +624,8 @@ $$</p>
 <p>Dù các nền tảng lý thuyết bên dưới của diffusion model trông rất rối nhưng quá trình training và sampling (inference) thì rất đơn giản.</p>
 <p>Đầu tiên, ta xét quá trình <strong>training</strong>:</p>
 <ul>
-<li>Ta cần train mô hình dự đoán nhiễu trong sample $\bold{x}_t$</li>
-<li>Loss function sẽ là $L_{t-1}^{\text{simple}}$ mà ta đã tìm được ở phần 3.</li>
+<li>Ta cần train mô hình dự đoán nhiễu.</li>
+<li>Có một chi tiết là các tác giả của paper DDPM cho rằng việc training sẽ hiệu quả hơn khi ta chọn ngẫu nhiên các timestep $t$ và chỉ dự đoán nhiễu tại timestep đó, thay vì phải dự đoán ở toàn bộ timestep như những gì được biểu diễn trong hàm loss ở <a class="link" href="#x%c3%a1c-%c4%91%e1%bb%8bnh-loss-function" ><strong>phần 3.2</strong></a>.</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
 <img style="max-height: 200px;" src='./images/train_algo.png'>
@@ -634,7 +634,7 @@ $$</p>
 </div>
 <p>Trong quá trình sampling (inference) thì ta sẽ chọn trước số lượng timestep tối đa $T$. Bắt đầu từ  $\bold{x}_T \sim \cal{N}(\bold{0}, \bold{I})$. Từ đó, dần qua các bước reverse thì:</p>
 <ul>
-<li>Dự đoán nhiễu $\epsilon_\theta$ và lấy $\bold{x}_t$ trừ lượng nhiễu này</li>
+<li>Dự đoán nhiễu $\epsilon_\theta(\bold{x}_t, t)$.</li>
 <li>Sample $\bold{x}_{t-1}$ với bằng re-parameterization trick</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
@@ -656,7 +656,7 @@ $$</p>
 </div>
 </div>
 <h2 id="nhận-xét">Nhận xét</h2>
-<p>Chỉ với những chi tiết trên thì có thể nói rằng diffusion models chưa thể vượt mặt GAN được về tốc độ sampling cũng như chất lượng ảnh. Ta vẫn còn nhiều cải tiến cho difusion models và những cải tiến này đã cùng nhau đưa diffusion models lên top 1, trong đó nổi bật là sự xuất hiện của Stable Diffusion với những ma thuật như text-to-image, image-to-image và hơn thế nữa!.</p>
+<p>Chỉ với những chi tiết trên thì có thể nói rằng diffusion models chưa thể vượt mặt GAN được về tốc độ sampling cũng như chất lượng ảnh. Ta vẫn còn nhiều cải tiến cho difusion models và những cải tiến này đã cùng nhau đưa diffusion models lên cạnh tranh vị trí top 1 trong bài toán Image Generation, trong đó nổi bật là sự xuất hiện của Stable Diffusion với những ma thuật như text-to-image, image-to-image và hơn thế nữa!.</p>
 <p>Ta sẽ đề cập đến chúng trong các bài viết sau.</p>
 <h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
 <ul>
