@@ -6,7 +6,23 @@
         <description>Recent content in Tags on Trong-Vu Hoang</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Tue, 11 Apr 2023 22:52:57 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 16 May 2023 11:37:12 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>mlp</title>
+        <link>https://htrvu.github.io/tags/mlp/</link>
+        <pubDate>Tue, 16 May 2023 11:37:12 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/mlp/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>mlp-mixer</title>
+        <link>https://htrvu.github.io/tags/mlp-mixer/</link>
+        <pubDate>Tue, 16 May 2023 11:37:12 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/tags/mlp-mixer/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>diffusion</title>
         <link>https://htrvu.github.io/tags/diffusion/</link>
         <pubDate>Tue, 11 Apr 2023 22:52:57 +0700</pubDate>

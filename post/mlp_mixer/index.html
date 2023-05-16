@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu mô hình MLP Mixer với ý tưởng channel mixing và token mixing'>
+<title>MLP Mixer</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/mlp_mixer/'>
+
+<link rel="stylesheet" href="/scss/style.min.5eda91a11f055cbfcec5ec0fd36a1f7cba21a6a47d4778547d7d8f3099d2ebe2.css"><meta property='og:title' content='MLP Mixer'>
+<meta property='og:description' content='Giới thiệu mô hình MLP Mixer với ý tưởng channel mixing và token mixing'>
+<meta property='og:url' content='https://htrvu.github.io/post/mlp_mixer/'>
+<meta property='og:site_name' content='Trong-Vu Hoang'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='mlp' /><meta property='article:tag' content='mlp-mixer' /><meta property='article:published_time' content='2023-05-16T11:37:12&#43;07:00'/><meta property='article:modified_time' content='2023-05-16T11:37:12&#43;07:00'/>
+<meta name="twitter:title" content="MLP Mixer">
+<meta name="twitter:description" content="Giới thiệu mô hình MLP Mixer với ý tưởng channel mixing và token mixing">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Trong-Vu Hoang</a></h1>
+            <h2 class="site-description">Keep going!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#giới-thiệu">Giới thiệu</a></li>
+    <li><a href="#chia-ảnh-input-thành-các-phần-nhỏ">Chia ảnh input thành các phần nhỏ</a></li>
+    <li><a href="#channel-mixing-và-token-mixing">Channel-mixing và token-mixing</a>
+      <ol>
+        <li><a href="#ý-nghĩa">Ý nghĩa</a></li>
+        <li><a href="#kết-hợp-đặc-trưng">Kết hợp đặc trưng</a></li>
+      </ol>
+    </li>
+    <li><a href="#chia-sẻ-trọng-số">Chia sẻ trọng số</a></li>
+    <li><a href="#gelu-activation-function">GELU activation function</a></li>
+    <li><a href="#mixer-block">Mixer block</a></li>
+    <li><a href="#kiến-trúc-mlp-mixer">Kiến trúc MLP-Mixer</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/mlp_mixer/">MLP Mixer</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu mô hình MLP Mixer với ý tưởng channel mixing và token mixing
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">May 16, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    9 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><strong>Note.</strong> Vì gần đây mình bận khá nhiều việc nên blog đang bị “đóng băng” 🥲 Bài viết này chỉ mang tính chất chữa cháy sau hơn 1 tháng không có bài mới (đây là bài đã được viết sẵn từ trước) =))</p>
+<p>Tuy nhiên, MLP Mixer cũng là một mô hình này cũng rất thú vị. Chỉ hơi tiếc một chút là mình lại post nó trước khi viết những bài về Transformer và Vision Transformer…</p>
+<h2 id="giới-thiệu">Giới thiệu</h2>
+<p>Vào thời điểm năm 2021, có thể nói rằng nhắc tới các mô hình trong Computer Vision thì ai ai cũng nghĩ đến một là CNN, hai là các mô hình dựa trên Transformer đang làm mưa làm gió với những mô hình mạnh mẽ như Vision Transformer hay Swin Transformer.</p>
+<p>Giữa tình hình đó, một mô hình được công bố mà khi nghe qua là ta đã thấy khó mà tin được là nó tốt đến thế. <strong>MLP-Mixer</strong>, mô hình chỉ sử dụng các fully connected layer, hệt như thời “xa xưa” ta dùng để xây dựng các Deep Neural Network (DNN), hay còn lại là Multi-layer Perceptrons (MLP) 😀</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/mlp.png'>
+<p align="center" style="margin: 0; color: #888;">Multi-layer Perceptron
+</p>
+</div>
+<p>Trước hết, ta cùng nhắc lại đến những hạn chế khiến DNN trở nên không phù hợp với computer vision và gần như đã bị bỏ quên khi CNN được phát triển:</p>
+<ul>
+<li>DNN dễ bị overfitting</li>
+<li>Số lượng tham số của một mô hình DNN là rất lớn</li>
+<li>Nó khó học được những đặc trưng liên quan <strong>sự dịch chuyển vị trí trong không gian</strong>
+Ví dụ, xét 4 bức ảnh chứa cùng một con chó như ở bên dưới thì khi các ảnh này được đưa vào DNN để tính toán, ta sẽ có các vector rất khác nhau. Trong khi đó, với CNN, qua các lần sử dụng filter thì ta sẽ thu về được các feature map tương tự nhau.</li>
+</ul>
+<p>Như vậy, ta dễ hiểu rằng mô hình MLP-Mixer mà bài viết này giới thiệu sẽ có các cách để khắc phục được những vấn đề đó. Lưu ý rằng, MLP-Mixer không phải là SOTA khi nó được công bố và nó vẫn còn kém một chút so với Vision Transformer. Tuy nhiên, xét đến tốc độ thì MLP-Mixer nhanh hơn khá nhiều.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/mlp_vs_vit.png'>
+<p align="center" style="margin: 0; color: #888;">So sánh MLP-Mixer và Vision Transformer trên tập ImageNet
+</p>
+</div>
+<h2 id="chia-ảnh-input-thành-các-phần-nhỏ">Chia ảnh input thành các phần nhỏ</h2>
+<p>Nếu đã từng xem qua các mô hình dựa trên Transformer trong Computer Vision thì ta cũng đã rất quen thuộc với bước này. Ảnh input $H \times W \times C$ của mô hình sẽ được chia thành các <em><strong>patch</strong></em> (hay là token) nhỏ có kích thước bằng nhau là $P \times P \times C$. Giá trị của $H$,  $W$ và $P$ thường được chọn sao cho ta chia vừa đủ số patch, và $H$ thường bằng $W$. Như vậy số patch mà ta có được là</p>
+<p>$$
+S = \frac{H \times W}{P^2}
+$$</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/img_to_patches.png'>
+<p align="center" style="margin: 0; color: #888;">Chia ảnh input thành các tokens (hay patches)
+</p>
+</div>
+<p>Sau đó, ta sẽ <strong>duỗi</strong> những patch có được này để làm input cho mô hình. Lúc này, một ma trận input của ta sẽ có shape là $(S, P \times P \times C)$, với mỗi hàng là “đặc trưng” ban đầu của mỗi patch. Ở các phần tiếp theo, ta gọi $P \times P \times C$ là số “channel” của một token, và ta kí hiệu nó là $C$ (hơi lú chút 😅)</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/input_mat.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa ma trận input
+</p>
+</div>
+<h2 id="channel-mixing-và-token-mixing">Channel-mixing và token-mixing</h2>
+<h3 id="ý-nghĩa">Ý nghĩa</h3>
+<p>Trong MLP-Mixer, các tác giả giới thiệu hai block đặc biệt là <strong>channel-mixing</strong> và <strong>token-mixing</strong>. Đây cũng chính là những gì tinh hoa nhất trong MLP-Mixer.</p>
+<p>Ta có thể mô tả hai block này như sau:</p>
+<ul>
+<li><strong>Channel-mixing:</strong> Liên quan đến quan hệ giữa các channel trong cùng một token, tức là <strong>các hàng của ma trận input</strong>. Nó thực hiện phép toán kết hợp những giá trị trên các channel của cùng một patch và có sự độc lập giữa các patch, do đó ta gọi nó là channel-mixing.</li>
+<li><strong>Token-mixing:</strong> Liên quan đến quan hệ giữa các giá trị ở cùng một vị trí trong các token, tức là <strong>các cột của ma trận input</strong>. Ta thấy rằng các giá trị tại cùng một vị trí trên các patch (token) được kết hợp với nhau và nó độc lập giữa các channel, do đó ta gọi nó là token-mixing.</li>
+</ul>
+<p>Sự khác biệt giữa channel-mixing và token-mixing trong khi cài đặt chỉ đơn giản là input của chúng. Với channel-mixing, ta dùng luôn ma trận input có shape là $(S, C)$, còn với token-mixing thì ta cần chuyển vị ma trận input thành shape $(C, S)$.</p>
+<div>
+<div style="display: flex; justify-content: space-around; align-items: center;">
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 230px"  src='./images/channel_mixing.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa input của Channel-mixing
+</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px" src='./images/token_mixing.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa input của Token-mixing
+</p>
+</div>
+</div>
+<p>Block channel-mixing và token-mixing sẽ bao gồm một <strong>MLP</strong> với hai fully connected layer và chúng sử dụng <strong>GELU activation function</strong> (sẽ được ở phần tiếp theo). Trước khi tiến hành tính toán, ta sẽ đưa ma trận input qua một layer chuẩn hóa để đưa ma trận này về phân phối chuẩn tắc. Hơn nữa, ta cũng áp dụng <strong>skip connection</strong> để tăng hiệu quả training.</p>
+<p>Kiến trúc của về channel-mixing và token-mixing như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/channel_mixing_arch.png'>
+<p align="center" style="margin: 0; color: #888;">Kiến trúc của Channel-mixing
+</p>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/token_mixing_arch.png'>
+<p align="center" style="margin: 0; color: #888;">Kiến trúc của Token-mixing
+</p>
+</div>
+<p>Có một số điểm cần lưu ý như sau:</p>
+<ul>
+<li>Các phần “MLP1” và “MLP2” ở hai hình trên được ghi theo từng khối dọc có nghĩa là ta đã <strong>chia sẻ trọng số</strong> giữa các vector input. Yếu tố này sẽ được đề cập ở những phần sauSS</li>
+<li>Trong token-mixing, trước khi tính toán thì ta cần chuyển vị ma trận input</li>
+</ul>
+<p>Vấn đề tiếp theo ta cần quan tâm là channel-mixing và token-mixing giúp cho MLP-Mixer đạt ược những gì.</p>
+<h3 id="kết-hợp-đặc-trưng">Kết hợp đặc trưng</h3>
+<p>Các mô hình trong Computer Vision thường kết hợp các đặc trưng như sau với nhau:</p>
+<ol>
+<li>Đặc trưng <strong>tại một vị trí nào đó</strong> trong không gian</li>
+<li>Đặc trưng <strong>giữa các vị trí khác nhau</strong> trong không gian</li>
+</ol>
+<p>Ví dụ:</p>
+<ul>
+<li>Với CNN điều này được thực hiện nhờ vào các phép toán convolution với filter $K \times K$ và pooling, mà cụ thể hơn thì ta thực hiện được (2) khi $K &gt; 1$, và thực hiện được (1) khi $K = 1$.</li>
+<li>Với mô hình dựa trên Transformer thì cả 2 đều được thực hiện nhờ các self-attention layers.</li>
+<li>Khi xét đến MLP thông thường, ta chỉ thực hiện được (1)</li>
+</ul>
+<p>Ý tưởng đằng sau MLP-Mixer là sử dụng channel-mixing cho yếu tố (1), thật sự là vậy vì channel-mixing tính toán trên từng patch độc lập; và sử dụng token-mixing cho yếu tố (2), token-mixing đã tính toán trên các patch.</p>
+<h2 id="chia-sẻ-trọng-số">Chia sẻ trọng số</h2>
+<p><strong>Chia sẻ trọng số (typing weights)</strong> là một yếu tố giúp cho MLP-Mixer giảm được đáng kể số lượng trọng số của mô hình, đồng thời góp phần hỗ trợ việc học các đặc trưng liên quan đến tính không gian.</p>
+<p>Xét phép toán convolution, ta sẽ thấy rằng phép toán này có sự chia sẻ trọng số trong từng channel như sau:</p>
+<ul>
+<li>Với mỗi channel của input, ta sẽ dùng một filter $K \times K$ (có $K^2$ trọng số) và lần lượt di chuyển nó qua các vị trí trên channel này để tính toán ra một feature map. Như vậy, toàn bộ các vùng trên input đều được áp dụng cùng một bộ trọng số để tính ra feature map.</li>
+<li>Nhờ vào việc chia sẻ trọng số, nếu một đối tượng xuất hiện ở những vị trí khác nhau trên ảnh input thì feature map ta thu được cũng sẽ rất tương tự nhau.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/conv_opt.png'>
+<p align="center" style="margin: 0; color: #888;">Phép toán convolution
+</p>
+</div>
+<p>Để ý rằng, ta sẽ không tìm thấy sự chia sẻ trọng số ở MLP thông thường. Lý do là vì mỗi neuron trong một layer của mô hình sẽ nối với toàn bộ các neuron ở layer phía trước, do đó ta có một ma trận trọng số với mỗi dòng là một vector trọng số ứng với một neuron.</p>
+<p>Vậy trong MLP-Mixer thì chia sẻ trọng số xảy ra ở đâu?</p>
+<ul>
+<li>Với ý tưởng rất giống với filter trong CNN, channel-mixing sẽ được áp dụng chia sẻ trọng số. Việc kết hợp đặc trưng trên từng patch sẽ được tiến hành bởi cùng một bộ trọng số (ở đây là vector).</li>
+<li>Đối với token-mixing thì MLP-Mixer cũng áp dụng chia sẻ trọng số. Tuy nhiên, yếu tố này là rất hiếm thấy trong các nghiên cứu trước đó. Lí do chính của điều này là nhằm giảm số lượng trọng số của mô hình. Các tác giả cugx cho biết rằng họ đã thử nghiệm cả hướng không áp dụng sự chia sẻ trọng số cho token-mixing và kết quả thì rất xấp xỉ nhau.</li>
+</ul>
+<p>Do đó, ở phần giới thiệu channel-mixing và token-mixing thì ta quan sát thấy cách biểu diễn phần MLP theo từng khối “MLP2” và “MLP1” như vậy.</p>
+<h2 id="gelu-activation-function">GELU activation function</h2>
+<p>Một điểm đáng chú ý ở trong MLP-Mixer là mô hình này có sử dụng activation function GELU. Đây là một hàm sử dụng hàm phân phối tích lũy chuẩn tắc $N(0, 1)$. Có thể nói GELU là một phiên bản “trơn hơn” của ReLU.</p>
+<p>Với giả sử input $X$ tuân theo phân phối $N(0, 1)$, ta có</p>
+<p>$$
+\text{GELU}\left(x\right) = x{P}\left(X\leq{x}\right) = x\Phi\left(x\right) = x \cdot \frac{1}{2}\left[1 + \text{erf}(x/\sqrt{2})\right],
+$$</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/gelu.png'>
+<p align="center" style="margin: 0; color: #888;">So sánh ReLU, ELU và GELU
+</p>
+</div>
+<h2 id="mixer-block">Mixer block</h2>
+<p><strong>Mixer block</strong> (hay Mixer Layer) là thành phần chính trong kiến trúc của MLP-Mixer. Trong block này, ta sẽ sử dụng cả channel-mixing và token-mixing, tạo nên kiến trúc như sau:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/mixer_layer.png'>
+<p align="center" style="margin: 0; color: #888;">Kiến trúc của Mixer block
+</p>
+</div> 
+<p>Như vậy, ban đầu ta sẽ áp dụng token-mixing và sau đó dùng kết quả để làm input cho channel-mixing.</p>
+<h2 id="kiến-trúc-mlp-mixer">Kiến trúc MLP-Mixer</h2>
+<p>Mô hình MLP-Mixer được xây dựng bằng cách áp dụng nhiều Mixer Block (hay Mixer Layer). Trước đó, ta chia ảnh input thành các patch và đưa các patch này qua một fully connected layer để giảm số channel mỗi patch. Lưu ý rằng, ở layer này thì ta cũng áp dụng sự chia sẻ trọng số, tức là toàn bộ patch đều được giảm số channel với cùng một bộ trọng số.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/mlp_mixer.png'>
+<p align="center" style="margin: 0; color: #888;">Kiến trúc của mô hình MLP-Mixer
+</p>
+</div> 
+<p>Ngoài ra, tùy vào kích thước của một batch và số lượng Mixer Block được sử dụng mà ta sẽ có các phiên bản MLP-Mixer khác nhau. Bên cạnh các siêu tham số đó thì ta cũng có một vài siêu tham số khác như trong bảng dưới đây:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/mlp_mixer_vers.png'>
+<p align="center" style="margin: 0; color: #888;">Các phiên bản MLP-Mixer. Trong đó, S, B, L và H lần lượt là Small, Base, Large và Huge. Các siêu tham số này được gán giá trị cho ảnh input với độ phân giải là 224 x 224.
+</p>
+</div> 
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li><a class="link" href="https://youtu.be/T1hGxK5IsIA"  target="_blank" rel="noopener"
+    >ProtonX: AI Papers Reading and Coding - MLP-Mixer: An all-MLP Architecture for Vision</a></li>
+<li>Paper MLP-Mixer: <a class="link" href="https://arxiv.org/pdf/2105.01601.pdf"  target="_blank" rel="noopener"
+    >https://arxiv.org/pdf/2105.01601.pdf</a></li>
+<li><a class="link" href="https://viblo.asia/p/mlp-mixer-huong-giai-quyet-cac-bai-toan-computer-vision-moi-ben-canh-cnn-va-transformer-LzD5da0eKjY#_cau-truc-cua-mixerlayer-2"  target="_blank" rel="noopener"
+    >MLP-Mixer - Hướng giải quyết các bài toán Computer Vision mới bên cạnh CNN và Transformer</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/mlp/">mlp</a>
+        
+            <a href="/tags/mlp-mixer/">mlp-mixer</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/diffusion-models/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Lý thuyết về diffusion models</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/densenet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">DenseNet (2018)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Trong-Vu Hoang
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
