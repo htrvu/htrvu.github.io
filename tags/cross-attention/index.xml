@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>cross-attention on Trong-Vu Hoang</title>
+        <link>https://htrvu.github.io/tags/cross-attention/</link>
+        <description>Recent content in cross-attention on Trong-Vu Hoang</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en-us</language>
+        <lastBuildDate>Mon, 17 Jul 2023 21:58:29 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/tags/cross-attention/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Cơ chế Attention và mô hình Transformer</title>
+        <link>https://htrvu.github.io/post/transformer_01/</link>
+        <pubDate>Mon, 17 Jul 2023 21:58:29 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/post/transformer_01/</guid>
+        <description>Note. Nội dung bài viết này phần lớn được trích từ báo cáo đồ án môn học Học thống kê của nhóm mình và bạn Trần Hữu Thiên tại HCMUS, với chủ đề là English-Vietnamese Machine Translation. Các bạn có thể xem mã nguồn của đồ án này tại đây 🚀
+Trong bài viết trước, mình đã giới thiệu về bài toán Machine Translation cùng một mô hình khá quen thuộc trong bài toán đó là Seq2seq.</description>
+        </item>
+        
+    </channel>
+</rss>

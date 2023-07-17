@@ -3,16 +3,40 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://htrvu.github.io/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/attention/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/transformer_01/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/cv/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/cross-attention/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/dl/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/nlp/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/post/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/self-attention/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/tags/transformer/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/mlp/</loc>
     <lastmod>2023-05-16T11:37:12+07:00</lastmod>
@@ -21,12 +45,6 @@
     <lastmod>2023-05-16T11:37:12+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/mlp-mixer/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/post/</loc>
-    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/</loc>
     <lastmod>2023-05-16T11:37:12+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/diffusion/</loc>
@@ -142,9 +160,6 @@
   </url><url>
     <loc>https://htrvu.github.io/post/densenet/</loc>
     <lastmod>2023-02-11T18:09:08+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/tags/attention/</loc>
-    <lastmod>2023-02-09T18:30:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/cam/</loc>
     <lastmod>2023-02-09T18:30:41+07:00</lastmod>

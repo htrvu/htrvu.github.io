@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Giới thiệu cơ chế Attention và các biến thể, mô hình Transformer trong bài toán Machine Translation'>
+<title>Cơ chế Attention và mô hình Transformer</title>
+
+<link rel='canonical' href='https://htrvu.github.io/post/transformer_01/'>
+
+<link rel="stylesheet" href="/scss/style.min.5eda91a11f055cbfcec5ec0fd36a1f7cba21a6a47d4778547d7d8f3099d2ebe2.css"><meta property='og:title' content='Cơ chế Attention và mô hình Transformer'>
+<meta property='og:description' content='Giới thiệu cơ chế Attention và các biến thể, mô hình Transformer trong bài toán Machine Translation'>
+<meta property='og:url' content='https://htrvu.github.io/post/transformer_01/'>
+<meta property='og:site_name' content='Trong-Vu Hoang'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='nlp' /><meta property='article:tag' content='attention' /><meta property='article:tag' content='transformer' /><meta property='article:tag' content='self-attention' /><meta property='article:tag' content='cross-attention' /><meta property='article:published_time' content='2023-07-17T21:58:29&#43;07:00'/><meta property='article:modified_time' content='2023-07-17T21:58:29&#43;07:00'/>
+<meta name="twitter:title" content="Cơ chế Attention và mô hình Transformer">
+<meta name="twitter:description" content="Giới thiệu cơ chế Attention và các biến thể, mô hình Transformer trong bài toán Machine Translation">
+    <link rel="shortcut icon" href="/neural.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu4ef57fa6d8ae56d86d9663ef18f7ace5_124758_300x0_resize_q75_box.jpg" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Trong-Vu Hoang</a></h1>
+            <h2 class="site-description">On my way!</h2>
+        </div>
+    </header><ol class="social-menu">
+            
+                <li>
+                    <a 
+                        href='https://github.com/htrvu'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://www.linkedin.com/in/htrvu/'
+                        target="_blank"
+                        title="Linkedin"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-linkedin" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <rect x="4" y="4" width="16" height="16" rx="2" /> <line x1="8" y1="11" x2="8" y2="16" /> <line x1="8" y1="8" x2="8" y2="8.01" /> <line x1="12" y1="16" x2="12" y2="11" /> <path d="M16 16v-3a2 2 0 0 0 -4 0" /> </svg>
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+
+        <li >
+            <a href='/page/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+
+        <div class="menu-bottom-section">
+            
+            
+                <li id="dark-mode-toggle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                    <span>Dark Mode</span>
+                </li>
+            
+        </div>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#tổng-quan-về-kiến-trúc-transformer">Tổng quan về kiến trúc Transformer</a></li>
+    <li><a href="#word-embedding-và-positional-encoding">Word Embedding và Positional Encoding</a></li>
+    <li><a href="#cơ-chế-attention-và-sự-truy-xuất-thông-tin">Cơ chế Attention và sự truy xuất thông tin</a></li>
+    <li><a href="#scale-dot-product-attention">Scale Dot-Product Attention</a></li>
+    <li><a href="#self-attention-và-cross-attention">Self-Attention và Cross-Attention</a>
+      <ol>
+        <li><a href="#self-attention">Self-Attention</a></li>
+        <li><a href="#cross-attention">Cross-Attention</a></li>
+      </ol>
+    </li>
+    <li><a href="#multi-head-attention-và-masked-multi-head-attention">Multi-Head Attention và Masked Multi-Head Attention</a>
+      <ol>
+        <li><a href="#mutli-head-attention">Mutli-Head Attention</a></li>
+        <li><a href="#masked-multi-head-attention">Masked-Multi Head Attention</a></li>
+      </ol>
+    </li>
+    <li><a href="#layer-normalization">Layer Normalization</a></li>
+    <li><a href="#feed-forward-network-và-skip-connection">Feed Forward Network và skip connection</a></li>
+    <li><a href="#encoder">Encoder</a></li>
+    <li><a href="#decoder">Decoder</a>
+      <ol>
+        <li><a href="#tổng-quan-về-kiến-trúc">Tổng quan về kiến trúc</a></li>
+        <li><a href="#decoder-trong-quá-trình-huấn-luyện">Decoder trong quá trình huấn luyện</a></li>
+        <li><a href="#decoder-trong-quá-trình-dự-đoán">Decoder trong quá trình dự đoán</a></li>
+      </ol>
+    </li>
+    <li><a href="#kết-luận">Kết luận</a></li>
+    <li><a href="#tài-liệu-tham-khảo">Tài liệu tham khảo</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/cv/" style="background-color: #2a9d8f; color: #fff;">
+                Computer Vision
+            </a>
+        
+            <a href="/categories/dl/" style="background-color: #2a9d8f; color: #fff;">
+                Deep Learning
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/post/transformer_01/">Cơ chế Attention và mô hình Transformer</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            Giới thiệu cơ chế Attention và các biến thể, mô hình Transformer trong bài toán Machine Translation
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 17, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    31 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <p><strong>Note.</strong> Nội dung bài viết này phần lớn được trích từ báo cáo đồ án môn học Học thống kê của nhóm mình và bạn <a class="link" href="https://github.com/huuthientran"  target="_blank" rel="noopener"
+    >Trần Hữu Thiên</a> tại HCMUS, với chủ đề là English-Vietnamese Machine Translation. Các bạn có thể xem mã nguồn của đồ án này tại <a class="link" href="https://github.com/htrvu/Transformer-MT"  target="_blank" rel="noopener"
+    >đây</a> 🚀</p>
+<p>Trong bài viết <a class="link" href="https://htrvu.github.io/post/mt_seq2seq/" >trước</a>, mình đã giới thiệu về bài toán Machine Translation cùng một mô hình khá quen thuộc trong bài toán đó là Seq2seq. Trong giai đoạn trước năm 2017, các mô hình Deep Learning được xây dựng cho bài toán Machine Translation thường được tổ chức theo kiến trúc <strong>Encoder-Decoder</strong> như Seq2seq với phần lõi là các biến thể cải tiến hơn của Recurrent Neural Network (RNN). Tuy nhiên, những mô hình NTM đó đều có một số hạn chế nhất định khi thực hiện dịch những câu có câu trúc phức tạp hoặc có độ dài lớn, mà thường thấy nhất là hạn chế về độ phức tạp tính toán và việc ghi nhớ quan hệ phụ thuộc giữa các từ trong câu về mặt ngữ nghĩa. Lý do của những hạn chế này phần lớn đến từ thao tác tính toán, xử lý tuần tự các từ (hay là token) của RNN.</p>
+<p><strong>Transformer</strong>, một mô hình được công bố vào năm 2017 đã tạo ra sự đột phá lớn trong lĩnh vực NLP với độ chính xác cũng như tốc độ xử lý đều vượt xa những mô hình Deep Learning trước đó. Dù vẫn tổ chức mô hình theo kiến trúc Encoder-Decoder thông dụng nhưng Transformer đã khắc phục được những nhược điểm của các mô hình trước nhờ vào việc tận dụng tối đa sức mạnh của <strong>cơ chế Attention</strong> với hai phép toán <strong>Self-Attention</strong> và <strong>Cross-Attention</strong>. Kể từ đó, mô hình Transformer đã trở thành một tiêu chuẩn mới trong bài toán Machine Translation nói riêng và trong nhiều bài toán thuộc lĩnh vực NLP nói chung. Không dừng lại ở đó, ý tưởng từ kiến trúc của Transformer cũng đã được áp dụng một cách rất thành công ở các bài toán thuộc lĩnh vực khác như Computer Vision.</p>
+<p>Trong bài viết này, mình sẽ trình bày về <strong>Transformer</strong> cùng <strong>cơ chế Attention</strong> (tổng quan và sau đó đi vào cụ thể với Self-Attention và Cross-Attention). Nội dung của bài này sẽ là <strong>rất dài</strong>.</p>
+<h2 id="tổng-quan-về-kiến-trúc-transformer">Tổng quan về kiến trúc Transformer</h2>
+<p><span id="overall"></span></p>
+<p>Mô hình Transformer có kiến trúc được tổ chức dạng Encoder-Decoder với phần lõi là cơ chế Attention. Tổng quan kiến trúc của mô hình này được thể hiện trong hình bên dưới, trong đó:</p>
+<ul>
+<li><strong>Encoder</strong> có vai trò chính là học mối tương quan giữa các từ với nhau trong câu thuộc ngôn ngữ nguồn (cụ thể hơn là giữa từng từ với các từ còn lại trong câu). Ta có thể hiểu đây như là việc ta đọc một câu Tiếng Anh và cố gắng hiểu ý nghĩa của câu đó.</li>
+<li><strong>Decoder</strong> sẽ lần lượt sinh ra các từ cho câu thuộc ngôn ngữ đích. Trong quá trình sinh từ này thì Decoder sẽ vừa để ý đến các từ nó đã sinh ra trước đó và vừa để ý đến một số từ liên quan trong câu ngôn ngữ nguồn để dịch cho đúng. Đây cũng có thể xem là sau khi đã hiểu ý nghĩa của câu Tiếng Anh rồi thì ta từng bước dịch câu đó ra Tiếng Việt sao cho trôi chảy, mạch lạc.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 450px;" src='./images/transformer.png'>
+<p align="center" style="margin: 0; color: #888;">Tổng quan kiến trúc của mô hình Transformer</p>
+</div>
+<p>Ta sẽ lần lượt đề cập đến những thành phần quan trọng trong kiến trúc của Transformer, mà đặc biệt là <strong>Scale Dot-Product Attention</strong> và <strong>Multi-Head Attention</strong>, thành phần đóng vai trò rất lớn trong việc tạo nên sức mạnh của mô hình này.</p>
+<h2 id="word-embedding-và-positional-encoding">Word Embedding và Positional Encoding</h2>
+<p>Phần đầu tiên trong kiến trúc của Transformer là <strong>embedding</strong>, với hai thành phần là Word Embedding và Positional Encoding.</p>
+<p><strong>Word Embedding</strong> là một phương pháp biểu diễn các từ trong câu thành các vector đặc trưng một cách hợp lý, sao cho các vector này thể hiện được mối quan hệ giữa các từ với nhau. Mình đã có đề cập đến nó ở trong bài viết <a class="link" href="https://htrvu.github.io/post/word-embedding/" >này</a>.</p>
+<ul>
+<li>Đối với bài toán Machine Translation, ta cần lưu ý rằng tập từ điển của ngôn ngữ nguồn và đích có thể có <strong>số từ khác nhau</strong> nên vector one-hot biểu diễn các từ trong câu thuộc ngôn ngữ nguồn và đích cũng có thể có số chiều khác nhau. Tuy nhiên, ta sẽ đều đưa chúng về  các word embedding vectors với cùng số chiều và giá trị này được ký hiệu là là $d_{model}$.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/word_embed.png'>
+<p align="center" style="margin: 0; color: #888;">Kết quả khi sử dụng thuật toán t-SNE để trực quan hóa các word embedding vector trên không gian 2 chiều của tập từ vựng Tiếng Anh</p>
+</div>
+<p>Vì mô hình Transformer không tính toán tuần tự theo thứ tự của các từ trong câu như những mô hình dựa trên phần lõi là RNN (RNN-based) nên để có thể cung cấp <strong>thông tin về vị trí của các từ trong câu</strong> cho mô hình, các tác giả của Transformer đã đề xuất một phương pháp gọi là <strong>Positional Encoding</strong>. Phần thông tin có được từ Positional Encoding sẽ được <strong>cộng</strong> vào word embedding vectors của các từ trong câu ngôn ngữ nguồn và ngôn ngữ đích. Thao tác cộng này được thể hiện ở phần ngay sau &ldquo;Input Embedding&rdquo; và &ldquo;Output Embedding&rdquo; của hình mô tả kiến trúc ở <a class="link" href="#overall" >phần 1</a>.</p>
+<p>Công thức của Positional Encoding được xác định thông qua <strong>hàm Sinusoid</strong>. Tất nhiên là để cộng được positional encoding vector (PE) với word embedding vector (WE) thì hai vector này phải có cùng số chiều là $d_{model}$. Với từ ở vị trí thứ $pos$ trong câu, giá trị của phần tử tại ví trí $2i$ và $(2i+1)$ ($0 \leq 2i, 2i+1 \leq d_{model} - 1)$ trong PE được xác định bởi:
+$$
+\begin{align*}
+PE(pos, 2i) &amp;= \sin \left( \frac{pos}{10000^{\frac{2i}{d_{model}}}} \right) \\
+PE(pos, 2i+1) &amp;= \cos \left(  \frac{pos}{10000^{\frac{2i}{d_{model}}}} \right)
+\end{align*}
+$$</p>
+<p>Minh họa cho kết quả của PE với các từ trong câu được thể hiện trong hình bên dưới với một câu gồm 20 từ, mỗi từ được biểu diễn bằng một WE 128 chiều. Ta thấy rằng PE của các từ trong câu đều đôi một khác nhau, tức là nó đã giúp ta mã hóa được thông tin vị trí của các từ.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/pe_heatmap.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa kết quả của các positional encoding vectors</p>
+</div>
+<p>Ngoài ra, các tác giả của Transformer còn cho biết rằng việc sử dụng hàm Sinusoid để tính PE có thể giúp mô hình học được <strong>vị trí tương đối</strong> của các từ, khi mà $PE(pos)$ và $PE(pos + k)$ có thể được biến đổi qua lại thông qua một phép biến đổi tuyến tính, tức là tồn tại ma trận $M$ sao cho
+$$
+\begin{equation*}
+M \cdot \begin{bmatrix}
+\sin(pos \cdot \omega_i) \\
+\cos(pos \cdot \omega_i)
+\end{bmatrix} = \begin{bmatrix}
+\sin((pos + k) \cdot \omega_i) \\
+\cos((pos + k) \cdot \omega_i)
+\end{bmatrix}
+\end{equation*}
+$$
+, với $\omega_i = \left (10000^{\frac{2i}{d_{model}}} \right)^{-1}$.</p>
+<p>Như vậy, với $x_{pos}$ là vector one-hot của từ thứ $pos$ trong câu, ta có thể biểu diễn kết quả sau việc kết hợp word embedding vector và positional encoding vector như sau:
+$$
+\begin{equation*}
+z_{pos} = WE(x_{pos}) * \sqrt{d_{model}} + PE(pos)
+\end{equation*}
+$$
+, trong đó $*$ là phép nhân element-wise.</p>
+<p><strong>Lưu ý 1.</strong> Một cách giải thích cho việc nhân WE với $\sqrt{d_{model}}$ trước khi cộng với PE là ta muốn lượng thông tin nhận được từ PE sẽ không tác động quá nhiều đến những thông tin mà WE đã cung cấp về các từ.</p>
+<p><strong>Lưu ý 2.</strong> Ta còn có thể hình dung ý nghĩa positional encoding vector thông qua ví dụ về <strong>cách biểu diễn nhị phân</strong> của các số nguyên. Xét hình minh họa cho 16 số nguyên đầu tiên biên dưới thì:</p>
+<ul>
+<li>Mỗi số được biểu diễn bằng duy nhất một chuỗi nhị phân và các chuỗi này đôi một phân biệt.</li>
+<li>Đi từ bit thấp đến bit cap thì &ldquo;tần suất thay đổi&rdquo; của các bit tăng dần. Ví dụ, từ 0 tới 7 thì bit 0 giữ nguyên, bit 1 thay đổi 1 lần, bit 2 thay đổi 3 lần, v.v. Nếu ta quan sát lại hình minh họa kết quả các positional encoding vectors ở phía trên thì cũng thấy tính chất tương tự.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/pe_intuition.jpg'>
+<p align="center" style="margin: 0; color: #888;">Liên hệ giữa Positional Encoding và cách biểu diễn nhị phân của các số nguyên</p>
+</div>
+<h2 id="cơ-chế-attention-và-sự-truy-xuất-thông-tin">Cơ chế Attention và sự truy xuất thông tin</h2>
+<span id='sec:attention'>
+<p><strong>Attention</strong> là một ý tưởng rất thú vị trong Deep Learning khi mà nó đã mô phỏng lại cách bộ não của con người hoạt động khi chúng ta phân tích, nhìn nhận một đối tượng. Ví dụ, mắt chúng ta có tầm nhìn rất rộng nhưng tại mỗi thời điểm thì ta chỉ tập trung vào một vùng nhất định trong tầm nhìn để lấy thông tin. Attention đã được áp dụng thành công vào nhiều lĩnh vực khác nhau, nhiều bài toán khác nhau trong Deep Learning.</p>
+<p>Để mô tả sơ lược về quá trình tính toán của cơ chế Attention, ta xét cách Attention được áp dụng trong các mô hình trong bài toán Machine Translation, ở giai đoạn trước khi Transformer được công bố (hình bên dưới). Giả sử input của Encoder là các vector $x_i$ và output vector tương ứng là $h_i$, ta đang tính toán cho từ đầu tiên trong output của Decoder với input của Decoder là vector $y_1$. Lúc này, ta thực hiện Attention từ $y_1$ đến các vector $x_i$, với ý nghĩa là khi ta dịch từ đầu tiên này thì ta nên chú ý vào các từ nào ở trong câu nguồn.</p>
+<div style="display: flex; flex-direction: column; align-items: center;" id="attention_ex">
+<img style="max-height: 400px;" src='./images/attention_ex.png'>
+<p align="center" style="margin: 0; color: #888;">Mô tả quá trình tính toán của cơ chế Attention</p>
+</div>
+<p>Trong Attention, ta có các khái niệm về <strong>context vector</strong> $c_i$ và <strong>attention weight</strong> $\alpha_{ij}$. Các giá trị attention weight $\alpha_{ij}$ sẽ nằm trong đoạn [0, 1] và cho biết mức độ chú ý của vector $y_i$ vào vector $x_j$ và context vector $c_i$ là kết quả thu được khi thực hiện Attention từ vector $y_i$.</p>
+<p>Ta tính context vector $c_i$ theo công thức
+$$
+\begin{equation*}
+c_i = \sum_{j=1}^N \left( \alpha_{ij} \cdot h_j \right )
+\end{equation*}
+$$
+, trong đó $N$ là độ dài của câu nguồn và attention weight $\alpha_{ij}$ được xác định như sau:
+$$
+\begin{equation}
+\alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{t=1}^N \exp(e_{it})}
+% \label{eq:attn_weights_1}
+\end{equation}
+$$
+, với $e_{ij} = f(y_i, h_j)$ và $f$ là một <strong>mô hình học</strong>, nó có thể đơn giản chỉ là Neural Network với một layer, input vector sẽ là vector được nối giữa $\alpha_{ij}$ và $h_j$, output là vector 1 chiều.</p>
+<p>Từ công thức $(1)$, ta có thể viết gọn bằng cách biểu diễn bằng các vector $N$ chiều $\alpha_i$ và $e_i$ như sau:
+$$
+\begin{equation*}
+\alpha_i = \text{softmax}(e_i)
+\end{equation*}
+$$</p>
+<p>Như vậy, $\alpha_{ij}$ càng lớn thì $y_i$ càng chú ý vào $x_j$ và rõ ràng ta có $\sum_{j=1}^N \alpha_{ij} = 1$. Về mặt trực quan, người ta thường biểu diễn attention weights bằng một ma trận như hình bên dưới, trong đó ô có màu càng sáng thì sẽ ứng với attention weights càng lớn.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 250px;" src='./images/attention_ex2.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa trực quan về attention weights</p>
+</div>
+<p>Trong Transformer, Attention có thể được xem như là một cơ chế <strong>truy xuất thông tin</strong>, khi mà attention weights $\alpha_{ij}$ càng lớn thì càng thể hiện sự &ldquo;liên quan đến nhau&rdquo; giữa của $y_i$ và $x_i$. Khi nói đến sự truy xuất thông tin, ta có 3 khái niệm được sử dụng là <strong>query</strong>, <strong>key</strong> và <strong>value</strong>. Một cách mô tả rất dễ hiểu về 3 khái niệm này với ví dụ Google Search trong <a class="link" href="https://pbcquoc.github.io/transformer/"  target="_blank" rel="noopener"
+    >bài viết của anh Quốc</a> như sau:</p>
+<ul>
+<li>Query: Vector dùng để chứa thông tin của từ được tìm kiếm, so sánh (hoặc là ma trận với mỗi dòng là vector ứng với một từ). Ví dụ, từ khóa mà ta nhập vào ô tìm kiếm của Google Search là query.</li>
+<li>Key: Ma trận dùng để biểu diễn thông tin chính của các từ được so sánh với từ cần tìm kiếm ở trên, mỗi dòng là vector ứng với một từ. Ví dụ, tiêu đề các trang web mà Google sẽ so sánh với từ khóa ta đã nhập là các key.</li>
+<li>Value: Ma trận biểu diễn đầy đủ nội dung, ý nghĩa của các từ có trong key, mỗi dòng là vector ứng với một từ. Nó như là nội dung các trang web được hiển thị cho người dùng sau khi tìm kiếm.
+\end{itemize}</li>
+</ul>
+<p>Trong ví dụ về attention ở hình <a class="link" href="#attention_ex" >trên</a>, query sẽ là vector $y_1$, keys và values sẽ đều là ma trận $H$ tạo bởi các vector $h_i$. Quá trình tính toán giữa query, keys và values trong ví dụ đó được mô tả lại trong hình bên dưới, với:</p>
+<ul>
+<li>Attention weights được tính từ query và keys.</li>
+<li>Context vector được tính từ attention weights và values.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 180px;" src='./images/query_key_value.png'>
+<p align="center" style="margin: 0; color: #888;">Attention với query, key và value. Trong đó, vector key và value của các từ trong hầu hết các trường hợp là giống nhau.</p>
+</div>
+<p><strong>Lưu ý</strong>. Với ý nghĩa của từng ma trận, trong một số tình huống thì keys và values có thể có giá trị khác nhau chứ không nhất thiết là luôn giống nhau.</p>
+<h2 id="scale-dot-product-attention">Scale Dot-Product Attention</h2>
+<p>Trong mô hình Transformer, Attention được tính toán đơn giản và nhanh hơn so với hầu hết các mô hình sử dụng Attention trong Machine Translation trước đó. Lý do là vì mô hình học $f$ dùng để tính attention weights $\alpha_{ij}$ sẽ chỉ đơn giản là phép toán <strong>tích vô hướng</strong> (Dot-Product). Ngoài ra, ta còn có thêm thao tác scale các giá trị trong ma trận kết quả với một giá trị hằng số. Do đó, quá trình tính toán Attention trong Transformer được gọi là <strong>Scale Dot-Product Attention</strong>.</p>
+<p><strong>Tại sao lại chỉ đơn giản là dùng phép toán tích vô hướng?</strong></p>
+<ul>
+<li>Để ý rằng, kết quả tích vô hướng của hai vector càng lớn thì hai vector đó càng &ldquo;liên quan đến nhau&rdquo;. Nếu xét hai vector có chuẩn bằng 1 thì điều này đang cho biết rằng góc giữa hai vector đó đang rất nhỏ. Như vậy, phép toán tích vô hướng có thể làm được nhiệm vụ của mô hình học $f$ một cách rất nhanh gọn.</li>
+</ul>
+<p>Trước hết, ký hiệu các ma trận queries, keys và values lần lượt là $Q$, $K$ và $V$, với $Q \in \mathbb{R}^{length_q \times d_q}$, $K \in \mathbb{R}^{length_k \times d_k}$ và $V \in \mathbb{R}^{length_v \times d_v}$. Gọi các vector query trong ma trận $Q$ là $q_i$ (ứng với từng dòng của ma trận), tương tự với $k_i$ trong $K$ và $v_i$ trong $V$. Ta có một số lưu ý sau:</p>
+<ul>
+<li>Để dễ hình dung, với ví dụ về Attention ở hình <a class="link" href="#attention_ex" >này</a> thì $length_k = length_v = 5$ và $length_q$ sẽ bằng với số từ ở phía Decoder (và trong hình đó thì là 1).</li>
+<li>Ta xét ma trận $Q$ vì từ phần về <a class="link" href="#sec:attention" >Attention</a> thì ta thấy rằng với mỗi vector $y_i$, quá trình tính toán Attention từ nó đến các vector $x_j$ là hoàn toàn độc lập với các vector $y_t$ khác, tức là ta có thể thực hiện <strong>tính toán Attention song song</strong> với tất cả các vector query.</li>
+<li>Vì $f$ là phép toán tích vô hướng nên số chiều của vector query và vector key phải giống nhau, tức là $d_q = d_k$. Ngoài ra, ta thường có $length_q = length_k = length_v$.</li>
+</ul>
+<p>Quá trình tính toán của Scale Dot-Product Attention được thể hiện trong hình bên dưới. Về mặt công thức, ma trận output sẽ thuộc $\mathbb{R}^{length_q \times d_v}$ và nó được xác định bằng
+$$
+\begin{equation*}
+\text{Attention}(Q, K, V) = \text{softmax} \left( \frac{QK^\top}{\sqrt{d_k}} \right) V
+\end{equation*}
+$$
+, trong đó phép toán $\text{softmax}$ được thực hiện trên từng dòng của ma trận $QK^\top$.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/scale_dot_product_attn.png'>
+<p align="center" style="margin: 0; color: #888;">Các bước tính toán trong Scale Dot-Product Attention.</p>
+</div>
+<p><strong>Lưu ý</strong>. Để giải thích cho sự cần thiết của việc scale các phần tử trong ma trận $QK^\top$ bằng cách chia cho $\sqrt{d_k}$ trước khi tính softmax thì ta cần quan tâm đến phương sai của các giá trị này. Nếu ban đầu các vector $q_i$ và $k_j$ có phương sai là 1 thì các phần tử trong $QK^\top$ sẽ có phương sai là $d_k$ (hoặc là $d_q$ vì ta có $d_q = d_k$). Đó là một giá trị rất lớn và nó sẽ ảnh hưởng đến quá trình tính attention weights (phép toán softmax): giảm độ chính xác và thời gian tính tăng lên khá nhiều.</p>
+<h2 id="self-attention-và-cross-attention">Self-Attention và Cross-Attention</h2>
+<p>Khác với các mô hình RNN-based, Transformer đã thay thế toàn bộ quá trình tính toán hồi quy bằng các phép toán Attention và một số fully connected layer. Nói cách khác, Transformer đã sử dụng Attention để học mối quan hệ giữa các từ trong câu nguồn và trong câu đích.</p>
+<ul>
+<li>Ngoài ra, quá trính tính toán này hoàn toàn có thể diễn ra song song chứ không cần phải tuần tự từng vị trí như RNN-based.</li>
+<li>Để ngắn gọn hơn, từ phần này trở đi, khi nói đến Attention trong Transformer thì ta hiểu đó là Scale Dot-Product Attention.</li>
+</ul>
+<p>Trong Transformer, Attention được sử dụng theo hai dạng là <strong>Self-Attention</strong> và <strong>Cross-Attention</strong>. Sự khác nhau giữa Self-Attention và Cross-Attention nằm ở các cách xác định giá trị ma trận $Q$, $K$ và $V$ để tính Scale Dot-Product Attention, trong đó:</p>
+<ul>
+<li><strong>Self-Attention:</strong> Ba ma trận $Q$, $K$ và $V$ đều được tính toán từ input của Encoder hoặc của Decoder, tức là câu thuộc ngôn ngữ nguồn hoặc ngôn ngữ đích. Như vậy, Self-Attention sẽ diễn ra trong nội bộ câu nguồn và nội bộ câu đích.</li>
+<li><strong>Cross-Attention:</strong> Ma trận $Q$ được tính toán từ input của Decoder, tức là câu ngôn ngữ đích. Trong khi đó, $K$ và $V$ được tính toán từ câu nguồn ở phía Encoder. Điều này nghĩa là Cross-Attention thực hiện Attention từ câu đích vào câu nguồn (đây thật là ý tưởng sử dụng Attention trong những mô hình trước đó).</li>
+</ul>
+<h3 id="self-attention">Self-Attention</h3>
+<p><span id='sec:self-attn'></span></p>
+<p>Trước tiên, ta xét đến Self-Attention. Self-Attention sẽ thực hiện nhiệm vụ <strong>học mối quan hệ giữa các từ với nhau trong cùng một câu</strong> (thay thế quá trình tính toán hồi quy trong các mô hình RNN-based). Do đó mà các ma trận $Q$, $K$ và $V$ được tính từ các từ trong cùng một câu. Hơn nữa, ta cũng có $length_q = length_k = length_v = n$ với $n$ là số từ của câu đó.</p>
+<p>Giả sử rằng, câu input sau khi qua các phần Embedding (Word Embedding và Positional Encoding) thì ta thu được ma trận $X \in \mathbb{R}^{n \times d_{model}}$. Khi đó:</p>
+<ul>
+<li>Ta sử dụng 3 fully connected layer để biến đổi $X$ thành các ma trận $Q$, $K$ và $V$. Gọi 3 ma trận trọng số ứng với các layer đó là $W_Q$, $W_K$ và $W_V$. Đây chính là các ma trận tham số mà Transformer cần học cho quá trình Self-Attention.</li>
+<li>Từ $Q$, $K$ và $V$, qua phép toán Scale Dot-Product Attention, ta thu được ma trận kết quả $Z \in \mathbb{R}^{n \times d_v}$.</li>
+</ul>
+<p>Quá trình tính toán này của Self-Attention được mô tả trong hình bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 450px;" src='./images/self-attn.png'>
+<p align="center" style="margin: 0; color: #888;">Quá trình tính toán của Self-Attention với d = d_model</p>
+</div>
+<p>Minh họa cho kết quả của phép toán Self-Attention trong một câu Tiếng Anh được thể hiện trong hình bên dưới. Trong đó, màu càng đậm thể hiện cho attention weights từ từ &ldquo;it&rdquo; vào từ tương ứng là càng lớn.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/self-attn_ex.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa kết quả của Self-Attention tại từ "it" trong câu đầu vào</p>
+</div>
+<p>Như vậy, Self-Attention đã có thể học được mối quan hệ giữa các từ trong cùng một câu về mặt ngữ nghĩa một cách đơn giản và hiệu quả hơn so với quá trình tính toán hồi quy trong các mô hình RNN-based.</p>
+<h3 id="cross-attention">Cross-Attention</h3>
+<p>Cross-Attention thực ra chính là cách sử dụng Attention trong nhiều mô hình trước đó với bài toán Machine Translation. Nhiệm vụ của nó trong bài toán Machine Translation là thực hiện <strong>Attention từ câu đích vào câu nguồn</strong>. Điều này có thể xem như là việc ta sử dụng những gì đã hiểu được ở câu thuộc ngôn ngữ nguồn để dịch dần câu đó ra câu ngôn ngữ đích.</p>
+<p>Cụ thể hơn, ta có:</p>
+<ul>
+<li>Giá trị của ma trận $K$ và $V$ sẽ được tính toán từ câu nguồn theo <strong>một cách nào đó</strong> (các phần về <a class="link" href="#sec:encoder" >Encoder</a> và <a class="link" href="#sec:decoder" >Decoder</a> sẽ đề cập kĩ hơn về chi tiết này).</li>
+<li>Đối với ma trận $Q$ thì nó cũng được xác định từ các từ hiện có trong câu ngôn ngữ đích tính đến vị trí đang xét. Ta vẫn sẽ đảm bảo rằng $d_q = d_k$ và quá trình tính toán của Cross-Attention hoàn toàn tương tự như Self-Attention.</li>
+<li>Mô hình Transformer cũng cần học ba ma trận tham số tương ứng để tính ra $Q$, $K$ và $V$ trước khi thực hiện Scale Dot-Product Attention).</li>
+</ul>
+<p>Để dễ hình dung hơn về sự khác nhau giữa $Q$, $K$ và $V$ trong Self-Attention và Cross-Attention, ta có minh họa trong hình bên dưới, với các hàm $f$, $g$ và $h$ đại diện cho quá trình tính toán ra ba ma trận đó.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/self_vs_cross_attn.png'>
+<p align="center" style="margin: 0; color: #888;">Sự khác nhau về cách tính toán $Q$, $K$ và $V$ trong Self-Attention và Cross-Attention</p>
+</div>
+<p><strong>Lưu ý.</strong> Cross-Attention là một thành phần rất thú vị. Nhờ có Cross-Attention mà kiến trúc Transformer có thể được áp dụng hiệu quả vào nhiều bài toán khác nhau. Ví dụ, với bài toán <strong>Image Captioning</strong>, ta có thể sử dụng Encoder để &ldquo;hiểu&rdquo; ý nghĩa của ảnh đầu vào, sau đó, trong quá trình sinh câu mô tả cho ảnh, ta có thể sử dụng Cross-Attention đến các đặc trưng rút ra từ ảnh đó để thu được các câu mô tả tốt hơn.</p>
+<h2 id="multi-head-attention-và-masked-multi-head-attention">Multi-Head Attention và Masked Multi-Head Attention</h2>
+<h3 id="mutli-head-attention">Mutli-Head Attention</h3>
+<!-- \label{sec:multi-head} -->
+<p>Để ý rằng, <a class="link" href="#sec:self-attn" >Self-Attention</a> đang thực hiện Attention từ một từ trong câu đến toàn bộ các từ còn lại trong câu (kể cả chính từ đó). Tương tự như với Cross-Attention. Điều này có nghĩa là ta đang thực hiện <strong>Global Attention</strong>. Tuy nhiên, trong ngôn ngữ, đôi khi từ X có thể có quan hệ &ldquo;mạnh&rdquo; với một từ Y theo một phương diện nào đó, và nó cũng có thể có quan hệ mạnh với từ Z theo một phương diện khác nữa. Do đó, nếu thực hiện Global Attention thì các quan hệ này có thể bị trung hòa lẫn nhau và khiến ta mất đi những đặc trưng có ích.</p>
+<p>Ta xét một ví dụ được đề cập trong bài giảng của <a class="link" href="https://drive.google.com/file/d/1y8YxaJwjjnhdpYeLWOTq27PIEInoOLHj/view"  target="_blank" rel="noopener"
+    >ProtonX</a>. Với câu &ldquo;Tôi đi học ở Hà Nội&rdquo; và ta đang xét từ &ldquo;Tôi&rdquo; như là query vector. Nếu xét theo 3 phương diện, hay là 3 câu hỏi,  sau đây: &ldquo;Ai?&rdquo;, &ldquo;Làm gì?&rdquo;, &ldquo;Ở đâu?&rdquo;, thì với mỗi phương diện, mối quan hệ giữa từ &ldquo;Tôi&rdquo; với các từ con lại được thể hiện mạnh nhất ở lần lượt các từ &ldquo;Tôi&rdquo;, &ldquo;đi&rdquo; và &ldquo;học&rdquo;, &ldquo;ở&rdquo; và &ldquo;Hà&rdquo; và &ldquo;Nội&rdquo; (minh họa ở hình bên dưới).</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/multi-head-motivation.png'>
+<p align="center" style="margin: 0; color: #888;">Xét từ "Tôi" trong ba phương diện khác nhau khi thực hiện Self-Attention</p>
+</div>
+<p>Chi tiết này là xuất phát cho ý tưởng của <strong>Multi-Head Attention</strong>. Nó sẽ hạn chế ảnh hưởng của Global Attention trong việc trung hòa mối quan hệ giữa các từ với nhau trong nhiều phương diện.</p>
+<p>Để đạt được điều này, Multi-Head Attention sẽ <strong>chia nhỏ</strong> từng ma trận trong các ma trận $Q$, $K$ và $V$ thành $h$ phần. Ví dụ, với $Q \in \mathbb{R}^{length_q \times d_q}$ thì ta sẽ có $h$ ma trận $Q_i \in \mathbb{R}^{length_q \times (d_k / h)}$ (hay là chia thành $h$ heads). Sau đó, Scale Dot-Product Attention sẽ được thực hiện trên $h$ bộ ba ma trận $(Q_i, K_i, V_i)$ và các kết quả sẽ được tổng hợp lại. Ta có thể hình dung rằng mỗi phần nhỏ của các ma trận $Q$, $K$ và $V$ sẽ cố gắng biểu diễn đặc trưng của các từ ở một phương diện nào đó.</p>
+<p>Quá trình tính toán của Multi-Head Attention được thể hiện trong hình bên dưới. Có một số lưu ý như sau:</p>
+<ul>
+<li>Với Multi-Head Attention trong Transformer, ta sẽ xét $length_q = length_k = length_v = n$ với $n$ là độ dài của câu đầu vào</li>
+<li>$d_q = d_k = d_v = d_{model}$ (đây là số chiều của embedding vector của các từ, sau khi bổ sung thông tin về Positional Encoding trong phần \ref{sec:pos-enc}).</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/multi-head-attn.png'>
+<p align="center" style="margin: 0; color: #888;">Quá trình tính toán trong Multi-Head Attention</p>
+</div>
+<p>Đặt $d_x = d_{model} / h$. Về mặt công thức, ma trận kết quả của Multi-Head Attention với $h$ head có thể xác định bằng
+$$
+\begin{equation*}
+\begin{aligned}
+\text{MultiHead}(Q, K, V) &amp;= \text{Concat}(\text{head}_1; \dots; \text{head}_h)W^O \\
+\text{với head}_i &amp;= \text{Attention}(QW^Q_i, KW^K_i, VW^V_i)
+\end{aligned}
+\end{equation*}
+$$
+, trong đó $Q, K, V \in \mathbb{R}^{n \times d_{model}}$, các ma trận trọng số $W^Q_i, W^V_i, W^K_i \in \mathbb{R}^{d_{model} \times d_x}$, kết quả Scale Dot-Product Attention $\text{head}_i \in \mathbb{R}^{n \times d_x}$ và $W^O \in \mathbb{R}^{d_{model} \times d_{model}}$. Như vậy, ma trận kết quả của Multi-Head Attention thuộc $\mathbb{R}^{n \times d_{model}}$.</p>
+<h3 id="masked-multi-head-attention">Masked-Multi Head Attention</h3>
+<p>Masked-Multi Head Attention là một biến thể của Multi-Head Attention và nó được sử dụng trong Decoder của Transformer. Mục đích của Masked-Multi Head Attention là <strong>ngăn chặn quá trình Attention tại một số vị trí trong câu</strong>. Ta có thể gọi phép tính Attention ở trong Masked-Multi Head Attention là Masked Scale Dot-Product Attention, và Self-Attention tại đây có thể được gọi là Masked Self-Attention.</p>
+<p>Lý do ta cần đến thành phần này ở Decoder là để tránh việc mô hình &ldquo;nhìn thấy&rdquo; được các từ ở phía sau từ hiện tại khi nó đang đưa ra dự đoán khi ta thực hiện Self-Attention tại Decoder. Minh họa cho ý tưởng này được thể hiện trong hình bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 200px;" src='./images/masked-attn-moti.png'>
+<p align="center" style="margin: 0; color: #888;">Minh họa ý tưởng của Masked Self-Attention</p>
+</div>
+<p><strong>Lưu ý.</strong> Bản chất của phép toán là ta sẽ làm cho giá trị attention weights đến các từ nên được bỏ qua thành một giá trị rất nhỏ để nó hầu như không thể tác động gì đến kết quả chung của quá trình Attention.</p>
+<ul>
+<li>Để thực hiện được điều đó, ta sẽ dùng một mặt nạ (mask) để đánh dấu những từ bị bỏ qua khi đang xét đến một từ nào đó trong câu.</li>
+<li>Ví dụ, với câu &ldquo;Tôi đi học ở Hà Nội&rdquo;, ta xét từ &ldquo;đi&rdquo; thì giá trị của mask sẽ là [0, 0, 1, 1, 1, 1], với phần tử bằng 1 có nghĩa là giá trị tại thành phần đó bị bỏ qua. Lúc đó, trước khi tính attention weights, ta kiểm tra mask xem giá trị nào bằng 1 thì gán cho phần tử tương ứng ở đó là $-\infty$. Khi đó, sau phép toán softmax, giá trị attention weight tại đó sẽ xấp xỉ 0.</li>
+</ul>
+<p>Như vậy, trong Masked Multi-Head Attention, quá trình tính toán của Scale Dot-Product Attention sẽ bổ sung thêm một phần kiểm tra mask và gán lại giá trị trước khi tính softmax. Quá trình này được thể hiện trong hình bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/scale-dot-product-attn-masked.png'>
+<p align="center" style="margin: 0; color: #888;">Quá trình tính toán trong Scale Dot-Product Attention khi thực hiện thêm thao tác kiểm tra mask</p>
+</div>
+<h2 id="layer-normalization">Layer Normalization</h2>
+<p>Trong các mô hình Deep Learning, ta thường thấy sự xuất hiện của các normalization layer nhằm cải thiện khả năng hội tụ của mô hình. Hai loại normalization layer thường thấy nhất là <strong>Batch Normalization</strong> (chuẩn hóa theo batch) và <strong>Layer Normalization</strong> (chuẩn hóa theo từng mẫu). Đối với các mô hình thuộc bài toán NLP nói chung và Transformer nói riêng thì loại layer được sử dụng thường là Layer Normalization. Sự khác nhau giữa hai loại layer này khi áp dụng vào bài toán ngôn ngữ được thể hiện trong hình bên dưới, trong đó:</p>
+<ul>
+<li><strong>Layer Normalization:</strong> Ta chuẩn hóa vector đặc trưng của từng vị trí trên từng mẫu một (với số vị trí bằng với độ dài của câu). Mọi vị trí của cùng một mẫu sẽ sử dụng chung một bộ tham số gain và bias. Như vậy, việc chuẩn hóa của từng mẫu sẽ độc lập với nhau.</li>
+<li><strong>Batch Normalization:</strong> Đối với loại layer này, ta sẽ chuẩn hóa từng phần tử của vector đặc trưng tại từng vị trí trong câu đầu vào và việc tính toán được dựa theo toàn bộ các mẫu trong cùng batch.</li>
+</ul>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 300px;" src='./images/layer_norm.png'>
+<p align="center" style="margin: 0; color: #888;">Layer Normalization và Batch Normalization khi áp dụng vào bài toán ngôn ngữ</p>
+</div>
+<p>Qua sự khác biệt đó, ta có thể thấy rằng Batch Normalization không nên được áp dụng vào các bài toán NLP vì vấn đề sự khác nhau về độ dài thật sự của các câu trong cùng một batch sẽ ảnh hưởng đến kết quả chuẩn hóa (dù ta đã sử dụng kĩ thuật padding để đưa các câu đó về cùng một độ dài nhưng các vị trí được padding lại có vector đặc trưng với giá trị khá vô nghĩa).</p>
+<ul>
+<li>Cụ thể hơn, nếu trong cùng một batch, có một câu có độ dài lớn và nhiều câu có độ dài nhỏ thì đặc trưng của các từ ở vị trí phía sau của câu dài hơn đó sẽ có khả năng cao bị mất đi khi ta áp dụng Batch Normalization.</li>
+</ul>
+<h2 id="feed-forward-network-và-skip-connection">Feed Forward Network và skip connection</h2>
+<p>Bên cạnh các quá trình tính toán Attention, các tác giả của Transformer sử dụng thêm một số <strong>Feed Forward Network</strong> (gồm các fully connected layer) và kỹ thuật <strong>Skip connection</strong> để tăng thêm khả năng học các đặc trưng của mô hình (các ô màu xanh dương trong hình ở phần <a class="link" href="#overall" >này</a>).</p>
+<p>Đầu tiên, Feed Forward Network (FFN) trong Transformer sử dụng 2 fully connected layers với số unit lần lượt là $d_{ff}$ và $d_{model}$ cùng activation function ReLU trong layer đầu tiên. Input của FFN là một ma trận thuộc $\mathbb{R}^{n \times d_{model}}$. Như vậy, ta có thể biểu diễn kết quả đầu ra của FFN theo công thức
+$$
+\begin{equation*}
+FFN(X) = \max(0, XW_1 + b_1) W_2 + b_2
+\end{equation*}
+$$
+, với hai ma trận trọng số $W_1 \in \mathbb{R}^{d_{model \times d_{ff}}}$ và $W_2 \in \mathbb{R}^{d_{ff} \times d_{model}}$ và $b_1$, $b_2$ là các bias vector. Do đó $FFN(X) \in \mathbb{R}^{n \times d_{model}}$.</p>
+<p>Ngoài ra, <strong>skip connection</strong> là một ý tưởng rất hay và phổ biến trong Deep Learning kể từ khi nó được áp dụng thành công trong mô hình ResNet. Skip connection có thể giúp cho gradient được lan truyền tốt hơn trong quá trình huấn luyện mô hình, từ đó góp phần làm giảm hiện tượng vanishing gradient. Mình đã đề cập đến ý tưởng này trong bài viết về <a class="link" href="https://htrvu.github.io/post/resnet/" >ResNet</a>.</p>
+<p>Trong kiến trúc Transformer, các tác giả đã áp dụng skip connection cùng với Layer Normalization ở rất nhiều vị trí (các khối &ldquo;Add &amp; Norm&rdquo; trong hình ở phần <a class="link" href="#overall" >này</a>). Ta có thể biểu diễn output của các khối đó ở dạng
+$$\text{LayerNorm}(X + \text{Sublayer}(X)))$$
+, với $\text{Sublayer}$ được sử dụng để đại diện cho những thành phần ở phía trước các khối đó.</p>
+<p><strong>Lưu ý.</strong> Một hướng giải thích cho chi tiết Feed Forward Network chỉ áp dụng activation function ReLU cho layer đầu tiên là vì ngay sau đó ta đã sử dụng skip connection. Đây là một kĩ thuật thường được sử dụng khi làm việc với skip connection.</p>
+<ul>
+<li>Nếu ta sử dụng activation function ReLU rồi sau đó áp dụng skip connection thì có thể nói là giá trị các phần tử trong ma trận đầu vào sẽ luôn không giảm, và hiệu ứng này có thể sẽ có ảnh hưởng không tốt đến mô hình.</li>
+</ul>
+<h2 id="encoder">Encoder</h2>
+<p><span id='sec:encoder'></span></p>
+<p>Sau khi đã trình bày về các thành phần quan trọng trong kiến trúc của Transformer, ta sẽ đi vào các nhánh chính của kiến trúc và nhánh đầu tiên là Encoder. Kiến trúc của Encoder được thể hiện trong hình bên dưới:</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 350px;" src='./images/encoder.png'>
+<p align="center" style="margin: 0; color: #888;">Layer Kiến trúc của Transformer Encoder</p>
+</div>
+<p>Thành phần Encoder trong Transformer là sự kết hợp của Word Embedding, Positional Encoding và một dãy gồm $N$ <strong>Encoder Layer</strong> liên tiếp nhau. Trong đó, Encoder Layer bao gồm nhiều thành phần như Multi-Head Attention, Feed Forward, skip connection và Layer Normalization.</p>
+<p>Cụ thể hơn, trong bài toán Machine Translation, input của Encoder sẽ là câu văn thuộc ngôn ngữ nguồn gồm $L$ từ. Trong đó, các &ldquo;từ&rdquo; trong câu lúc này là các con số ứng với vị trí của từ đó trong từ điển của ngôn ngữ nguồn. Khi đó:</p>
+<ul>
+<li>Sau khi qua Word Embedding và Positional Encoding, ta được một ma trận $X \in \mathbb{R}^{L \times d_{model}}$.</li>
+<li>Tại mỗi Encoder Layer, từ ma trận input $X&rsquo; \in \mathbb{R}^{N \times d_{model}}$, ta sẽ sử dụng ba ma trận trọng số $W_Q, W_K, W_V$ để tính ra $Q$ (được mô tả ở phần , $K$, $V$ từ $X&rsquo;$ và sau đó bắt đầu đi qua các thành phần trong đó. Ma trận output của Encoder Layer cũng sẽ là một ma trận thuộc $\mathbb{R}^{L \times d_{model}}$.</li>
+</ul>
+<p><strong>Lưu ý.</strong> Encoder output sẽ là một ma trận thuộc $\mathbb{R}^{L \times d_{model}}$, một ma trận có shape giống với ma trận đầu vào $X$ của Encoder. Như vậy, ta có thể hình dung rằng Encoder đang làm nhiệm vụ là bổ sung thêm những đặc trưng quan trọng vào embedding vector ban đầu của các từ trong câu.</p>
+<p>Đối với Encoder output, ta sẽ sử dụng ma trận này để tham gia vào phép tính Cross-Attention trong Decoder.</p>
+<h2 id="decoder">Decoder</h2>
+<p><span id='sec:decoder'></span></p>
+<h3 id="tổng-quan-về-kiến-trúc">Tổng quan về kiến trúc</h3>
+<p>Kiến trúc của Decoder được thể hiện trong hình bên dưới. Decoder cũng có cách tổ chức khá tương tự Encoder khi ta bắt đầu bằng Word Embedding và Positional Encoding, sau đó là dãy gồm $N$ <strong>Decoder Layer</strong> liên tiếp nhau. Phần cuối của Decoder là một fully connected layer kèm theo hàm softmax để ta chọn ra từ phù hợp nhất làm output của mô hình đối với vị trí hiện tại trong câu thuộc ngôn ngữ đích.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 500px;" src='./images/decoder.png'>
+<p align="center" style="margin: 0; color: #888;">Kiến trúc của Transformer Decoder</p>
+</div>
+<p>Ta cần để ý rằng, trong Decoder Layer, ta sẽ thực hiện cả hai phép tính Self-Attention và Cross-Attention. Trong đó:</p>
+<ul>
+<li>Self-Attention được thực hiện trước để tiến hành Attention đến các vị trí ở phía trước vị trí hiện tại trong câu, tức là ta đang sử dụng Masked Multi-Head Attention.</li>
+<li>Sau đó, Cross-Attention được thực hiện với hai thành phần $K$ và $V$ được tính toán từ Encoder output. Lúc này thì ta đang thực hiện Attention đến toàn bộ các vị trí trong Encoder output nên Multi-Head Attention được sử dụng.</li>
+</ul>
+<p>Ngoài ra, ta sẽ đặt số lượng từ trong câu nguồn và câu đích của mô hình là bằng nhau và bằng $L$ (trong trường hợp câu nào ngắn hơn thì ta sẽ sử dụng kỹ thuật padding để thêm các từ vào). Do đó:</p>
+<ul>
+<li>Trước khi đến với fully connected layer cuối cùng của Decoder để tiến hành phân lớp, ma trận output ta nhận được cũng sẽ thuộc $\mathbb{R}^{L \times d_{model}}$.</li>
+<li>Số chiều của output vector của fully connected layer cuối cùng sẽ bằng với kích thước tập từ điển của ngôn ngữ đích.</li>
+</ul>
+<h3 id="decoder-trong-quá-trình-huấn-luyện">Decoder trong quá trình huấn luyện</h3>
+<p>Trong quá trình huấn luyện mô hình, ta sẽ tạo ra các cặp (input, ground truth) của Decoder theo cách khá dặc biệt. Đầu tiên, ta sẽ thêm các từ đánh dấu cho việc &ldquo;bắt đầu&rdquo; và &ldquo;kết thúc&rdquo; của quá trình dịch. Ta gọi đây là các từ &ldquo;<start>&rdquo; và &ldquo;<end>&rdquo;. Các cặp (input, ground truth) dùng để huấn luyện Decoder sẽ được tạo ra bằng cách &ldquo;shifted right&rdquo; một câu thuộc ngôn ngữ đích. Ví dụ, với câu Tiếng Việt là &ldquo;tôi đi học&rdquo;, ta sẽ có các cặp (input, ground truth) tương ứng như sau:</p>
+<ul>
+<li>Input: &ldquo;<start>&rdquo;, &ldquo;tôi&rdquo;, &ldquo;đi&rdquo;, &ldquo;học&rdquo;.</li>
+<li>Ground truth: &ldquo;tôi&rdquo;, &ldquo;đi&rdquo;, &ldquo;học&rdquo;, &ldquo;<end>&rdquo;</li>
+</ul>
+<p>Ngoài ra, cho dù Decoder có dự đoán ra từ nào ở vị trí $t$ của câu đích đi nữa thì input của Decoder ở vị trí $t+1$ cũng luôn là một từ đúng (tức là ground truth của vị trí $t$). Kỹ thuật này gọi là <strong>Teacher Forcing</strong> và nó được sử dụng rất nhiều trong các bài toán NLP. Quá trình này được minh họa trong hình bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/teacher-forcing.png'>
+<p align="center" style="margin: 0; color: #888;">Kỹ thuật Teacher Forcing với Decoder trong huấn luyện Transformer</p>
+</div>
+<h3 id="decoder-trong-quá-trình-dự-đoán">Decoder trong quá trình dự đoán</h3>
+<p>Đối với quá trình dự đoán (hay là dịch) của Transformer, Decoder sẽ bắt đầu với một từ là &ldquo;&lt;start&gt;&rdquo; và quá trình dịch sẽ tiếp tục cho đến khi mô hình dự đoán ra từ &ldquo;&lt;end&gt;&rdquo;. Hơn nữa, từ được mô hình dự đoán ra ở vị trí $t$ sẽ được dùng làm input của Decoder cho vị trí $t+1$. Quá trình này được thể hiện trong hình bên dưới.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<img style="max-height: 400px;" src='./images/decoder_infer.png'>
+<p align="center" style="margin: 0; color: #888;">Decoder trong quá trình dự đoán</p>
+</div>
+<h2 id="kết-luận">Kết luận</h2>
+<p>Như vậy, sau một bài viết rất dài thì mình đã trình bày về Transformer với khá nhiều phân tích vào ý tưởng và bản chất của các thành phần. Từ sự thành công của Transformer trong Machine Translation, một kỷ nguyên mới thật sự đã mở ra đối với NLP nói riêng và Deep Learning nói chung:</p>
+<ul>
+<li>Các mô hình ngôn ngữ lớn như ChatGPT, Bard,&hellip; đều dựa trên nền tảng kiến trúc của Transformer. Rõ hơn một chút thì chúng sẽ sử dụng Transformer Decoder và sẽ không dùng đến Cross Attention 😉</li>
+<li>Đối với các bài toán thuộc lĩnh vực CV, hay là multi-model như text-to-image (Stable Diffusion,&hellip;) thì cũng đều đang tận dụng sức mạnh của Transformer và các thành phần của chúng, đặc biệt là Cross Attention.</li>
+</ul>
+<h2 id="tài-liệu-tham-khảo">Tài liệu tham khảo</h2>
+<ul>
+<li>Vaswani, Ashish, et al. &ldquo;Attention is all you need.&rdquo; Advances in neural information processing systems 30 (2017).</li>
+<li><a class="link" href="https://lilianweng.github.io/posts/2018-06-24-attention/"  target="_blank" rel="noopener"
+    >Weng, Lilian, &ldquo;Attention? Attention!&rdquo;</a></li>
+<li><a class="link" href="https://pbcquoc.github.io/transformer/"  target="_blank" rel="noopener"
+    >Phạm Bá Cường Quốc, &ldquo;Tìm hiểu mô hình Transformer - Ngươi Không Phải Là Anh Hùng, Ngươi Là Quái Vật Nhiều Đầu&rdquo;</a></li>
+<li>Shen, Sheng, et al. &ldquo;Powernorm: Rethinking batch normalization in transformers.&rdquo; International Conference on Machine Learning. PMLR, 2020.</li>
+<li><a class="link" href="https://drive.google.com/file/d/1y8YxaJwjjnhdpYeLWOTq27PIEInoOLHj/view"  target="_blank" rel="noopener"
+    >ProtonX, Transformer - Encoder</a></li>
+<li><a class="link" href="https://drive.google.com/file/d/1zuQah_XnVihdAJ72zy3Wc_cFdPssH4uS/view"  target="_blank" rel="noopener"
+    >ProtonX, Transformer - Decoder</a></li>
+<li>Luong, Minh-Thang, Hieu Pham, and Christopher D. Manning. &ldquo;Effective approaches to attention-based neural machine translation.&rdquo;, arXiv preprint arXiv:1508.04025 (2015).</li>
+<li><a class="link" href="https://notesonai.com/Attention&#43;Mechanism"  target="_blank" rel="noopener"
+    >Notes On AI, &ldquo;Attention Machenism&rdquo;</a></li>
+<li><a class="link" href="https://sebastianraschka.com/blog/2023/self-attention-from-scratch.html"  target="_blank" rel="noopener"
+    >Sebastian Raschka, &ldquo;Understanding and Coding the Self-Attention Mechanism of Large Language Models From Scratch&rdquo;</a></li>
+<li><a class="link" href="http://jalammar.github.io/illustrated-transformer/"  target="_blank" rel="noopener"
+    >Jay Alammar, &ldquo;The Illustrated Transformer&rdquo;</a></li>
+<li><a class="link" href="https://d2l.ai/chapter_recurrent-modern/beam-search.html"  target="_blank" rel="noopener"
+    >Dive Into Deep Learning, &ldquo;Beam Search&rdquo;</a></li>
+</ul>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/nlp/">nlp</a>
+        
+            <a href="/tags/attention/">attention</a>
+        
+            <a href="/tags/transformer/">transformer</a>
+        
+            <a href="/tags/self-attention/">self-attention</a>
+        
+            <a href="/tags/cross-attention/">cross-attention</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css"integrity="sha256-J&#43;iAE0sgH8QSz9hpcDxXIftnj65JEZgNhGcgReTTK9s="crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js"integrity="sha256-InsNdER1b2xUewP&#43;pKCUJpkhiqwHgqiPXDlIk7GzBu4="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js"integrity="sha256-y39Mpg7V3D4lhBX4x6O0bUqTV4pSrfgwEfGKfxkOdgI="crossorigin="anonymous"
+                defer
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/post/cam/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">CAM, Grad-CAM và Score-CAM trong CNN</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mlp_mixer/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MLP Mixer</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/diffusion-models/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Lý thuyết về diffusion models</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/efficientnet/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">EfficientNet (2020)</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/post/mobilenet_v2/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MobileNet V2 (2019)</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+<div id="disqus_thread"></div>
+
+<p><b>Lưu ý.</b> Nếu phần Comment không load ra được thì các bạn vào DNS setting của Wifi/LAN và đổi thành "8.8.8.8" nhé (server của Google)!</p>
+
+
+<script>
+    
+
+    
+
+    (function() { 
+    var d = document, s = d.createElement('script');
+    s.src = 'https://htrvu-blog.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2023 Trong-Vu Hoang
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.16.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
