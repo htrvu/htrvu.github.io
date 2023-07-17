@@ -7,14 +7,6 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
         <lastBuildDate>Mon, 17 Jul 2023 21:58:29 +0700</lastBuildDate><atom:link href="https://htrvu.github.io/categories/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Computer Vision</title>
-        <link>https://htrvu.github.io/categories/cv/</link>
-        <pubDate>Mon, 17 Jul 2023 21:58:29 +0700</pubDate>
-        
-        <guid>https://htrvu.github.io/categories/cv/</guid>
-        <description>&lt;img src="https://htrvu.github.io/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
-        </item>
-        <item>
         <title>Deep Learning</title>
         <link>https://htrvu.github.io/categories/dl/</link>
         <pubDate>Mon, 17 Jul 2023 21:58:29 +0700</pubDate>
@@ -25,10 +17,18 @@
         <item>
         <title>Natual Language Processing</title>
         <link>https://htrvu.github.io/categories/nlp/</link>
-        <pubDate>Sun, 19 Mar 2023 00:25:41 +0700</pubDate>
+        <pubDate>Mon, 17 Jul 2023 21:58:29 +0700</pubDate>
         
         <guid>https://htrvu.github.io/categories/nlp/</guid>
         <description>&lt;img src="https://htrvu.github.io/categories/nlp/nlp.jpg" alt="Featured image of post Natual Language Processing" /&gt;</description>
+        </item>
+        <item>
+        <title>Computer Vision</title>
+        <link>https://htrvu.github.io/categories/cv/</link>
+        <pubDate>Tue, 16 May 2023 11:37:12 +0700</pubDate>
+        
+        <guid>https://htrvu.github.io/categories/cv/</guid>
+        <description>&lt;img src="https://htrvu.github.io/categories/cv/cv.jpg" alt="Featured image of post Computer Vision" /&gt;</description>
         </item>
         <item>
         <title>Explainable AI</title>

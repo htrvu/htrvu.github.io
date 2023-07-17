@@ -14,13 +14,13 @@
     <loc>https://htrvu.github.io/post/transformer_01/</loc>
     <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
-    <loc>https://htrvu.github.io/categories/cv/</loc>
-    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
-  </url><url>
     <loc>https://htrvu.github.io/tags/cross-attention/</loc>
     <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/categories/dl/</loc>
+    <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/nlp/</loc>
     <lastmod>2023-07-17T21:58:29+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/nlp/</loc>
@@ -37,6 +37,9 @@
   </url><url>
     <loc>https://htrvu.github.io/tags/transformer/</loc>
     <lastmod>2023-07-17T21:58:29+07:00</lastmod>
+  </url><url>
+    <loc>https://htrvu.github.io/categories/cv/</loc>
+    <lastmod>2023-05-16T11:37:12+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/mlp/</loc>
     <lastmod>2023-05-16T11:37:12+07:00</lastmod>
@@ -75,9 +78,6 @@
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/machine-translation/</loc>
-    <lastmod>2023-03-19T00:25:41+07:00</lastmod>
-  </url><url>
-    <loc>https://htrvu.github.io/categories/nlp/</loc>
     <lastmod>2023-03-19T00:25:41+07:00</lastmod>
   </url><url>
     <loc>https://htrvu.github.io/tags/rnn/</loc>
