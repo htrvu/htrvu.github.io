@@ -588,8 +588,9 @@ $$
 </div>
 <h2 id="layer-normalization">Layer Normalization</h2>
 <p>Trong các mô hình Deep Learning, ta thường thấy sự xuất hiện của các normalization layer nhằm cải thiện khả năng hội tụ của mô hình. Hai loại normalization layer thường thấy nhất là <strong>Batch Normalization</strong> (chuẩn hóa theo batch) và <strong>Layer Normalization</strong> (chuẩn hóa theo từng mẫu). Đối với các mô hình thuộc bài toán NLP nói chung và Transformer nói riêng thì loại layer được sử dụng thường là Layer Normalization. Sự khác nhau giữa hai loại layer này khi áp dụng vào bài toán ngôn ngữ được thể hiện trong hình bên dưới, trong đó:</p>
+<!-- * **Layer Normalization:** Ta chuẩn hóa vector đặc trưng của từng vị trí trên từng mẫu một (với số vị trí bằng với độ dài của câu). Mọi vị trí của cùng một mẫu sẽ sử dụng chung một bộ tham số gain và bias. Như vậy, việc chuẩn hóa của từng mẫu sẽ độc lập với nhau. -->
 <ul>
-<li><strong>Layer Normalization:</strong> Ta chuẩn hóa vector đặc trưng của từng vị trí trên từng mẫu một (với số vị trí bằng với độ dài của câu). Mọi vị trí của cùng một mẫu sẽ sử dụng chung một bộ tham số gain và bias. Như vậy, việc chuẩn hóa của từng mẫu sẽ độc lập với nhau.</li>
+<li><strong>Layer Normalization:</strong> Việc chuẩn hóa của từng mẫu sẽ độc lập với nhau. Ta sẽ chuẩn hóa các vector trên từng đặc trưng một (tổng cộng có $d_model$ đặc trưng).</li>
 <li><strong>Batch Normalization:</strong> Đối với loại layer này, ta sẽ chuẩn hóa từng phần tử của vector đặc trưng tại từng vị trí trong câu đầu vào và việc tính toán được dựa theo toàn bộ các mẫu trong cùng batch.</li>
 </ul>
 <div style="display: flex; flex-direction: column; align-items: center;">
